@@ -17,23 +17,23 @@ const int _TileResulution = 500;//resulution of the individual tile pattern of _
 const std::string _srcTileImage = "bilder/backgrounds/TilesColor.png";
 const int TileResulution = 1;//resulution of the individual tile pattern in pixel of _srcTileImage
 */
-const double NoticableTemperaturDifference = 0.5; //erst bei einem temp diff von ... wird die neue Temperatur angezeigt-> je höher die erlaubte diff ist, desto schneller die Sim, da weniger gezeichent wird
+const double _NoticableTemperaturDifference = 0.5; //erst bei einem temp diff von ... wird die neue Temperatur angezeigt-> je höher die erlaubte diff ist, desto schneller die Sim, da weniger gezeichent wird
 const std::string _DefinedMap = "bilder/map2.jpg"; //höhenprofiel Wenn string leer, wird rand generiert
 
-const double PI = 3.141592653589793238463;
+const double _PI = 3.141592653589793238463;
 const double _1_durch_PI = 0.318309886183790671537;
 const double _2PI = 2 * 3.141592653589793238463;
 const double _1_durch_2PI = 1.0 / _2PI;
 
-const double PI_4tel = 0.785398163397448309615;
+const double _PI_4tel = 0.785398163397448309615;
 
 ///Dimensionen der Welt
 const double _LandToOceanRate = 1.3;
 const int _DIMENSION_HALF = 150; // [DeltaParts]//max 150
 const int _World_Dimension = _DIMENSION_HALF * 2; //amount of tiles for one side
 const int _Amount_Delta_Worlds = _World_Dimension*_World_Dimension; //amount of all tiles creating this world
-const double WorldDiameter = 40000000.0; // [m] Umfang = Durchmesser
-const double _DELTA_SIZE = WorldDiameter/ _Amount_Delta_Worlds; //[m]
+const double _WorldDiameter = 40000000.0; // [m] Umfang = Durchmesser
+const double _DELTA_SIZE = _WorldDiameter/ _Amount_Delta_Worlds; //[m]
 const double _MaxHeight = 3000;//[m]
 const double _MinHeight = -3000;//[m]
 
@@ -142,7 +142,7 @@ inline double cosResurceGeneration(double max, double Tau, double t) {
 		}
 	}
 
-	return (0.5*-std::cos(PI / Tau * t) + 0.5)*max;
+	return (0.5*-std::cos(_PI / Tau * t) + 0.5)*max;
 }
 /**
 * @function inverse_cosResurceGeneration f(double max, double Tau, double resources)
@@ -159,7 +159,7 @@ inline double inverse_cosResurceGeneration(double max, double Tau,  double resou
 	else if (resources <= 0.0) {
 		return 0.0;
 	}
-	return Tau / PI * std::acos(-2 * (resources / max - 0.5));
+	return Tau / _PI * std::acos(-2 * (resources / max - 0.5));
 
 }
 /**
@@ -173,7 +173,7 @@ inline double one_divid_Tau_depend_Temp(double temp, double bestGrowthTemp) {
 	if (temp > _plants_stop_growth_temp) {
 		double high_temp_growthBorder = bestGrowthTemp*2.0 - _plants_stop_growth_temp;
 		if (temp < high_temp_growthBorder) {
-			return (10.0 / _QuaterYEAR_in_s)*(0.5*std::sin(PI * temp / (bestGrowthTemp - _plants_stop_growth_temp) + _plants_stop_growth_temp) + 0.5);//todo factor
+			return (10.0 / _QuaterYEAR_in_s)*(0.5*std::sin(_PI * temp / (bestGrowthTemp - _plants_stop_growth_temp) + _plants_stop_growth_temp) + 0.5);//todo factor
 		}
 		else {
 			return (-1.0 / _QuaterYEAR_in_s)*(high_temp_growthBorder - temp)*(high_temp_growthBorder - temp);

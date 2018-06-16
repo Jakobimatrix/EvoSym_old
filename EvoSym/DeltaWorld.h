@@ -496,7 +496,7 @@ public:
 	* @retval int:
 	**/
 	bool hadA_RecentChangeInTemp() {
-		if (std::abs(this->RecentDeltaTemperature) > NoticableTemperaturDifference) {
+		if (std::abs(this->RecentDeltaTemperature) > _NoticableTemperaturDifference) {
 			this->RecentDeltaTemperature = 0.0;
 			return true;
 		}
