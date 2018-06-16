@@ -20,7 +20,7 @@ private:
 	Skills SkillToReachResources[3]; //alle Skills, die notwendig sind um die resourcen erreichen zu können
 	double ResourceDistributionViaSkill[3];//wie viel Prozent der Resourcen mit diesem Skill zu erreichen sind
 
-	int possibleNeigbourChanseFaktor[_amountRegions];//rellative Wahrscheinlichkeit, mit der DIESE Region auftritt in Abhängigkeit eines Nachbarn
+	int possibleNeigbourChanseFaktor[_AMOUNT_REGIONS];//rellative Wahrscheinlichkeit, mit der DIESE Region auftritt in Abhängigkeit eines Nachbarn
 	int regionId;
 	int minNeigboursWithSameRegion;//DIESE Region tritt nur auf, wenn es mindestens n Nachbarn gibt, die auch DIESE Region sind
 
@@ -54,14 +54,14 @@ public:
 
 	bool occoursInTempZone(int i)
 	{
-		if (i > _amountTemperateZones) return 0;
+		if (i > _AMOUNT_TEMPERATE_ZONES) return 0;
 		return this->occurrenceInTemperateZone[i];
 	}
 	bool occoursInHeight(double h) {
 		return this->Height.isWithin(h);
 	}
 	int getRegionChanseFaktor(int region) {
-		if (region > _amountRegions) return 0;
+		if (region > _AMOUNT_REGIONS) return 0;
 		return this->possibleNeigbourChanseFaktor[region];
 	}
 
@@ -139,25 +139,25 @@ public:
 		case 1://Lake
 			return 	Season<double>(1, 1, 1, 1);
 		case 2://Medow
-			return 	Season<double>(1.0 / (2.0 *		_QuaterYEAR_in_s), 1.0 / (1.0 *		_QuaterYEAR_in_s), 1.0 / (2.0 *		_QuaterYEAR_in_s), 1.0 / (4.0 *		_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (2.0 *		_QUARTER_YEAR_IN_S), 1.0 / (1.0 *		_QUARTER_YEAR_IN_S), 1.0 / (2.0 *		_QUARTER_YEAR_IN_S), 1.0 / (4.0 *		_QUARTER_YEAR_IN_S));
 		case 3://Forest
-			return 	Season<double>(1.0 / (2.0 *		_QuaterYEAR_in_s), 1.0 / (1.0 *		_QuaterYEAR_in_s), 1.0 / (2.0 *		_QuaterYEAR_in_s), 1.0 / (4.0 *		_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (2.0 *		_QUARTER_YEAR_IN_S), 1.0 / (1.0 *		_QUARTER_YEAR_IN_S), 1.0 / (2.0 *		_QUARTER_YEAR_IN_S), 1.0 / (4.0 *		_QUARTER_YEAR_IN_S));
 		case 4://Steppe	
-			return 	Season<double>(1.0 / (0.1 *		_QuaterYEAR_in_s), 1.0 / (100.0 *	_QuaterYEAR_in_s), 1.0 / (-1.0 *	_QuaterYEAR_in_s), 1.0 / (-1.0 *	_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (0.1 *		_QUARTER_YEAR_IN_S), 1.0 / (100.0 *	_QUARTER_YEAR_IN_S), 1.0 / (-1.0 *	_QUARTER_YEAR_IN_S), 1.0 / (-1.0 *	_QUARTER_YEAR_IN_S));
 		case 5://Desert
-			return 	Season<double>(1.0 / (100.0 *	_QuaterYEAR_in_s), 1.0 / (100.0 *	_QuaterYEAR_in_s), 1.0 / (-100.0 *	_QuaterYEAR_in_s), 1.0 / (-1.0 *	_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (100.0 *	_QUARTER_YEAR_IN_S), 1.0 / (100.0 *	_QUARTER_YEAR_IN_S), 1.0 / (-100.0 *	_QUARTER_YEAR_IN_S), 1.0 / (-1.0 *	_QUARTER_YEAR_IN_S));
 		case 6://Moor
-			return 	Season<double>(1.0 / (0.1 *		_QuaterYEAR_in_s), 1.0 / (0.1 *		_QuaterYEAR_in_s), 1.0 / (0.1 *		_QuaterYEAR_in_s), 1.0 / (1.0 *		_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (0.1 *		_QUARTER_YEAR_IN_S), 1.0 / (0.1 *		_QUARTER_YEAR_IN_S), 1.0 / (0.1 *		_QUARTER_YEAR_IN_S), 1.0 / (1.0 *		_QUARTER_YEAR_IN_S));
 		case 7://tropical Forest
-			return 	Season<double>(1.0 / (0.1 *		_QuaterYEAR_in_s), 1.0 / (0.2 *		_QuaterYEAR_in_s), 1.0 / (1.0 *		_QuaterYEAR_in_s), 1.0 / (1.0 *		_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (0.1 *		_QUARTER_YEAR_IN_S), 1.0 / (0.2 *		_QUARTER_YEAR_IN_S), 1.0 / (1.0 *		_QUARTER_YEAR_IN_S), 1.0 / (1.0 *		_QUARTER_YEAR_IN_S));
 		case 8://Ice desert
-			return 	Season<double>(1.0 / (100.0 *	_QuaterYEAR_in_s), 1.0 / (100.0 *	_QuaterYEAR_in_s), 1.0 / (100.0 *	_QuaterYEAR_in_s), 1.0 / (100.0 *	_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (100.0 *	_QUARTER_YEAR_IN_S), 1.0 / (100.0 *	_QUARTER_YEAR_IN_S), 1.0 / (100.0 *	_QUARTER_YEAR_IN_S), 1.0 / (100.0 *	_QUARTER_YEAR_IN_S));
 		case 9://highlands
-			return 	Season<double>(1.0 / (0.5 *		_QuaterYEAR_in_s), 1.0 / (1.0 *		_QuaterYEAR_in_s), 1.0 / (10.0 *	_QuaterYEAR_in_s), 1.0 / (10.0 *	_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (0.5 *		_QUARTER_YEAR_IN_S), 1.0 / (1.0 *		_QUARTER_YEAR_IN_S), 1.0 / (10.0 *	_QUARTER_YEAR_IN_S), 1.0 / (10.0 *	_QUARTER_YEAR_IN_S));
 		case 10://mountain
-			return 	Season<double>(1.0 / (1.0 *		_QuaterYEAR_in_s), 1.0 / (2.0 *		_QuaterYEAR_in_s), 1.0 / (20.0 *	_QuaterYEAR_in_s), 1.0 / (40.0 *	_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (1.0 *		_QUARTER_YEAR_IN_S), 1.0 / (2.0 *		_QUARTER_YEAR_IN_S), 1.0 / (20.0 *	_QUARTER_YEAR_IN_S), 1.0 / (40.0 *	_QUARTER_YEAR_IN_S));
 		default:
-			return 	Season<double>(1.0 / (1.0 *		_QuaterYEAR_in_s), 1.0 / (1.0 *		_QuaterYEAR_in_s), 1.0 / (1.0 *		_QuaterYEAR_in_s), 1.0 / (1.0 *		_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (1.0 *		_QUARTER_YEAR_IN_S), 1.0 / (1.0 *		_QUARTER_YEAR_IN_S), 1.0 / (1.0 *		_QUARTER_YEAR_IN_S), 1.0 / (1.0 *		_QUARTER_YEAR_IN_S));
 			break;
 		}
 	}
@@ -166,29 +166,29 @@ public:
 		switch (ID)
 		{
 		case 0://ocean
-			return 	Season<double>(1.0 / (1.0 *		_QuaterYEAR_in_s), 1.0 / (1.0 *		_QuaterYEAR_in_s), 1.0 / (2.0 *		_QuaterYEAR_in_s), 1.0 / (10.0 *	_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (1.0 *		_QUARTER_YEAR_IN_S), 1.0 / (1.0 *		_QUARTER_YEAR_IN_S), 1.0 / (2.0 *		_QUARTER_YEAR_IN_S), 1.0 / (10.0 *	_QUARTER_YEAR_IN_S));
 		case 1://Lake
-			return 	Season<double>(1.0 / (5.0 *		_QuaterYEAR_in_s), 1.0 / (1.0 *		_QuaterYEAR_in_s), 1.0 / (100.0 *	_QuaterYEAR_in_s), 1.0 / (-0.1 * 	_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (5.0 *		_QUARTER_YEAR_IN_S), 1.0 / (1.0 *		_QUARTER_YEAR_IN_S), 1.0 / (100.0 *	_QUARTER_YEAR_IN_S), 1.0 / (-0.1 * 	_QUARTER_YEAR_IN_S));
 		case 2://Medow
-			return 	Season<double>(1.0 / (2.0 *		_QuaterYEAR_in_s), 1.0 / (10.0 *	_QuaterYEAR_in_s), 1.0 / (0.5 *		_QuaterYEAR_in_s), 1.0 / (-0.1 *	_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (2.0 *		_QUARTER_YEAR_IN_S), 1.0 / (10.0 *	_QUARTER_YEAR_IN_S), 1.0 / (0.5 *		_QUARTER_YEAR_IN_S), 1.0 / (-0.1 *	_QUARTER_YEAR_IN_S));
 		case 3://Forest
-			return 	Season<double>(1.0 / (30.0 *	_QuaterYEAR_in_s), 1.0 / (8.0 *		_QuaterYEAR_in_s), 1.0 / (0.8 *		_QuaterYEAR_in_s), 1.0 / (-1.0 *	_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (30.0 *	_QUARTER_YEAR_IN_S), 1.0 / (8.0 *		_QUARTER_YEAR_IN_S), 1.0 / (0.8 *		_QUARTER_YEAR_IN_S), 1.0 / (-1.0 *	_QUARTER_YEAR_IN_S));
 		case 4://Steppe
-			return 	Season<double>(1.0 / (0.05 *	_QuaterYEAR_in_s), 1.0 / (-0.05 *	_QuaterYEAR_in_s), 1.0 / (-0.01 *	_QuaterYEAR_in_s), 1.0 / (-0.01 *	_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (0.05 *	_QUARTER_YEAR_IN_S), 1.0 / (-0.05 *	_QUARTER_YEAR_IN_S), 1.0 / (-0.01 *	_QUARTER_YEAR_IN_S), 1.0 / (-0.01 *	_QUARTER_YEAR_IN_S));
 		case 5://Desert	
-			return 	Season<double>(1.0 / (100.0 *	_QuaterYEAR_in_s), 1.0 / (100.0 *	_QuaterYEAR_in_s), 1.0 / (-2.0 *	_QuaterYEAR_in_s), 1.0 / (100.0 *	_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (100.0 *	_QUARTER_YEAR_IN_S), 1.0 / (100.0 *	_QUARTER_YEAR_IN_S), 1.0 / (-2.0 *	_QUARTER_YEAR_IN_S), 1.0 / (100.0 *	_QUARTER_YEAR_IN_S));
 		case 6://Moor
-			return 	Season<double>(1.0 / (80.0 *	_QuaterYEAR_in_s), 1.0 / (4.0 *		_QuaterYEAR_in_s), 1.0 / (4.0 *		_QuaterYEAR_in_s), 1.0 / (-0.1 *	_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (80.0 *	_QUARTER_YEAR_IN_S), 1.0 / (4.0 *		_QUARTER_YEAR_IN_S), 1.0 / (4.0 *		_QUARTER_YEAR_IN_S), 1.0 / (-0.1 *	_QUARTER_YEAR_IN_S));
 		case 7://tropical Forest	
-			return 	Season<double>(1.0 / (0.3 *		_QuaterYEAR_in_s), 1.0 / (0.3 *		_QuaterYEAR_in_s), 1.0 / (0.3 *		_QuaterYEAR_in_s), 1.0 / (0.3 *		_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (0.3 *		_QUARTER_YEAR_IN_S), 1.0 / (0.3 *		_QUARTER_YEAR_IN_S), 1.0 / (0.3 *		_QUARTER_YEAR_IN_S), 1.0 / (0.3 *		_QUARTER_YEAR_IN_S));
 		case 8://Ice desert
-			return 	Season<double>(1.0 / (1000.0 *	_QuaterYEAR_in_s), 1.0 / (10.0 *	_QuaterYEAR_in_s), 1.0 / (-100.0 *	_QuaterYEAR_in_s), 1.0 / (-0.1 *	_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (1000.0 *	_QUARTER_YEAR_IN_S), 1.0 / (10.0 *	_QUARTER_YEAR_IN_S), 1.0 / (-100.0 *	_QUARTER_YEAR_IN_S), 1.0 / (-0.1 *	_QUARTER_YEAR_IN_S));
 		case 9://highlands		
-			return 	Season<double>(1.0 / (60 *		_QuaterYEAR_in_s), 1.0 / (16.0 *	_QuaterYEAR_in_s), 1.0 / (16.0 *	_QuaterYEAR_in_s), 1.0 / (-1.0 *	_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (60 *		_QUARTER_YEAR_IN_S), 1.0 / (16.0 *	_QUARTER_YEAR_IN_S), 1.0 / (16.0 *	_QUARTER_YEAR_IN_S), 1.0 / (-1.0 *	_QUARTER_YEAR_IN_S));
 		case 10://mountain
-			return 	Season<double>(1.0 / (120 *		_QuaterYEAR_in_s), 1.0 / (32.5 *	_QuaterYEAR_in_s), 1.0 / (-17.0 *	_QuaterYEAR_in_s), 1.0 / (-1.0 *	_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (120 *		_QUARTER_YEAR_IN_S), 1.0 / (32.5 *	_QUARTER_YEAR_IN_S), 1.0 / (-17.0 *	_QUARTER_YEAR_IN_S), 1.0 / (-1.0 *	_QUARTER_YEAR_IN_S));
 		default:
-			return 	Season<double>(1.0 / (2 *		_QuaterYEAR_in_s), 1.0 / (1.0 *		_QuaterYEAR_in_s), 1.0 / (2.0 *		_QuaterYEAR_in_s), 1.0 / (-4.0 *	_QuaterYEAR_in_s));
+			return 	Season<double>(1.0 / (2 *		_QUARTER_YEAR_IN_S), 1.0 / (1.0 *		_QUARTER_YEAR_IN_S), 1.0 / (2.0 *		_QUARTER_YEAR_IN_S), 1.0 / (-4.0 *	_QUARTER_YEAR_IN_S));
 			break;
 		}
 	}

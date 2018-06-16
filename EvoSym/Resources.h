@@ -30,7 +30,7 @@ public:
 	void setRegeneration_freshwater(Season<double>& Regeneration_freshwater) {
 		this->Regeneration_freshwater_1_divided_Tau = Regeneration_freshwater;
 	}
-	void RegenerateFreshWater(double deltaT,double(&TempSeasonIfluence)[_amountSeasons], int regionID) {
+	void RegenerateFreshWater(double deltaT,double(&TempSeasonIfluence)[_AMOUNT_SEASONS], int regionID) {
 		if (this->max_freshwater <= 0.0) {
 			this->freshwater = 0.0;
 			return;
@@ -38,7 +38,7 @@ public:
 
 		//calc Tau from Season
 		double Tau = 0;
-		for (int s = 0; s < _amountSeasons; s++) {
+		for (int s = 0; s < _AMOUNT_SEASONS; s++) {
 			if (TempSeasonIfluence[s] > 0.0) {
 				Tau +=TempSeasonIfluence[s] * this->Regeneration_freshwater_1_divided_Tau.getValue(s);
 			}
@@ -59,7 +59,7 @@ public:
 	void setRegeneration_plants(Season<double>& Regeneration_plants) {
 		this->Regeneration_plants_1_divided_Tau = Regeneration_plants;
 	}
-	void RegeneratePlants(double deltaT,double(&TempSeasonIfluence)[_amountSeasons], int regionID, double temperature) {
+	void RegeneratePlants(double deltaT,double(&TempSeasonIfluence)[_AMOUNT_SEASONS], int regionID, double temperature) {
 		if (this->max_plants <= 0.0) {
 			this->plants = 0.0;
 			return;
@@ -68,7 +68,7 @@ public:
 		//calc Tau from Season und temp
 		double Tau_temp = 0.0;
 		double Tau_region_season = 0.0;
-		for (int s = 0; s < _amountSeasons; s++) {
+		for (int s = 0; s < _AMOUNT_SEASONS; s++) {
 			if (TempSeasonIfluence[s] > 0.0) {
 				Tau_region_season = Tau_region_season + (TempSeasonIfluence[s] * this->Regeneration_plants_1_divided_Tau.getValue(s));
 				//todo better:? spaart für jede Kachel this->Regeneration_plants_1_divided_Tau

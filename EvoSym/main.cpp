@@ -142,7 +142,7 @@ int main()
 	
 
 	WorldView worldview;
-	World SimulatedWorld = World(_DefinedMap);
+	World SimulatedWorld = World(_DEFINED_MAP);
 	//World SimulatedWorld = World();
 
 

@@ -2,7 +2,7 @@
 
 
 void Animal::init(){
-	this->deltaT_Update = _Hour_in_s;
+	this->deltaT_Update = _HOUR_IN_S;
 	//this->deltaT_Update = _Minute_in_s;
 	this->AnimalCharacteristics.evolution.points = 0;
 	this->AnimalCharacteristics.isCondition.isAlive = true;
@@ -55,7 +55,7 @@ void Animal::isCloned(const Animal &mother) {
 void Animal::die() {
 	//this->AnimalCharacteristics.Gene.scent = Code(_scent_decay);//todo maybe slowly shift the scent into "decay scent"->do this within this->decay()
 	this->AnimalCharacteristics.isCondition.isAlive = false;
-	this->deltaT_Update = _Hour_in_s;// a dead animal dont need to be updated every deltaTime
+	this->deltaT_Update = _HOUR_IN_S;// a dead animal dont need to be updated every deltaTime
 }
 //TODO
 void Animal::growth() {

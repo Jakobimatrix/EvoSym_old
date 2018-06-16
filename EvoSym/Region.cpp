@@ -52,7 +52,7 @@ void Region::setTo(int i) {
 void Region::setToOcean() {
 	this->regionId = 0;
 	this->VariationInTemperature = Season<Propability>(Propability(+2, 2.0), Propability(-2, 4.0), Propability(-1, 2.0), Propability(+4, 2.0));
-	this->Height = MinMax(_MinHeight,10.0);
+	this->Height = MinMax(_MIN_TERRANE_HEIGHT,10.0);
 	this->occurrenceInTemperateZone[0] = true;
 	this->occurrenceInTemperateZone[1] = true;
 	this->occurrenceInTemperateZone[2] = true;
@@ -64,7 +64,7 @@ void Region::setToOcean() {
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
 
-	this->tau_ice_growth = 0.5*_QuaterYEAR_in_s;
+	this->tau_ice_growth = 0.5*_QUARTER_YEAR_IN_S;
 	this->max_ice_thickness = 10.0;
 
 	this->SkillToCross[0] = Swim();
@@ -106,7 +106,7 @@ void Region::setToLake() {
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
 
-	this->tau_ice_growth =(1.2*_QuaterYEAR_in_s);
+	this->tau_ice_growth =(1.2*_QUARTER_YEAR_IN_S);
 	this->max_ice_thickness = 2.0;
 
 	this->SkillToCross[0] = Swim();
@@ -148,7 +148,7 @@ void Region::setToMeadow() {
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
 
-	this->tau_ice_growth = (0.5*_QuaterYEAR_in_s);
+	this->tau_ice_growth = (0.5*_QUARTER_YEAR_IN_S);
 	this->max_ice_thickness = 0.5;
 
 	this->SkillToCross[0] = NoSkill();
@@ -191,7 +191,7 @@ void Region::setToForest() {
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
 
-	this->tau_ice_growth = (1.0*_QuaterYEAR_in_s);
+	this->tau_ice_growth = (1.0*_QUARTER_YEAR_IN_S);
 	this->max_ice_thickness = 0.5;
 
 	
@@ -234,7 +234,7 @@ void Region::setToSteppe() {
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
 
-	this->tau_ice_growth =(10.0*_QuaterYEAR_in_s);
+	this->tau_ice_growth =(10.0*_QUARTER_YEAR_IN_S);
 	this->max_ice_thickness = 0.5;
 
 	this->SkillToCross[0] = NoSkill();
@@ -276,7 +276,7 @@ void Region::setToDesert() {
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
 
-	this->tau_ice_growth =  (10.0*_QuaterYEAR_in_s);
+	this->tau_ice_growth =  (10.0*_QUARTER_YEAR_IN_S);
 	this->max_ice_thickness = 0.5;
 
 	this->SkillToCross[0] = NoSkill();
@@ -319,7 +319,7 @@ void Region::setToMoor() {
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
 
-	this->tau_ice_growth =  (1.0*_QuaterYEAR_in_s);
+	this->tau_ice_growth =  (1.0*_QUARTER_YEAR_IN_S);
 	this->max_ice_thickness = 0.7;
 
 	this->SkillToCross[0] = NoSkill();
@@ -362,7 +362,7 @@ void Region::setToTropicalForest() {
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
 
-	this->tau_ice_growth = (10.0*_QuaterYEAR_in_s);
+	this->tau_ice_growth = (10.0*_QUARTER_YEAR_IN_S);
 	this->max_ice_thickness = 0.5;
 
 	this->SkillToCross[0] = NoSkill();
@@ -392,7 +392,7 @@ void Region::setToTropicalForest() {
 void Region::setToIceDesert() {
 	this->regionId = 8;
 	this->VariationInTemperature = Season<Propability>(Propability(-6.0, 2.0), Propability(-2.0, 2.0), Propability(-6.0, 2.0), Propability(-11.0, 2.0));
-	this->Height = MinMax(-100, _MaxHeight);
+	this->Height = MinMax(-100, _MAX_TERRANE_HEIGHT);
 	this->occurrenceInTemperateZone[0] = true;
 	this->occurrenceInTemperateZone[1] = false;
 	this->occurrenceInTemperateZone[2] = false;
@@ -404,7 +404,7 @@ void Region::setToIceDesert() {
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
 
-	this->tau_ice_growth =(0.1*_QuaterYEAR_in_s);
+	this->tau_ice_growth =(0.1*_QUARTER_YEAR_IN_S);
 	this->max_ice_thickness = 2.5;
 
 	this->SkillToCross[0] = NoSkill();
@@ -446,7 +446,7 @@ void Region::setToHeighland() {
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
 
-	this->tau_ice_growth =  (1.0*_QuaterYEAR_in_s);
+	this->tau_ice_growth =  (1.0*_QUARTER_YEAR_IN_S);
 	this->max_ice_thickness = 0.5;
 
 	this->SkillToCross[0] = NoSkill();
@@ -476,7 +476,7 @@ void Region::setToHeighland() {
 void Region::setToMountain() {
 	this->regionId = 10;
 	this->VariationInTemperature = Season<Propability>(Propability(-5,10.0), Propability(-1, 10.0), Propability(-2.0, 10.0), Propability(-6, 10.0));
-	this->Height = MinMax(1000.0, _MaxHeight);
+	this->Height = MinMax(1000.0, _MAX_TERRANE_HEIGHT);
 	this->occurrenceInTemperateZone[0] = true;
 	this->occurrenceInTemperateZone[1] = true;
 	this->occurrenceInTemperateZone[2] = true;
@@ -488,7 +488,7 @@ void Region::setToMountain() {
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
 
-	this->tau_ice_growth =(0.8*_QuaterYEAR_in_s);
+	this->tau_ice_growth =(0.8*_QUARTER_YEAR_IN_S);
 	this->max_ice_thickness = 0.7;
 
 	this->SkillToCross[0] = Climb();

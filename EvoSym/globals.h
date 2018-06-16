@@ -6,102 +6,101 @@
 #include <iostream>
 #include "structs.h"
 
+//constants
+const double _PI = 3.141592653589793238463; //[math.const] The constant pi.
+const double _INVERSE_PI = 0.318309886183790671537; //[math.const] The inverse of the constant pi.
+const double _2PI = 2 * 3.141592653589793238463; //[math.const] Two times the constant pi.
+const double _INVERSE_2PI = 1.0 / _2PI;	//[math.const] The inverse of two times the constant pi.
+const double _PI_QUARTER = 0.785398163397448309615; //[math.const] A fourth of the constant pi.
+
+//Dimensiones of this world
+const int _AMOUNT_REGIONS = 11; //[int] The amount of defined regions.
+const int _AMOUNT_TEMPERATE_ZONES = 4; //[int] The amount of defined temperature zones.
+const int _AMOUNT_SEASONS = 4; //[int] the amount of defined seasons.
+
+const double _LAND_TO_OCEAN_RATIO = 1.3; //[ratio] This ratio determines how much land compared to ocean there shall be.
+const int _DIMENSION_HALF = 150; //[DeltaWorld] The radius in tiles the world should consist of. Program Crashes for more than 150.
+const int _WORLD_DIMENSION = _DIMENSION_HALF * 2; //[DeltaWorld] The diameter in tiles the world consist of.
+const int _AMOUNT_DELTA_WORLDS = _WORLD_DIMENSION * _WORLD_DIMENSION; //[DeltaWorld] The amount of all tiles creating this world.
+const double _WORLD_DIAMETER = 40000000.0; // [m] The Diameter of the created world in meters. This sets the size of the world in relation to the animals.
+const double _DELTA_SIZE = _WORLD_DIAMETER/ _AMOUNT_DELTA_WORLDS; //[m] The size of one tile of the world in meter.
+const double _MAX_TERRANE_HEIGHT = 3000;//[m] The highst possible point of the world.
+const double _MIN_TERRANE_HEIGHT = -3000;//[m] The lowest possible point of this world.
 
 //TileMap
+const std::string _SRC_TILE_IMAGE = "bilder/backgrounds/Tiles.png";//[path] Path to the tile map.
+const int _TILE_RESULUTION = 500;//[pixel] Resulution of the individual tile pattern in _SRC_TILE_IMAGE.
 
-/**/
-const std::string _srcTileImage = "bilder/backgrounds/Tiles.png";
-const int _TileResulution = 500;//resulution of the individual tile pattern of _srcTileImage
+//Drawing
+const double _VISUALIZED_TEMPERATURE_DIFFERENCE = 0.5; //[°C] At which temperature difference a tile should change apearence. The smaller this number the more often a tile has to be redrawn.
+const std::string _DEFINED_MAP = "bilder/map2.jpg"; //[path] Loades a hight profile from an black and white image. If empty the height profile will be randomized with perlian noise.
+const int _WORLD_DIAMETER_IN_PIXEL = _WORLD_DIMENSION*_TILE_RESULUTION; //[pix] gesammt anzahl der Pixel in Länge und breite
 
-/*
-const std::string _srcTileImage = "bilder/backgrounds/TilesColor.png";
-const int TileResulution = 1;//resulution of the individual tile pattern in pixel of _srcTileImage
-*/
-const double _NoticableTemperaturDifference = 0.5; //erst bei einem temp diff von ... wird die neue Temperatur angezeigt-> je höher die erlaubte diff ist, desto schneller die Sim, da weniger gezeichent wird
-const std::string _DefinedMap = "bilder/map2.jpg"; //höhenprofiel Wenn string leer, wird rand generiert
+//Parameter for a random generated world with perlian noise.
 
-const double _PI = 3.141592653589793238463;
-const double _1_durch_PI = 0.318309886183790671537;
-const double _2PI = 2 * 3.141592653589793238463;
-const double _1_durch_2PI = 1.0 / _2PI;
-
-const double _PI_4tel = 0.785398163397448309615;
-
-///Dimensionen der Welt
-const double _LandToOceanRate = 1.3;
-const int _DIMENSION_HALF = 150; // [DeltaParts]//max 150
-const int _World_Dimension = _DIMENSION_HALF * 2; //amount of tiles for one side
-const int _Amount_Delta_Worlds = _World_Dimension*_World_Dimension; //amount of all tiles creating this world
-const double _WorldDiameter = 40000000.0; // [m] Umfang = Durchmesser
-const double _DELTA_SIZE = _WorldDiameter/ _Amount_Delta_Worlds; //[m]
-const double _MaxHeight = 3000;//[m]
-const double _MinHeight = -3000;//[m]
-
-///Parameter für Random generation. Werte in Kommentar bezogen auf 200X200 Kacheln
-const int _Graphic_pix_diameter = _World_Dimension*_TileResulution; //[pix] gesammt anzahl der Pixel in Länge und breite
-
-const int _MinOffset = -1000000;//-1000000
-const int _MaxOffset =  1000000;//-1000000
+/*Perlian noise is like the pattern of a military uniform. This pattern is only pseudorandom but i can choose randoomly with
+the offset O (_MIN_OFFSET_PERLIAN_NOISE < O < _MAX_OFFSET_PERLIAN_NOISE) where to start on a large predifined pattern map.*/
+const int _MIN_OFFSET_PERLIAN_NOISE = -1000000;//[int] Empirical value, should not be less than -1000000.
+const int _MAX_OFFSET_PERLIAN_NOISE =  1000000;//[int] Empirical value, should not be more than  1000000.
 
 //divided by _DIMENSION_HALF to assure the same pattern independent from the amount of tiles 
-const double _minSmoothFactor_Zoom = 1.1 / _DIMENSION_HALF;//Min smoothfactor für die Höhendistribution 1.1->wenig Inseln
-const double _maxSmoothFactor_Zoom = 3.0 / _DIMENSION_HALF;//Max smoothfactor für die Höhendistribution 2.0->viele Inseln 
+/*One way to make perlian noise more randoom is to zoom randoomly into the predefined pattern map.*/
+const double _MIN_ZOOM_PERLIAN_NOISE = 1.1 / _DIMENSION_HALF;//Min zoomfactor 1.1->less Islands.
+const double _MAX_ZOOM_PERLIAN_NOISE = 3.0 / _DIMENSION_HALF;//Max zoomfactor 3.0->many Islands. 
 
-const double _minSmoothFactor_Verzerrung = 0.005 / _DIMENSION_HALF;//Min smoothfactor für die Steigungsdistribution 0.0.005->Schwache Verzerrung der Strucktur
-const double _maxSmoothFactor_Verzerrung = 0.03 / _DIMENSION_HALF;//Max smoothfactor für die Steigungsdistribution 0.03->starke Verzerrung der Strucktur
+/*With these factors we can distort the pattern of the perlian noise with a second perlian noise pattern.*/
+const double _MIN_DISTORTION_PERLIAN_NOISE = 0.005 / _DIMENSION_HALF;//Min distorting factor for the perlian noise map. 0.005->weak distortion.
+const double _MAX_DISTORTION_PERLIAN_NOISE = 0.03 / _DIMENSION_HALF;//Max distorting factor for the perlian noise map. 0.03->strong distortion.
 
-const double _smoothingfactor_krummungChnage = 0.01 / _DIMENSION_HALF; //constant changerate for curvature 0.01;
-const double _minSmoothFactor_krummungChnage = 10.0 / _DIMENSION_HALF; //10.0 -> schwache Peaks
-const double _maxSmoothFactor_krummungChnage = 20.0 / _DIMENSION_HALF;//200.0 -> starke Peaks
+/*With these factors we can distort the second perlian noise pattern with a third pattern. This will cause
+localy strong changes in the resulting pattern.*/
+const double _CURVATURE_CHANGE_RATE_PERLIAN_NOISE = 0.01 / _DIMENSION_HALF; //Constant changerate for the pattern. 0.01;
+const double _MIN_CURVATURE_PERLIAN_NOISE = 10.0 / _DIMENSION_HALF; //Min. factor 10.0 -> weak peaks / sudden changes in height. 
+const double _MAX_CURVATURE_PERLIAN_NOISE = 20.0 / _DIMENSION_HALF;//Max. factor 200.0 -> strong peaks / sudden changes in height.
 
 
 
-///Simulations-DeltaEinheiten-Einheit
-const double _YEAR_in_s = 31536000.0; //[s] 365*24*60*60
-const double _QuaterYEAR_in_s = _YEAR_in_s*0.25; //[s] 365*24*60*60
-const double _1_divided_QuaterYEAR_in_s = 1.0/ _QuaterYEAR_in_s; //[s] 365*24*60*60
-const double _1_divided_YEAR_in_s = 1.0/ _YEAR_in_s;
-const double _Month_in_s = 30 * 24 * 60 * 60;
-const double _1_divided_Month_in_s = 1.0/ _Month_in_s;
-const double _YEAR_in_d = 8544; //[s] 365*24
-const double _DAY_in_s = 86400;//[s] 24*60*60
-const double _1_divided_DAY_in_s = 1/ _DAY_in_s;
-const double _Hour_in_s = 3600;//[s] 60*60
-const double _1_divided_Hour_in_s = 1 / _Hour_in_s;
-const double _Minute_in_s = 60;//[s] 60
-const double _1_divided_Minute_in_s = 1 / _Minute_in_s;
+//Simulation Time units
+const double _YEAR_IN_S = 31536000.0; //[s] 365*24*60*60
+const double _QUARTER_YEAR_IN_S = _YEAR_IN_S*0.25; //[s] 365*24*60*60*0.25
+const double _INVERSE_QUARTER_YEAR_IN_S = 1.0/ _QUARTER_YEAR_IN_S; //[1/s] 1/(365*24*60*60*0.25)
+const double _INVERSE_YEAR_IN_S = 1.0/ _YEAR_IN_S; //[1/s] 1/(365*24*60*60)
+const double _MONTH_IN_S = 30 * 24 * 60 * 60; //[s] 30*24*60*60
+const double _INVERSE_MONTH_IN_S = 1.0/ _MONTH_IN_S; //[1/s] 1/(30*24*60*60)
+const double _YEAR_IN_D = 8544; //[s] 365*24
+const double _DAY_IN_S = 86400; //[s] 24*60*60
+const double _INVERSE_DAY_IN_S = 1/ _DAY_IN_S; //[1/s] 1/(24*60*60)
+const double _HOUR_IN_S = 3600; //[s] 60*60
+const double _INVERSE_HOUR_IN_S = 1 / _HOUR_IN_S; //[1/s] 17(60*60)
+const double _MINUTE_IN_S = 60; //[s] 60
+const double _INVERSE_MINUTE_IN_S = 1 / _MINUTE_IN_S; //[1/s] 1/60
 
-//nach dieser Zeit soll die Tempertur nur noch duch sollgrößen, nicht mehr von ist größen abhängen
-//const double _time_dependency_for_temp_seconds_ = 60 * 60 * 24 * 7;//1 Wochen
-const double _time_dependency_for_temp_seconds_ = 60 * 60 * 24 *7;//1 Tag Je größer, desto mehr hängt die Temp von der Season ab
-const double _1_divided_time_dependency_for_temp_seconds_ = 1/ _time_dependency_for_temp_seconds_;
+//simulation temperature
+const double _TIME_DEPENDANTCY_FOR_TEMP_S = 60 * 60 * 24 *7; //[s] After this time intervall the calculation for the new temperature depends only on seasonal influences.
+const double _INVERSE_TIME_DEPENDANTCY_FOR_TEMP_S = 1/ _TIME_DEPENDANTCY_FOR_TEMP_S; //[1/s] After 1/(this time intervall) the calculation for the new temperature depends only on seasonal influences.
+//!!!The summ of all _TEMP_INFLUENCE_... has to be 1.0! 
+const double _TEMP_INFLUENCE_NEIGHBOURS = 0.45; //[ratio] How much influence neighbour tiles have on the temperature.
+const double _TEMP_INFLUENCE_TEMPERATE_ZONE = 0.5; //[ratio] How much influence the temperate zone has on the temperature.
+const double _TEMP_INFLUENCE_IS_TEMP = 0.05; //[ratio] How much the temperature of the last simulation step influences the new temperature.
+//const double _TEMP_INFLUENCE_GROUND_TEMP; //[ratio] How much the groundtemperature the temperature influences.
 
-//Physikalische Eigenschaften der Welt
-const double _water_freez_temp[2] = { -0.2, -1.9 };
-const double _tempDropPer1m = -0.003;
-const double _beginTempDrop = 0; //m erst ab x meter soll es kontinuierlich kälter werden
+//simulation physics
+const double _WATER_FREEZING_TEMPERATURE[2] = { -0.2, -1.9 }; //[°C,°C] At this temperature [water, marine water] begin to freeze.
+const double _TEMPERATURE_DROP_PER_METER = -0.003; //[°C/m] With every meter the average temperature drops by this value.
+const double _BEGIN_HEIGHT_TEMP_DROP = 0; //[m] Above this value the average temperature drops per meter with _TEMPERATURE_DROP_PER_METER.
 
-const double _ice_tau_per_degree_latitude = 1.0;//[1/(s*°lat)]
-const double _ice_tau_thickness_factor = 1000000.0;//[1/(s*m)]
+
+
+//this block willbe gone soon
+const double _ice_tau_thickness_factor = 1000000.0;	//[1/(s*m)]
 const double _ice_tau_per_grad_celsius_factor = 0.1;//[1/°C]
 const double _ice_temperature_gradient = 0.1;
 const double _ice_melt_temp_expo = 5;
 const double _ice_freeze_temp_expo = 5;
+//..
 
-const double _plants_stop_growth_temp = 4.0;
+const double _plants_stop_growth_temp = 4.0;//this should be defined for each region 
 
-
-//Definition für Arraygröße
-const int _amountRegions = 11;
-const int _amountTemperateZones = 4;
-const int _amountSeasons = 4;
-
-
-
-//Tempersturberechnung für DeltaWorld müssen zusammen 1 ergeben
-const double _multiplier_neigbours = 0.45;
-const double _multiplier_temperateZone = 0.5;
-const double _ist_temp = 0.05;
 
 
 ///animalPropertys
@@ -120,11 +119,11 @@ const double _energy_consumption_weight_exponent = 5.2;
 
 /**
 * @function cosResurceGeneration f(double max, double Tau, double t)
-* @brief Resourcengeneration: zwischen f(t = 0) = 0, und f(t = +-Tau) = +-max
-* @param[in] max: Maximaler Wert für resource
-* @param[in] Tau: Nach Tau sekunden ist die resource voll. Tau darf nicht INF sein!
-* @param[in] t: Zeit, die Vergangen ist.
-* @retval double: resourcen nach t secunden
+* @brief Resourc regeneration: between f(t = 0) = 0, and f(t = +-Tau) = +-max
+* @param[in] max: Max capacity of the resource
+* @param[in] Tau: After Tau seconds the resource is full. Tau != INF
+* @param[in] t: Passed time.
+* @retval double: Resourcen after t seconds.
 **/
 inline double cosResurceGeneration(double max, double Tau, double t) {
 	if (max == 0) {
@@ -146,11 +145,11 @@ inline double cosResurceGeneration(double max, double Tau, double t) {
 }
 /**
 * @function inverse_cosResurceGeneration f(double max, double Tau, double resources)
-* @brief Berechnet, wie viel Zeit bereits vergangen ist bei einer ist-resource: zwischen f(resources = 0) = 0, und f(resources = max) = Tau
-* @param[in] max: Maximaler Wert für Resource.
-* @param[in] Tau: Nach Tau sekunden ist die resource voll. Tau darf nicht INF sein!
-* @param[in] resources: Ist zustand der resource.
-* @retval double: Zeit, die vergangen ist, damit der ist resourcen wert generiert werden konnte
+* @brief Calculates how many time passed given the amount of resources currently avaiable: between f(resources = 0) = 0, and f(resources = max) = Tau
+* @param[in] max: Max capacity of the resource.
+* @param[in] Tau: After Tau seconds the resource is full. Tau != INF
+* @param[in] resources: Amount of resources at this point of time.
+* @retval double: Time needed to generate the given amount of resources.
 **/
 inline double inverse_cosResurceGeneration(double max, double Tau,  double resources) {
 	if (resources >= max) {
@@ -163,24 +162,24 @@ inline double inverse_cosResurceGeneration(double max, double Tau,  double resou
 
 }
 /**
-* @function one_divid_Tau_depend_Temp(double temp, double bestGrowth)
-* @brief Berechnet, die inverse der Regenerationsrate Tau abhängig von der Temperatur und der Temp, bei der Pflanzen am besten wachsen
-* @param[in] temp: Ist-Temperatur.
-* @param[in] bestGrowth: Temperatur und der Temp, bei der Pflanzen am besten wachsen.
-* @retval double: Inverse von Tau, der Regenerationsrate.
+* @function one_divid_Tau_depend_Temp(double temp, double bestGrowthTemp)
+* @brief Calculates the inverse of the regeneration rate Tau considering temperature at which plants grow best.
+* @param[in] temp: is-temperature.
+* @param[in] bestGrowth: Optimal temperature for plant growth.
+* @retval double: Inverse of Tau.
 **/
 inline double one_divid_Tau_depend_Temp(double temp, double bestGrowthTemp) {
 	if (temp > _plants_stop_growth_temp) {
 		double high_temp_growthBorder = bestGrowthTemp*2.0 - _plants_stop_growth_temp;
 		if (temp < high_temp_growthBorder) {
-			return (10.0 / _QuaterYEAR_in_s)*(0.5*std::sin(_PI * temp / (bestGrowthTemp - _plants_stop_growth_temp) + _plants_stop_growth_temp) + 0.5);//todo factor
+			return (10.0 / _QUARTER_YEAR_IN_S)*(0.5*std::sin(_PI * temp / (bestGrowthTemp - _plants_stop_growth_temp) + _plants_stop_growth_temp) + 0.5);//todo factor
 		}
 		else {
-			return (-1.0 / _QuaterYEAR_in_s)*(high_temp_growthBorder - temp)*(high_temp_growthBorder - temp);
+			return (-1.0 / _QUARTER_YEAR_IN_S)*(high_temp_growthBorder - temp)*(high_temp_growthBorder - temp);
 		}
 	}
 	else if(temp < 0.0){
-		return (-1.0 / _QuaterYEAR_in_s ) * temp * temp ;// Resource nimmt mit der Temperatur quadratisch ab.
+		return (-1.0 / _QUARTER_YEAR_IN_S ) * temp * temp ;// Resource nimmt mit der Temperatur quadratisch ab.
 	}
 	else {
 		return 0.0;
@@ -213,7 +212,7 @@ public:
 private:
 	// Private Constructor
 	GlobalSingleton() {
-		this->_DeltaTime = _YEAR_in_s;
+		this->_DeltaTime = _YEAR_IN_S;
 		double DeltaTime = 1;//jede sekunde wird simuliert
 		DeltaTime = 60;//jede Minute wird simuliert
 		DeltaTime = 60 * 60;//jede Stunde wird Simuliert
@@ -301,7 +300,7 @@ public:
 	void announceDeltaTime(double dt) {
 		if (dt < this->_DeltaTime) {
 			this->_DeltaTime = dt;
-			this->_DELTA_SEASON_CHANGE_GRAD = (360.0  * _1_divided_YEAR_in_s) * this->_DeltaTime;
+			this->_DELTA_SEASON_CHANGE_GRAD = (360.0  * _INVERSE_YEAR_IN_S) * this->_DeltaTime;
 			this->_DELTA_SEASON_CHANGE_RAD = Deg2Rad(this->_DELTA_SEASON_CHANGE_GRAD);
 		}
 	}

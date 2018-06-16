@@ -25,9 +25,9 @@ void DeltaWorld::setRandRegion(double height, int notThisRegion) {
 	//region
 	//gehe alle Nachbarn durch, errechne für jeden Nachbarn die Wahrscheinlichkeit für this DeltaWorld Region
 	//Durch Höhe und Breitengrad wird die Auswahl begrenzt
-	double PossibleRegion[_amountRegions];//hier wird gespeichert, mit welcher warscheinlichkeit, welche Region diese DeltaWorld wird. 
+	double PossibleRegion[_AMOUNT_REGIONS];//hier wird gespeichert, mit welcher warscheinlichkeit, welche Region diese DeltaWorld wird. 
 
-	for (int ir = 0; ir < _amountRegions; ir++) {
+	for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
 		PossibleRegion[ir] = 0.0;
 		if (this->_RG_->getRegion(ir)->occoursInHeight(height)) {//kommt die Region in dieser Höhe vor?
 			//Ja
@@ -39,7 +39,7 @@ void DeltaWorld::setRandRegion(double height, int notThisRegion) {
 			PossibleRegion[ir] = 0.0;//Zohne kommt nicht in der Höhe vor
 		}
 	}
-	if (-1 < notThisRegion && notThisRegion < _amountRegions) {
+	if (-1 < notThisRegion && notThisRegion < _AMOUNT_REGIONS) {
 		PossibleRegion[notThisRegion] = 0.0;
 	}
 
@@ -49,7 +49,7 @@ void DeltaWorld::setRandRegion(double height, int notThisRegion) {
 		DeltaWorld* D = this->getNeigbour(in);
 		if (D) {
 			if (D->isInitialized()) {
-				for (int ir = 0; ir < _amountRegions; ir++) {
+				for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
 					PossibleRegion[ir] = PossibleRegion[ir] * (double)(this->_RG_->getRegion(D->getRegionId())->getRegionChanseFaktor(ir));
 					//P(Region_i) = P(Region_i|Klimazohne) * P(Region_i|NachbarRegion)
 				}
@@ -58,7 +58,7 @@ void DeltaWorld::setRandRegion(double height, int notThisRegion) {
 	}
 
 	double TotalChanse = 0;
-	for (int ir = 0; ir < _amountRegions; ir++) {
+	for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
 		TotalChanse += PossibleRegion[ir];
 	}
 	if (TotalChanse == 0) {//falls etwas schief gelaufen ist und für jede Region P(Region_i) = 0 gilt
@@ -76,7 +76,7 @@ void DeltaWorld::setRandRegion(double height, int notThisRegion) {
 	else {
 		double RandRegion = uniform_double_dist(0.0, TotalChanse);
 		TotalChanse = 0;
-		for (int ir = 0; ir < _amountRegions; ir++) {
+		for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
 			TotalChanse += PossibleRegion[ir];
 			if (TotalChanse > RandRegion) {
 				this->setRegion_and_height(ir, height);
@@ -113,9 +113,9 @@ void DeltaWorld::calcTemp(double dt) {
 	double dependency_T_ist = timeFactorist;
 	*/
 	//constante Abhängigkeit 
-	double dependency_neigbour = _multiplier_neigbours;		//"nachbar abhängigkeit"
-	double dependency_T_TempZone_mean = _multiplier_temperateZone;//"temp Zohne"
-	double dependency_T_ist = _ist_temp;			//"temp speicher"
+	double dependency_neigbour = _TEMP_INFLUENCE_NEIGHBOURS;		//"nachbar abhängigkeit"
+	double dependency_T_TempZone_mean = _TEMP_INFLUENCE_TEMPERATE_ZONE;//"temp Zohne"
+	double dependency_T_ist = _TEMP_INFLUENCE_IS_TEMP;			//"temp speicher"
 	if (!this->initilized) {
 		double dependency_neigbour = 0.0;
 		double dependency_T_TempZone_mean = 1;
@@ -124,13 +124,13 @@ void DeltaWorld::calcTemp(double dt) {
 	//alles zusammen muss 1 ergeben!!
 
 	//Season
-	for (int s = 0; s < _amountSeasons; s++) {
+	for (int s = 0; s < _AMOUNT_SEASONS; s++) {
 		if (this->SeasonMultiplier[s] > 0) {
 			TemperateZone T;
 			double T_TempZone_mean_2 = 0;
 			double T_TempZone_offset_Seasondependant = 0;
 			//TempZohne
-			for (int TempZone = 0; TempZone < _amountTemperateZones; TempZone++) {
+			for (int TempZone = 0; TempZone < _AMOUNT_TEMPERATE_ZONES; TempZone++) {
 				T = TemperateZone(TempZone);
 				T_TempZone_mean_2 += T.getSeasonDependentTemp()->getValue(s) * this->InfluencedByTempZone[TempZone];
 									//mean temp.in TempZone in Season		//influence of TempZone 
@@ -232,7 +232,7 @@ void DeltaWorld::calcIceThicknes(double dt) {
 		if (this->regionID == 0) {
 			waterType = 1;
 		}
-		if (temperature < _water_freez_temp[waterType]) {
+		if (temperature < _WATER_FREEZING_TEMPERATURE[waterType]) {
 
 			Tau = R->getTauIceGrwoth();//es friert je nach Region schneller oder langsamer zu;
 			Tau = Tau / std::abs(_ice_tau_per_grad_celsius_factor*std::pow(this->temperature*_ice_temperature_gradient, _ice_freeze_temp_expo));  //je niedriger die Temp, desto schneller friert es

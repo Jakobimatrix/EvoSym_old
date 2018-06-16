@@ -103,7 +103,7 @@ public:
 		this->_G_ = &this->_G_->getInstance();
 		this->_RG_ = &this->_RG_->getInstance();
 		//parameter
-		this->deltaT_Update = 1.0*_DAY_in_s;//ein Tag
+		this->deltaT_Update = 1.0*_DAY_IN_S;//ein Tag
 		this->_G_->announceDeltaTime(this->deltaT_Update);
 		this->t_lastUpdate = 0.0;
 		this->latitude = latitude;
@@ -135,8 +135,8 @@ public:
 		this->regionID = regionID;
 		this->height = h;
 		this->TempDropDueHeight = 0;
-		if (this->height > _beginTempDrop) {
-			this->TempDropDueHeight = this->height * _tempDropPer1m;
+		if (this->height > _BEGIN_HEIGHT_TEMP_DROP) {
+			this->TempDropDueHeight = this->height * _TEMPERATURE_DROP_PER_METER;
 		}
 		this->temperature = 0.0;
 
@@ -353,7 +353,7 @@ public:
 	int getSeason() {
 		int season = 0;
 		double max = 0;
-		for (int i = 0; i < _amountSeasons; i++) {
+		for (int i = 0; i < _AMOUNT_SEASONS; i++) {
 			if (this->SeasonMultiplier[i] > max) {
 				max = this->SeasonMultiplier[i];
 				season = i;
@@ -496,7 +496,7 @@ public:
 	* @retval int:
 	**/
 	bool hadA_RecentChangeInTemp() {
-		if (std::abs(this->RecentDeltaTemperature) > _NoticableTemperaturDifference) {
+		if (std::abs(this->RecentDeltaTemperature) > _VISUALIZED_TEMPERATURE_DIFFERENCE) {
 			this->RecentDeltaTemperature = 0.0;
 			return true;
 		}
@@ -566,7 +566,7 @@ public:
 	std::string getSeasonText() {
 		int season = 0;
 		double max = 0;
-		for (int i = 0; i < _amountSeasons; i++) {
+		for (int i = 0; i < _AMOUNT_SEASONS; i++) {
 			if (this->SeasonMultiplier[i] > max) {
 				max = this->SeasonMultiplier[i];
 				season = i;

@@ -33,7 +33,7 @@ public:
 	//int *ary = new int[sizeX*sizeY];
 	//// ary[i][j] is then rewritten as
 	//ary[i*sizeY + j]
-	DeltaWorld* WorldParts[_Amount_Delta_Worlds];
+	DeltaWorld* WorldParts[_AMOUNT_DELTA_WORLDS];
 	std::vector<Animal> Animals;
 private:
 
@@ -67,7 +67,7 @@ public:
 	}
 	~World()
 	{
-		for (int i = 0; i < _Amount_Delta_Worlds; i++) {
+		for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
 			delete this->WorldParts[i];
 		}
 	}
@@ -77,12 +77,12 @@ public:
 		this->time = 0;
 		this->Animals.clear();
 		if (!init) {
-			for (int i = 0; i < _Amount_Delta_Worlds; i++) {
+			for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
 				this->WorldParts[i] = new DeltaWorld();
 			}
 		}
 		else {
-			for (int i = 0; i < _Amount_Delta_Worlds; i++) {
+			for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
 				this->WorldParts[i]->reset();
 			}
 		}

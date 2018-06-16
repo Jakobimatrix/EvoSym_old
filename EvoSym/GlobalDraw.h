@@ -86,8 +86,8 @@ private:
 		//HeighFarbGradient
 		this->minHeightRGB = 0.0;
 		this->maxHeightRGB = 255.0;
-		this->GradientMinMaxHeight = -(this->maxHeightRGB - this->minHeightRGB) / (float)(_MaxHeight - _MinHeight);
-		this->HeightOffset = this->maxHeightRGB - this->GradientMinMaxHeight*(float)_MaxHeight;
+		this->GradientMinMaxHeight = -(this->maxHeightRGB - this->minHeightRGB) / (float)(_MAX_TERRANE_HEIGHT - _MIN_TERRANE_HEIGHT);
+		this->HeightOffset = this->maxHeightRGB - this->GradientMinMaxHeight*(float)_MAX_TERRANE_HEIGHT;
 		//regionSpecifische color
 		this->BackgroundOcean.setSmooth(true);
 		this->BackgroundOcean.loadFromFile("bilder/backgrounds/ocean.jpg");

@@ -5,9 +5,9 @@
 class RegionGlobals {
 
 private:
-	Region Regions[_amountRegions];
+	Region Regions[_AMOUNT_REGIONS];
 	RegionGlobals() {
-		for (int i = 0; i < _amountRegions; i++) {
+		for (int i = 0; i < _AMOUNT_REGIONS; i++) {
 			this->Regions[i].setTo(i);
 		}		
 	}
@@ -17,7 +17,7 @@ private:
 
 public:
 	Region* getRegion(int i) {
-		if (i < _amountRegions) {
+		if (i < _AMOUNT_REGIONS) {
 			return &this->Regions[i];
 		}
 		else {
