@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\window">
+      <UniqueIdentifier>{c38d792a-bc32-4811-b303-235a1381d22a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\world">
+      <UniqueIdentifier>{ad805840-7312-41f3-ac04-46131d3d0104}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\simulation">
+      <UniqueIdentifier>{ae7d6552-5a1b-4f9e-8e57-b71f849e938f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\functions">
+      <UniqueIdentifier>{ab7cca86-23b3-483a-9008-9a62c5950e7b}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="globals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DeltaWorld.h">
+      <Filter>Header Files\world</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>Header Files\world</Filter>
+    </ClInclude>
+    <ClInclude Include="TemperateZone.h">
+      <Filter>Header Files\world</Filter>
+    </ClInclude>
+    <ClInclude Include="Region.h">
+      <Filter>Header Files\world</Filter>
+    </ClInclude>
+    <ClInclude Include="Animal.h">
+      <Filter>Header Files\simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="Plant.h">
+      <Filter>Header Files\simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="Resources.h">
+      <Filter>Header Files\simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="Skills.h">
+      <Filter>Header Files\simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="SimulatedUnit.h">
+      <Filter>Header Files\simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="structs.h">
+      <Filter>Header Files\functions</Filter>
+    </ClInclude>
+    <ClInclude Include="noises\simplexnoise1234.h">
+      <Filter>Header Files\functions</Filter>
+    </ClInclude>
+    <ClInclude Include="Point2d.h">
+      <Filter>Header Files\functions</Filter>
+    </ClInclude>
+    <ClInclude Include="functions.h">
+      <Filter>Header Files\functions</Filter>
+    </ClInclude>
+    <ClInclude Include="Menue.h">
+      <Filter>Header Files\window</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldView.h">
+      <Filter>Header Files\window</Filter>
+    </ClInclude>
+    <ClInclude Include="Clickable.h">
+      <Filter>Header Files\window</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>Header Files\window</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalDraw.h">
+      <Filter>Header Files\window</Filter>
+    </ClInclude>
+    <ClInclude Include="RegionGlobals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TileMap.h">
+      <Filter>Header Files\window</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Header Files\functions</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="EvoSym.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DeltaWorld.cpp">
+      <Filter>Header Files\world</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>Header Files\world</Filter>
+    </ClCompile>
+    <ClCompile Include="Region.cpp">
+      <Filter>Header Files\world</Filter>
+    </ClCompile>
+    <ClCompile Include="Animal.cpp">
+      <Filter>Header Files\simulation</Filter>
+    </ClCompile>
+    <ClCompile Include="Plant.cpp">
+      <Filter>Header Files\simulation</Filter>
+    </ClCompile>
+    <ClCompile Include="Skills.cpp">
+      <Filter>Header Files\simulation</Filter>
+    </ClCompile>
+    <ClCompile Include="noises\simplexnoise1234.cpp">
+      <Filter>Header Files\functions</Filter>
+    </ClCompile>
+    <ClCompile Include="Point2d.cpp">
+      <Filter>Header Files\functions</Filter>
+    </ClCompile>
+    <ClCompile Include="functions.cpp">
+      <Filter>Header Files\functions</Filter>
+    </ClCompile>
+    <ClCompile Include="Menue.cpp">
+      <Filter>Header Files\window</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldView.cpp">
+      <Filter>Header Files\window</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+</Project>
