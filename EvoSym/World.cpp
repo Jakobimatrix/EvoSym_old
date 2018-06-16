@@ -20,11 +20,11 @@ void World::createWorld() {
 
 	int x;//koordinaten
 	int y;//koordinaten
-	for (int xi = 0; xi < _World_Dimension; xi++) {//pixel
-		for (int yi = 0; yi < _World_Dimension; yi++) {//pixel
+	for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {//pixel
+		for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {//pixel
 			x = xi - _DIMENSION_HALF;	//koordinaten (x,y)
 			y = yi - _DIMENSION_HALF;	//koordinaten (x,y)
-			int i = (xi)*_World_Dimension + yi;	//array element
+			int i = (xi)*_WORLD_DIMENSION + yi;	//array element
 
 			//1.Breitengrad;
 			//2.TemperateZone;
@@ -57,10 +57,10 @@ void World::createWorld() {
 	}
 
 	//4.Give every DeltaWorld his Neigbours
-	for (int xi = 0; xi < _World_Dimension; xi++) {//pixel
-		for (int yi = 0; yi < _World_Dimension; yi++) {//pixel
+	for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {//pixel
+		for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {//pixel
 
-			int i = (xi)*_World_Dimension + yi;	//array element
+			int i = (xi)*_WORLD_DIMENSION + yi;	//array element
 
 			DeltaWorld* left	= nullptr;
 			DeltaWorld* right	= nullptr;
@@ -73,45 +73,45 @@ void World::createWorld() {
 			DeltaWorld* bottom_right	= nullptr;
 
 			bool left_border_violated	= (xi - 1 > -1) ? false : true;
-			bool right_border_violated	= (xi + 1 < _World_Dimension) ? false : true;
+			bool right_border_violated	= (xi + 1 < _WORLD_DIMENSION) ? false : true;
 
 			bool top_border_violated	= (yi - 1 > -1) ? false : true;
-			bool bottom_border_violated = (yi + 1 < _World_Dimension) ? false : true;
+			bool bottom_border_violated = (yi + 1 < _WORLD_DIMENSION) ? false : true;
 			
 			int in;
 			if (!left_border_violated) {//left
-				in = (xi - 1)*_World_Dimension + yi;
+				in = (xi - 1)*_WORLD_DIMENSION + yi;
 				left = this->WorldParts[in];
 			}
 			if (!right_border_violated) {//right
-				in = (xi + 1)*_World_Dimension + yi;
+				in = (xi + 1)*_WORLD_DIMENSION + yi;
 				right = this->WorldParts[in];
 			}
 			if (!bottom_border_violated) {//bottom
-				in = (xi)*_World_Dimension + yi + 1;
+				in = (xi)*_WORLD_DIMENSION + yi + 1;
 				bottom = this->WorldParts[in];
 
 				if (!left_border_violated) {//bottom-left
-					in = (xi - 1)*_World_Dimension + yi + 1;
+					in = (xi - 1)*_WORLD_DIMENSION + yi + 1;
 					bottom_left = this->WorldParts[in];
 				}
 
 				if (!right_border_violated) {//bottom-right
-					in = (xi + 1)*_World_Dimension + yi + 1;
+					in = (xi + 1)*_WORLD_DIMENSION + yi + 1;
 					bottom_right = this->WorldParts[in];
 				}
 			}
 			if (!top_border_violated) {//top
-				in = (xi)*_World_Dimension + yi - 1;
+				in = (xi)*_WORLD_DIMENSION + yi - 1;
 				top = this->WorldParts[in];
 
 				if (!left_border_violated) {//top-left
-					in = (xi - 1)*_World_Dimension + yi - 1;
+					in = (xi - 1)*_WORLD_DIMENSION + yi - 1;
 					top_left = this->WorldParts[in];
 				}
 
 				if (!right_border_violated) {//top-right
-					in = (xi + 1)*_World_Dimension + yi - 1;
+					in = (xi + 1)*_WORLD_DIMENSION + yi - 1;
 					top_right = this->WorldParts[in];
 				}
 			}					
@@ -135,15 +135,15 @@ void World::createWorld() {
 	bool erosion;
 
 	//array with all indices
-	int* indices[_Amount_Delta_Worlds];
-	for (int i = 0; i < _Amount_Delta_Worlds; i++) {
+	int* indices[_AMOUNT_DELTA_WORLDS];
+	for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
 		indices[i] = new int(i);
 	}
 	do{
-		std::random_shuffle(indices, indices + _Amount_Delta_Worlds);//shuffle the idices for rand access
+		std::random_shuffle(indices, indices + _AMOUNT_DELTA_WORLDS);//shuffle the idices for rand access
 		erosion = false;
 		i_er++;
-		for (int i = 0; i < _Amount_Delta_Worlds; i++) {
+		for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
 			if (! this->_RG_->getRegion(this->WorldParts[*indices[i]]->getRegionId())->hasEnoughNeigboursWithSameRegion(this->WorldParts[*indices[i]]->getNumNeigboursWithSameRegion())) {
 				this->WorldParts[*indices[i]]->changeRegionToFitNeigbours();
 				bool erosion = true;
@@ -151,7 +151,7 @@ void World::createWorld() {
 		}
 	} while (erosion && i_er < imax);
 
-	for (int i = 0; i < _Amount_Delta_Worlds; i++) {
+	for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
 		delete indices[i];
 	}
 }
@@ -163,70 +163,70 @@ void World::createSetHeightRand() {
 	int y;//koordinaten
 	int xOffset;
 	int yOffset;
-	double* perlNoiseSmootFaktor[_Amount_Delta_Worlds];//smoothfactor für die Höhendistribution
+	double* perlNoiseSmootFaktor[_AMOUNT_DELTA_WORLDS];//smoothfactor für die Höhendistribution
 
 	SimplexNoise1234 Noise = SimplexNoise1234(true);
 	//Verteilung der Krümmung
-	xOffset = uniform_int_dist(_MinOffset, _MaxOffset);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
-	yOffset = uniform_int_dist(_MinOffset, _MaxOffset);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear	
+	xOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
+	yOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear	
 
-	for (int xi = 0; xi < _World_Dimension; xi++) {
-		for (int yi = 0; yi < _World_Dimension; yi++) {
+	for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {
+		for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {
 			x = xi - _DIMENSION_HALF;
 			y = yi - _DIMENSION_HALF;
-			int i = (xi)*_World_Dimension + yi;
-			perlNoiseSmootFaktor[i] = new double(Noise.noise(x*_smoothingfactor_krummungChnage + xOffset, y*_smoothingfactor_krummungChnage + yOffset));//-1...1
+			int i = (xi)*_WORLD_DIMENSION + yi;
+			perlNoiseSmootFaktor[i] = new double(Noise.noise(x*_CURVATURE_CHANGE_RATE_PERLIAN_NOISE + xOffset, y*_CURVATURE_CHANGE_RATE_PERLIAN_NOISE + yOffset));//-1...1
 			*perlNoiseSmootFaktor[i] = (*perlNoiseSmootFaktor[i] + 0.1) / 2.0;//0...1
-			*perlNoiseSmootFaktor[i] = *perlNoiseSmootFaktor[i] * (_minSmoothFactor_krummungChnage + _maxSmoothFactor_krummungChnage);//0..._max - _min
-			*perlNoiseSmootFaktor[i] = *perlNoiseSmootFaktor[i] + _minSmoothFactor_krummungChnage;//_max ... _min
+			*perlNoiseSmootFaktor[i] = *perlNoiseSmootFaktor[i] * (_MIN_CURVATURE_PERLIAN_NOISE + _MAX_CURVATURE_PERLIAN_NOISE);//0..._max - _min
+			*perlNoiseSmootFaktor[i] = *perlNoiseSmootFaktor[i] + _MIN_CURVATURE_PERLIAN_NOISE;//_max ... _min
 		}
 	}
 	//in perlNoiseSmootFaktor[i] steht jetzt, wie schnell sich die Krümmung ändern darf in i
 
 
 	//Verzerrung
-	xOffset = uniform_int_dist(_MinOffset, _MaxOffset);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
-	yOffset = uniform_int_dist(_MinOffset, _MaxOffset);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
+	xOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
+	yOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
 
-	for (int xi = 0; xi < _World_Dimension; xi++) {
-		for (int yi = 0; yi < _World_Dimension; yi++) {
+	for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {
+		for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {
 			x = xi - _DIMENSION_HALF;
 			y = yi - _DIMENSION_HALF;
-			int i = (xi)*_World_Dimension + yi;
+			int i = (xi)*_WORLD_DIMENSION + yi;
 			*perlNoiseSmootFaktor[i] = Noise.noise(x**perlNoiseSmootFaktor[i] + xOffset, y**perlNoiseSmootFaktor[i] + yOffset);
 			*perlNoiseSmootFaktor[i] = (*perlNoiseSmootFaktor[i] + 0.1) / 2.0;//0...1
-			*perlNoiseSmootFaktor[i] = *perlNoiseSmootFaktor[i] * (_minSmoothFactor_Verzerrung + _maxSmoothFactor_Verzerrung);
-			*perlNoiseSmootFaktor[i] = *perlNoiseSmootFaktor[i] + _minSmoothFactor_Verzerrung;
+			*perlNoiseSmootFaktor[i] = *perlNoiseSmootFaktor[i] * (_MIN_DISTORTION_PERLIAN_NOISE + _MAX_DISTORTION_PERLIAN_NOISE);
+			*perlNoiseSmootFaktor[i] = *perlNoiseSmootFaktor[i] + _MIN_DISTORTION_PERLIAN_NOISE;
 		}
 	}
 	//in perlNoiseSmootFaktor[i] steht jetzt, wie schnell sich die Steigung ändern darf in i
 
 	//Zoom
-	xOffset = uniform_int_dist(_MinOffset, _MaxOffset);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
-	yOffset = uniform_int_dist(_MinOffset, _MaxOffset);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
+	xOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
+	yOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
 
-	for (int xi = 0; xi < _World_Dimension; xi++) {
-		for (int yi = 0; yi < _World_Dimension; yi++) {
+	for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {
+		for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {
 			x = xi - _DIMENSION_HALF;
 			y = yi - _DIMENSION_HALF;
-			int i = (xi)*_World_Dimension + yi;
+			int i = (xi)*_WORLD_DIMENSION + yi;
 			*perlNoiseSmootFaktor[i] = Noise.noise(x**perlNoiseSmootFaktor[i] + xOffset, y**perlNoiseSmootFaktor[i] + yOffset);
 			*perlNoiseSmootFaktor[i] = (*perlNoiseSmootFaktor[i] + 0.1) / 2.0;//0...1
-			*perlNoiseSmootFaktor[i] = *perlNoiseSmootFaktor[i] * (_minSmoothFactor_Zoom + _maxSmoothFactor_Zoom);
-			*perlNoiseSmootFaktor[i] = *perlNoiseSmootFaktor[i] + _minSmoothFactor_Zoom;
+			*perlNoiseSmootFaktor[i] = *perlNoiseSmootFaktor[i] * (_MIN_ZOOM_PERLIAN_NOISE + _MAX_ZOOM_PERLIAN_NOISE);
+			*perlNoiseSmootFaktor[i] = *perlNoiseSmootFaktor[i] + _MIN_ZOOM_PERLIAN_NOISE;
 		}
 	}
 	//in perlNoiseSmootFaktor[i] steht jetzt, wie schnell sich die Höhe ändern darf in i
 
 	//Höhe
-	xOffset = uniform_int_dist(_MinOffset, _MaxOffset);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
-	yOffset = uniform_int_dist(_MinOffset, _MaxOffset);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
+	xOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
+	yOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
 
-	for (int xi = 0; xi < _World_Dimension; xi++) {
-		for (int yi = 0; yi < _World_Dimension; yi++) {
+	for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {
+		for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {
 			x = xi - _DIMENSION_HALF;
 			y = yi - _DIMENSION_HALF;
-			int i = (xi)*_World_Dimension + yi;
+			int i = (xi)*_WORLD_DIMENSION + yi;
 			//height
 
 			double height = Noise.noise(x*(*perlNoiseSmootFaktor[i]) + xOffset, y*(*perlNoiseSmootFaktor[i]) + yOffset);//return [-1,1]
@@ -238,15 +238,15 @@ void World::createSetHeightRand() {
 			//L + O = 2 = 1-(-1) -> L = 2 - O in (1)
 			//(2 -O)/O = ratio -> O = 2/(ratio + 1)
 			//dx = 1 - O = 1 - 2/(ratio +1)
-			double dx = 1 - 2 / (_LandToOceanRate + 1);
+			double dx = 1 - 2 / (_LAND_TO_OCEAN_RATIO + 1);
 			height = height + dx; //verschiebe "See level"
 			if (height < 0) {
 				height = height*(1 / (-1 + dx));// [1 0];
-				height = height * _MinHeight;	// [-min,0]
+				height = height * _MIN_TERRANE_HEIGHT;	// [-min,0]
 			}
 			else {
 				height = height*(1 / (1 + dx));	// [1 0];
-				height = height * _MaxHeight;	// [0,max]
+				height = height * _MAX_TERRANE_HEIGHT;	// [0,max]
 			}
 			//region
 			//gehe alle Nachbarn durch, errechne für jeden Nachbarn die Wahrscheinlichkeit für this DeltaWorld Region
@@ -254,7 +254,7 @@ void World::createSetHeightRand() {
 			this->WorldParts[i]->setRandRegion(height);
 		}
 	}
-	for (int i = 0; i < _Amount_Delta_Worlds; i++) {
+	for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
 		delete perlNoiseSmootFaktor[i];
 	}
 }
@@ -264,7 +264,7 @@ void World::createSetHeightPredefined() {
 	sf::Vector2u ImageSize = this->WorldHeightMap.getSize();
 
 	u_int *a = new u_int[ImageSize.x*ImageSize.y];//array aller Pixel RGB
-	u_char *b = new u_char[_Amount_Delta_Worlds];//array resultierende Pixel GREY
+	u_char *b = new u_char[_AMOUNT_DELTA_WORLDS];//array resultierende Pixel GREY
 
 	for (unsigned int x = 0; x < ImageSize.x; x++) {
 		for (unsigned int y = 0; y < ImageSize.y; y++) {
@@ -272,11 +272,11 @@ void World::createSetHeightPredefined() {
 			a[x*ImageSize.x + y] = (pix.r << 16) | (pix.g << 8) | (pix.b);
 		}
 	}
-	resample(a, b, ImageSize.x, ImageSize.y, _World_Dimension, _World_Dimension);
+	resample(a, b, ImageSize.x, ImageSize.y, _WORLD_DIMENSION, _WORLD_DIMENSION);
 
-	for (unsigned int x = 0; x < _World_Dimension; x++) {
-		for (unsigned int y = 0; y < _World_Dimension; y++) {
-			int i = x*_World_Dimension + y;
+	for (unsigned int x = 0; x < _WORLD_DIMENSION; x++) {
+		for (unsigned int y = 0; y < _WORLD_DIMENSION; y++) {
+			int i = x*_WORLD_DIMENSION + y;
 			double height = b[i];//[0...255];
 			height = height - 127.5;
 			height = height / 127.5;//[-1...1]
@@ -284,10 +284,10 @@ void World::createSetHeightPredefined() {
 
 			if (height < 0) {
 				height = -height;// [1 0];
-				height = height * _MinHeight;	// [-min,0]
+				height = height * _MIN_TERRANE_HEIGHT;	// [-min,0]
 			}
 			else {
-				height = height * _MaxHeight;	// [0,max]
+				height = height * _MAX_TERRANE_HEIGHT;	// [0,max]
 			}
 			//region
 			//gehe alle Nachbarn durch, errechne für jeden Nachbarn die Wahrscheinlichkeit für this DeltaWorld Region
@@ -305,41 +305,41 @@ std::string World::GetTimeReadable(bool y,bool d,bool h, bool m, bool s) {
 	std::string output = "";
 	double t = this->time;
 	double tRest = t;
-	if (y && tRest > _YEAR_in_s) {
-		t = std::floor(tRest * _1_divided_YEAR_in_s);
+	if (y && tRest > _YEAR_IN_S) {
+		t = std::floor(tRest * _INVERSE_YEAR_IN_S);
 		if (t > 0.0) {
 			output += "Y: " + std::to_string((int)t);
-			tRest -= t*_YEAR_in_s;
+			tRest -= t*_YEAR_IN_S;
 		}
 	}
-	if (d && tRest > _DAY_in_s) {
+	if (d && tRest > _DAY_IN_S) {
 		if (output != "") {
 			output += " ";
 		}
-		t = std::floor(tRest * _1_divided_DAY_in_s);
+		t = std::floor(tRest * _INVERSE_DAY_IN_S);
 		if (t > 0.0) {
 			output += "d: " + std::to_string((int)t);
-			tRest -= t*_DAY_in_s;
+			tRest -= t*_DAY_IN_S;
 		}		
 	}
-	if (h && tRest > _Hour_in_s) {
+	if (h && tRest > _HOUR_IN_S) {
 		if (output != "") {
 			output += " ";
 		}
-		t = std::floor(tRest * _1_divided_Hour_in_s);
+		t = std::floor(tRest * _INVERSE_HOUR_IN_S);
 		if (t > 0.0) {
 			output += "h: " + std::to_string((int)t);
-			tRest -= t*_Hour_in_s;
+			tRest -= t*_HOUR_IN_S;
 		}				
 	}
-	if (m && tRest > _Minute_in_s) {
+	if (m && tRest > _MINUTE_IN_S) {
 		if (output != "") {
 			output += " ";
 		}
-		t = std::floor(tRest * _1_divided_Minute_in_s);
+		t = std::floor(tRest * _INVERSE_MINUTE_IN_S);
 		if (t > 0.0) {
 			output += "m: " + std::to_string((int)t);
-			tRest -= t*_Minute_in_s;
+			tRest -= t*_MINUTE_IN_S;
 		}		
 	}
 	if (s) {
@@ -364,7 +364,7 @@ void World::Update() {
 		this->_G_->_SeasonShift = 0;//ein Jahr ist um
 		TemperateZone T;
 		double offset = 0.0;
-		for (int s = 0; s < _amountSeasons; s++) {
+		for (int s = 0; s < _AMOUNT_SEASONS; s++) {
 			T = TemperateZone(s);
 			this->_G_->CurrentYearTempOffset[s] = this->_G_->NextYearTempOffset[s];
 			offset = 0.6 * offset + 0.4 * T.getNewYearTempVariation(); //damit der Unterschied zwischen zwei benachbarten Zohnen nicht zu arg unterschiedlich ist

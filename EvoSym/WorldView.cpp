@@ -7,7 +7,7 @@ void WorldView::Update(World& W, bool forceUpdate) {
 		sf::Vector2i MousePos = sf::Mouse::getPosition(this->window);
 		sf::Vector2i MousePos_menue = sf::Mouse::getPosition(this->window);
 		MousePos.x = (int)(MousePos.x*this->one_div_ratio);
-		sf::Vector2f graphic_to_windowsize_ratio = sf::Vector2f((float)_Graphic_pix_diameter / (float)this->window.getSize().x, (float)_Graphic_pix_diameter / (float)this->window.getSize().y);
+		sf::Vector2f graphic_to_windowsize_ratio = sf::Vector2f((float)_WORLD_DIAMETER_IN_PIXEL / (float)this->window.getSize().x, (float)_WORLD_DIAMETER_IN_PIXEL / (float)this->window.getSize().y);
 		while (this->window.pollEvent(event))
 		{
 			if (event.type == sf::Event::Closed) {
@@ -75,11 +75,11 @@ void WorldView::Update(World& W, bool forceUpdate) {
 
 				//TileInformation
 				if (!mouse_over_menue) {//mouse_over_menue
-					int hover_over_tile_x = (int)(((float) MousePos.x * graphic_to_windowsize_ratio.x*this->zoom - (float)this->left_upper_corner_of_view.x)/ (float)_TileResulution);
-					int hover_over_tile_y = (int)(((float) MousePos.y * graphic_to_windowsize_ratio.y*this->zoom - (float)this->left_upper_corner_of_view.y)/ (float)_TileResulution);
+					int hover_over_tile_x = (int)(((float) MousePos.x * graphic_to_windowsize_ratio.x*this->zoom - (float)this->left_upper_corner_of_view.x)/ (float)_TILE_RESULUTION);
+					int hover_over_tile_y = (int)(((float) MousePos.y * graphic_to_windowsize_ratio.y*this->zoom - (float)this->left_upper_corner_of_view.y)/ (float)_TILE_RESULUTION);
 
-					int dw_element = (hover_over_tile_x)*_World_Dimension + hover_over_tile_y;
-					if (dw_element > -1 && dw_element < _Amount_Delta_Worlds) {
+					int dw_element = (hover_over_tile_x)*_WORLD_DIMENSION + hover_over_tile_y;
+					if (dw_element > -1 && dw_element < _AMOUNT_DELTA_WORLDS) {
 						this->focussed_delta_world = dw_element;
 					}
 					else {
@@ -96,7 +96,7 @@ void WorldView::Update(World& W, bool forceUpdate) {
 				float _zoome_after = this->zoom;
 
 				float Verschiebung = _zoome_after - _zoome_before;
-				Verschiebung = Verschiebung * (float)_Graphic_pix_diameter;
+				Verschiebung = Verschiebung * (float)_WORLD_DIAMETER_IN_PIXEL;
 				Verschiebung = Verschiebung / 2;
 
 				this->left_upper_corner_of_view = sf::Vector2i(this->left_upper_corner_of_view.x + (int)Verschiebung, this->left_upper_corner_of_view.y + (int)Verschiebung);
@@ -109,7 +109,7 @@ void WorldView::Update(World& W, bool forceUpdate) {
 				float _zoome_after =  this->zoom;
 
 				float Verschiebung = _zoome_after - _zoome_before;
-				Verschiebung = Verschiebung * (float)_Graphic_pix_diameter;
+				Verschiebung = Verschiebung * (float)_WORLD_DIAMETER_IN_PIXEL;
 				Verschiebung = Verschiebung / 2;
 
 				this->left_upper_corner_of_view = sf::Vector2i(this->left_upper_corner_of_view.x + (int)Verschiebung, this->left_upper_corner_of_view.y + (int)Verschiebung);
@@ -128,7 +128,7 @@ void WorldView::Update(World& W, bool forceUpdate) {
 					float _zoome_after = this->zoom;
 
 					float Verschiebung = _zoome_after - _zoome_before;
-					Verschiebung = Verschiebung * (float)_Graphic_pix_diameter;
+					Verschiebung = Verschiebung * (float)_WORLD_DIAMETER_IN_PIXEL;
 					Verschiebung = Verschiebung / 2;
 
 					this->left_upper_corner_of_view = sf::Vector2i(this->left_upper_corner_of_view.x + (int)Verschiebung, this->left_upper_corner_of_view.y + (int)Verschiebung);
@@ -139,7 +139,7 @@ void WorldView::Update(World& W, bool forceUpdate) {
 		this->TextTime.setString(W.GetTimeReadable(true, true, true, true, true));
 
 
-		this->tilemap_view.reset(sf::FloatRect((float)-this->left_upper_corner_of_view.x, (float)-this->left_upper_corner_of_view.y, zoom * (float)_World_Dimension * (float)_TileResulution * this->one_div_ratio, zoom * _World_Dimension * _TileResulution));
+		this->tilemap_view.reset(sf::FloatRect((float)-this->left_upper_corner_of_view.x, (float)-this->left_upper_corner_of_view.y, zoom * (float)_WORLD_DIMENSION * (float)_TILE_RESULUTION * this->one_div_ratio, zoom * _WORLD_DIMENSION * _TILE_RESULUTION));
 
 		this->tilemap_view.setViewport(sf::FloatRect(0.f, 0.f, 1, this->tliemap_height_ratio));
 		this->window.setView(this->tilemap_view);
@@ -167,10 +167,10 @@ void WorldView::Update(World& W, bool forceUpdate) {
 			//int drawFromY = (int)std::ceil((float)this->centerOfView.y / (float)TileResulution);
 			//int drawToY = (int)std::ceil(visible_World_Dimension + (float)this->centerOfView.y / (float)TileResulution);
 
-			for (int xi = 0; xi < _World_Dimension; xi++) {
-				for (int yi = 0; yi < _World_Dimension; yi++) {
+			for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {
+				for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {
 					//if (drawFromX < xi && xi < drawToX && drawFromY < yi && yi < drawToY) {//draw only visible Tiles //TODO doesnt work
-						int i = xi*_World_Dimension + yi;
+						int i = xi*_WORLD_DIMENSION + yi;
 						if (W.WorldParts[i]->hadChangeInAppearance(this->DeltaWorldColoring)) {
 							this->map.updateOne(xi, yi, W.WorldParts[i], this->DeltaWorldColoring);	
 						}

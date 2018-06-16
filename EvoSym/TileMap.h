@@ -12,21 +12,21 @@ private:
 public:
 
 	TileMap() {
-		m_tileset.loadFromFile(_srcTileImage);
+		m_tileset.loadFromFile(_SRC_TILE_IMAGE);
 		this->_G_ = &this->_G_->getInstance();
 		// resize the vertex array to fit the level size
 		m_vertices.setPrimitiveType(sf::Quads);
-		m_vertices.resize(_World_Dimension * _World_Dimension * 4);
+		m_vertices.resize(_WORLD_DIMENSION * _WORLD_DIMENSION * 4);
 	}
 
 	bool loadAll(World &W, int representation)
 	{
 		// populate the vertex array, with one quad per tile
 		
-		for (unsigned int x = 0; x < _World_Dimension; x++){
-			for (unsigned int y = 0; y < _World_Dimension; y++)
+		for (unsigned int x = 0; x < _WORLD_DIMENSION; x++){
+			for (unsigned int y = 0; y < _WORLD_DIMENSION; y++)
 			{
-				this->updateOne(x, y, W.WorldParts[y + x * _World_Dimension], representation);
+				this->updateOne(x, y, W.WorldParts[y + x * _WORLD_DIMENSION], representation);
 			}
 		}
 
@@ -39,13 +39,13 @@ public:
 		// populate the vertex array, with one quad per tile
 
 		// get a pointer to the current tile's quad
-		sf::Vertex* quad = &m_vertices[(x + y * _World_Dimension) * 4]; 
+		sf::Vertex* quad = &m_vertices[(x + y * _WORLD_DIMENSION) * 4]; 
 
 		// define its 4 corners
-		quad[0].position = sf::Vector2f((float)(x * _TileResulution), y * (float)(_TileResulution));
-		quad[1].position = sf::Vector2f((float)((x + 1) * _TileResulution), y * (float)(_TileResulution));
-		quad[2].position = sf::Vector2f((float)((x + 1) * _TileResulution), (float)((y + 1) * _TileResulution));
-		quad[3].position = sf::Vector2f((float)(x * _TileResulution), (float)((y + 1) * _TileResulution));
+		quad[0].position = sf::Vector2f((float)(x * _TILE_RESULUTION), y * (float)(_TILE_RESULUTION));
+		quad[1].position = sf::Vector2f((float)((x + 1) * _TILE_RESULUTION), y * (float)(_TILE_RESULUTION));
+		quad[2].position = sf::Vector2f((float)((x + 1) * _TILE_RESULUTION), (float)((y + 1) * _TILE_RESULUTION));
+		quad[3].position = sf::Vector2f((float)(x * _TILE_RESULUTION), (float)((y + 1) * _TILE_RESULUTION));
 
 		if (representation == 1) {
 			// get the current tile number
@@ -55,15 +55,15 @@ public:
 			}
 
 			// find its position in the tileset texture
-			int tu = tileNumber % (m_tileset.getSize().x / _TileResulution);
-			int tv = tileNumber / (m_tileset.getSize().x / _TileResulution);
+			int tu = tileNumber % (m_tileset.getSize().x / _TILE_RESULUTION);
+			int tv = tileNumber / (m_tileset.getSize().x / _TILE_RESULUTION);
 
 			// define its 4 texture coordinates
 
-			quad[0].texCoords = sf::Vector2f((float)(tu * _TileResulution), (float)(tv * _TileResulution));
-			quad[1].texCoords = sf::Vector2f((float)((tu + 1) * _TileResulution), (float)(tv * _TileResulution));
-			quad[2].texCoords = sf::Vector2f((float)((tu + 1) * _TileResulution), (float)((tv + 1) * _TileResulution));
-			quad[3].texCoords = sf::Vector2f((float)(tu * _TileResulution), (float)((tv + 1) * _TileResulution));
+			quad[0].texCoords = sf::Vector2f((float)(tu * _TILE_RESULUTION), (float)(tv * _TILE_RESULUTION));
+			quad[1].texCoords = sf::Vector2f((float)((tu + 1) * _TILE_RESULUTION), (float)(tv * _TILE_RESULUTION));
+			quad[2].texCoords = sf::Vector2f((float)((tu + 1) * _TILE_RESULUTION), (float)((tv + 1) * _TILE_RESULUTION));
+			quad[3].texCoords = sf::Vector2f((float)(tu * _TILE_RESULUTION), (float)((tv + 1) * _TILE_RESULUTION));
 
 			quad[0].color = sf::Color(255, 255, 255, (sf::Uint8) 255);
 			if (DW->showInfo()) {
@@ -76,20 +76,20 @@ public:
 		else {
 			int tileNumber = 23;
 			// find its position in the tileset texture
-			int tu = tileNumber % (m_tileset.getSize().x / _TileResulution);
-			int tv = tileNumber / (m_tileset.getSize().x / _TileResulution);
+			int tu = tileNumber % (m_tileset.getSize().x / _TILE_RESULUTION);
+			int tv = tileNumber / (m_tileset.getSize().x / _TILE_RESULUTION);
 
 			// define its 4 texture coordinates
 
-			quad[0].texCoords = sf::Vector2f((float)(tu * _TileResulution), (float)(tv * _TileResulution));
-			quad[1].texCoords = sf::Vector2f((float)((tu + 1) * _TileResulution), (float)(tv * _TileResulution));
-			quad[2].texCoords = sf::Vector2f((float)((tu + 1) * _TileResulution), (float)((tv + 1) * _TileResulution));
-			quad[3].texCoords = sf::Vector2f((float)(tu * _TileResulution), (float)((tv + 1) * _TileResulution));
+			quad[0].texCoords = sf::Vector2f((float)(tu * _TILE_RESULUTION), (float)(tv * _TILE_RESULUTION));
+			quad[1].texCoords = sf::Vector2f((float)((tu + 1) * _TILE_RESULUTION), (float)(tv * _TILE_RESULUTION));
+			quad[2].texCoords = sf::Vector2f((float)((tu + 1) * _TILE_RESULUTION), (float)((tv + 1) * _TILE_RESULUTION));
+			quad[3].texCoords = sf::Vector2f((float)(tu * _TILE_RESULUTION), (float)((tv + 1) * _TILE_RESULUTION));
 
 		
 			if (representation == 2) {
-				double RGB_grey = DW->getHeight() + std::abs(_MinHeight);//0-Min+Max
-				RGB_grey = RGB_grey / (_MaxHeight - _MinHeight);//0-1
+				double RGB_grey = DW->getHeight() + std::abs(_MIN_TERRANE_HEIGHT);//0-Min+Max
+				RGB_grey = RGB_grey / (_MAX_TERRANE_HEIGHT - _MIN_TERRANE_HEIGHT);//0-1
 				RGB_grey = RGB_grey * 255.0;//0-255
 				if (-100 < DW->getHeight() && DW->getHeight() < 100) {//markiere nulllinie
 					quad[0].color = sf::Color(255, 0, 0);
