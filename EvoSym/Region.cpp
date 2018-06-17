@@ -64,9 +64,6 @@ void Region::setToOcean() {
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
 
-	this->tau_ice_growth = 0.5*_QUARTER_YEAR_IN_S;
-	this->max_ice_thickness = 10.0;
-
 	this->SkillToCross[0] = Swim();
 	this->SkillToCross[1] = Fly();
 	this->SkillToCross[2] = NoSkill();
@@ -102,7 +99,7 @@ void Region::setToOcean() {
 }
 void Region::setToLake() {
 	this->regionId = 1;
-	this->VariationInTemperature = Season<Propability>(Propability(-1.0, 7.0), Propability(-3, 5.0), Propability(-2.0, 5.0), Propability(-3.0, 7.0));
+	this->VariationInTemperature = Season<Propability>(Propability(-1.5, 2.0), Propability(-0.75, 2.0), Propability(0.75, 2.0), Propability(1.8, 2.0));
 	this->Height = MinMax(100,5000.0);
 	this->occurrenceInTemperateZone[0] = false;
 	this->occurrenceInTemperateZone[1] = true;
@@ -114,9 +111,6 @@ void Region::setToLake() {
 	this->TauFreshWater = this->getRegionBasedWaterRegeneration(this->regionId);
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
-
-	this->tau_ice_growth =(1.2*_QUARTER_YEAR_IN_S);
-	this->max_ice_thickness = 2.0;
 
 	this->SkillToCross[0] = Swim();
 	this->SkillToCross[1] = Fly();
@@ -137,22 +131,22 @@ void Region::setToLake() {
 	this->possibleNeigbourChanseFaktor[6] = 10;		//moor
 	this->possibleNeigbourChanseFaktor[7] = 10;		//tropical forest
 	this->possibleNeigbourChanseFaktor[8] = 10;		//ice desert
-	this->possibleNeigbourChanseFaktor[9] = 0;//5;		//highlands
+	this->possibleNeigbourChanseFaktor[9] = 10;		//highlands
 	this->possibleNeigbourChanseFaktor[10] = 5;		//mountain
 
 	this->minNeigboursWithSameRegion = 0;
 
 	this->groundProperties.groundPt1T = 1641600; //T parameter of discrete Pt1 behaviour
-	this->groundProperties.groundaboveLayerFacator = 0.75; //weigheted mean factor for the layer above
-	this->groundProperties.groundbelowLayerFacator = 0.25; //weigheted mean factor for the layer below
-	this->groundProperties.groundDepth = 20.0; //!todo make randoom between 30m 6m //[m] at which layer we have a stable temperature
-	this->groundProperties.groundLayerThickness = 2.0; //[m] how thik one layer shall be
+	this->groundProperties.groundaboveLayerFacator = 0.60; //weigheted mean factor for the layer above
+	this->groundProperties.groundbelowLayerFacator = 0.40; //weigheted mean factor for the layer below
+	this->groundProperties.groundDepth = 6.0; //[m] at which layer we have a stable temperature
+	this->groundProperties.groundLayerThickness = 1.0; //[m] how thick one layer shall be
 	this->groundProperties.groundLastLayerTemp[0] = 4.0; //[°C] The temperature of the last layer for latitude [0°]
 	this->groundProperties.groundLastLayerTemp[1] = 4.0; //[°C] The temperature of the last layer for latitude [90°]
 }
 void Region::setToMeadow() {
 	this->regionId = 2;
-	this->VariationInTemperature = Season<Propability>(Propability(1.0, 7.0), Propability(5.0, 2.0), Propability(3.0, 7.0), Propability(-4, 5.0));
+	this->VariationInTemperature = Season<Propability>(Propability(1.0, 6.0), Propability(2.0, 3.0), Propability(-1.0, 7.0), Propability(-4, 5.0));
 	this->Height = MinMax(-100,3000.0);
 	this->occurrenceInTemperateZone[0] = false;
 	this->occurrenceInTemperateZone[1] = true;
@@ -164,9 +158,6 @@ void Region::setToMeadow() {
 	this->TauFreshWater = this->getRegionBasedWaterRegeneration(this->regionId);
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
-
-	this->tau_ice_growth = (0.5*_QUARTER_YEAR_IN_S);
-	this->max_ice_thickness = 0.5;
 
 	this->SkillToCross[0] = NoSkill();
 	this->SkillToCross[1] = NoSkill();
@@ -204,7 +195,7 @@ void Region::setToMeadow() {
 }
 void Region::setToForest() {
 	this->regionId = 3;
-	this->VariationInTemperature = Season<Propability>(Propability(-1.0, 1.0), Propability(-2.0, 1.0), Propability(-1.0, 1.0), Propability(0.0, 1.0));
+	this->VariationInTemperature = Season<Propability>(Propability(0.0, 3.0), Propability(-1.0, 1.0), Propability(0.0, 1.0), Propability(0.0, 3.0));
 	this->Height = MinMax(-100,2200.0);
 	this->occurrenceInTemperateZone[0] = false;
 	this->occurrenceInTemperateZone[1] = true;
@@ -216,10 +207,6 @@ void Region::setToForest() {
 	this->TauFreshWater = this->getRegionBasedWaterRegeneration(this->regionId);
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
-
-	this->tau_ice_growth = (1.0*_QUARTER_YEAR_IN_S);
-	this->max_ice_thickness = 0.5;
-
 	
 	this->SkillToCross[0] = NoSkill();
 	this->SkillToCross[1] = NoSkill();
@@ -238,7 +225,7 @@ void Region::setToForest() {
 	this->possibleNeigbourChanseFaktor[4] = 0;		//steppe
 	this->possibleNeigbourChanseFaktor[5] = 0;		//desert
 	this->possibleNeigbourChanseFaktor[6] = 4;		//moor
-	this->possibleNeigbourChanseFaktor[7] = 1;		//tropical forest
+	this->possibleNeigbourChanseFaktor[7] = 10;		//tropical forest
 	this->possibleNeigbourChanseFaktor[8] = 0;		//ice desert
 	this->possibleNeigbourChanseFaktor[9] = 0;//3;		//highlands
 	this->possibleNeigbourChanseFaktor[10] = 1;		//mountain
@@ -268,9 +255,6 @@ void Region::setToSteppe() {
 	this->TauFreshWater = this->getRegionBasedWaterRegeneration(this->regionId);
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
-
-	this->tau_ice_growth =(10.0*_QUARTER_YEAR_IN_S);
-	this->max_ice_thickness = 0.5;
 
 	this->SkillToCross[0] = NoSkill();
 	this->SkillToCross[1] = NoSkill();
@@ -321,9 +305,6 @@ void Region::setToDesert() {
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
 
-	this->tau_ice_growth =  (10.0*_QUARTER_YEAR_IN_S);
-	this->max_ice_thickness = 0.5;
-
 	this->SkillToCross[0] = NoSkill();
 	this->SkillToCross[1] = NoSkill();
 	this->SkillToCross[2] = NoSkill();
@@ -373,9 +354,6 @@ void Region::setToMoor() {
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
 
-	this->tau_ice_growth =  (1.0*_QUARTER_YEAR_IN_S);
-	this->max_ice_thickness = 0.7;
-
 	this->SkillToCross[0] = NoSkill();
 	this->SkillToCross[1] = NoSkill();
 	this->SkillToCross[2] = NoSkill();
@@ -412,7 +390,7 @@ void Region::setToMoor() {
 void Region::setToTropicalForest() {
 	this->regionId = 7;
 	this->VariationInTemperature = Season<Propability>(Propability(+5.0, 2.0), Propability(+5.0, 1.0), Propability(+5.0, 1.0), Propability(+5.0, 2.0));
-	this->Height = MinMax(-100,2000.0);
+	this->Height = MinMax(-100,2300.0);
 	this->occurrenceInTemperateZone[0] = false;
 	this->occurrenceInTemperateZone[1] = false;
 	this->occurrenceInTemperateZone[2] = false;
@@ -424,9 +402,6 @@ void Region::setToTropicalForest() {
 	this->TauFreshWater = this->getRegionBasedWaterRegeneration(this->regionId);
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
-
-	this->tau_ice_growth = (10.0*_QUARTER_YEAR_IN_S);
-	this->max_ice_thickness = 0.5;
 
 	this->SkillToCross[0] = NoSkill();
 	this->SkillToCross[1] = NoSkill();
@@ -441,16 +416,16 @@ void Region::setToTropicalForest() {
 	this->possibleNeigbourChanseFaktor[0] = 5;		//ocean
 	this->possibleNeigbourChanseFaktor[1] = 1;		//lake
 	this->possibleNeigbourChanseFaktor[2] = 5;		//meadow
-	this->possibleNeigbourChanseFaktor[3] = 0;		//forest
+	this->possibleNeigbourChanseFaktor[3] = 10;		//forest
 	this->possibleNeigbourChanseFaktor[4] = 4;		//steppe
 	this->possibleNeigbourChanseFaktor[5] = 0;		//desert
 	this->possibleNeigbourChanseFaktor[6] = 0;		//moor
-	this->possibleNeigbourChanseFaktor[7] = 8;	//tropical forest
+	this->possibleNeigbourChanseFaktor[7] = 13;	//tropical forest
 	this->possibleNeigbourChanseFaktor[8] = 0;		//ice desert
 	this->possibleNeigbourChanseFaktor[9] = 0;//4;		//highlands
-	this->possibleNeigbourChanseFaktor[10] = 2;	//mountain
+	this->possibleNeigbourChanseFaktor[10] = 5;	//mountain
 
-	this->minNeigboursWithSameRegion = 3;
+	this->minNeigboursWithSameRegion = 2;
 
 	this->groundProperties.groundPt1T = 777600; //T parameter of discrete Pt1 behaviour
 	this->groundProperties.groundaboveLayerFacator = 0.65; //weigheted mean factor for the layer above
@@ -475,9 +450,6 @@ void Region::setToIceDesert() {
 	this->TauFreshWater = this->getRegionBasedWaterRegeneration(this->regionId);
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
-
-	this->tau_ice_growth =(0.1*_QUARTER_YEAR_IN_S);
-	this->max_ice_thickness = 2.5;
 
 	this->SkillToCross[0] = NoSkill();
 	this->SkillToCross[1] = NoSkill();
@@ -527,9 +499,6 @@ void Region::setToHeighland() {
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
 
-	this->tau_ice_growth =  (1.0*_QUARTER_YEAR_IN_S);
-	this->max_ice_thickness = 0.5;
-
 	this->SkillToCross[0] = NoSkill();
 	this->SkillToCross[1] = NoSkill();
 	this->SkillToCross[2] = NoSkill();
@@ -547,7 +516,7 @@ void Region::setToHeighland() {
 	this->possibleNeigbourChanseFaktor[4] = 1;		//steppe
 	this->possibleNeigbourChanseFaktor[5] = 1;		//desert
 	this->possibleNeigbourChanseFaktor[6] = 1;		//moor
-	this->possibleNeigbourChanseFaktor[7] = 1;		//tropical forest
+	this->possibleNeigbourChanseFaktor[7] = 2;		//tropical forest
 	this->possibleNeigbourChanseFaktor[8] = 5;		//ice desert
 	this->possibleNeigbourChanseFaktor[9] = 0;//10;		//highlands
 	this->possibleNeigbourChanseFaktor[10] = 10;		//mountain
@@ -577,9 +546,6 @@ void Region::setToMountain() {
 	this->TauFreshWater = this->getRegionBasedWaterRegeneration(this->regionId);
 	this->TauPlants = this->getRegionBasedPlantGrowth(this->regionId);
 	this->tempOptimalGroth = this->getOptimalTempForGrowth(this->regionId);
-
-	this->tau_ice_growth =(0.8*_QUARTER_YEAR_IN_S);
-	this->max_ice_thickness = 0.7;
 
 	this->SkillToCross[0] = Climb();
 	this->SkillToCross[1] = NoSkill();

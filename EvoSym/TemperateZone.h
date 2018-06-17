@@ -133,7 +133,7 @@ private:
 	void setToPolar() {
 		this->_G_ = &this->_G_->getInstance();
 		this->latitude = this->_G_->_POLAR_latitude;
-		this->OverlapNextTemperateZone = 10.0;
+		this->OverlapNextTemperateZone = 12.0;
 		//this->MeanTemp = Season<double>(-18.0, -10.0, -15.0, -20.0);//https://de.wikipedia.org/wiki/Datei:Klimadiagramm-Wostok-Antarktis_(Russland)-metrisch-deutsch.png
 		this->MeanTemp = Season<double>(-40.0, -25.0, -40.0, -50.0);//https://de.wikipedia.org/wiki/Datei:Klimadiagramm-Wostok-Antarktis_(Russland)-metrisch-deutsch.png
 		this->VariationInTemp = Propability(0.0, 10.0);
@@ -144,8 +144,8 @@ private:
 	void setToModerate() {
 		this->_G_ = &this->_G_->getInstance();
 		this->latitude = this->_G_->_MODERATE_latitude;
-		this->OverlapNextTemperateZone = 15.0;
-		this->MeanTemp = Season<double>(6.0, 18.0, 7.0, -5.0);//Berlin
+		this->OverlapNextTemperateZone = 16.0;
+		this->MeanTemp = Season<double>(7.0, 27.0, 13.0, -6.0);
 		this->VariationInTemp = Propability(0.0,5.0);
 		this->TempZoneName = "moderate";
 		this->TempZoneID = 1;
@@ -154,8 +154,8 @@ private:
 	void setToSubtropical() {
 		this->_G_ = &this->_G_->getInstance();
 		this->latitude = this->_G_->_SUBTROPE_latitude;
-		this->OverlapNextTemperateZone = 10.0;
-		this->MeanTemp = Season<double>(19.0, 24.0, 22.0, 18.0);//sydney https://de.climate-data.org/location/24/
+		this->OverlapNextTemperateZone = 8.0;
+		this->MeanTemp = Season<double>(24.0, 30.0, 25.0, 20.0);//sydney https://de.climate-data.org/location/24/
 		this->VariationInTemp = Propability(0.0, 3.0);
 		this->TempZoneName = "subtropical";
 		this->TempZoneID = 2;
@@ -164,7 +164,7 @@ private:
 	void setToTropical() {
 		this->_G_ = &this->_G_->getInstance();
 		this->latitude = this->_G_->_TROPICAL_latitude;
-		this->OverlapNextTemperateZone = 20.0;
+		this->OverlapNextTemperateZone = 10.0;
 		this->MeanTemp = Season<double>(30.0, 30.0, 30.0, 30.0);
 		this->VariationInTemp = Propability(0, 1.5);
 		this->TempZoneName = "tropical";

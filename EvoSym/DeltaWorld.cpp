@@ -128,7 +128,7 @@ void DeltaWorld::calcTemp(double dt) {
 	//Season
 	for (int s = 0; s < _AMOUNT_SEASONS; s++) {
 		if (this->SeasonMultiplier[s] > 0) {
-			TemperateZone T;
+			TemperateZone T;//todo safe pointer as attribute!!
 			double T_TempZone_mean_2 = 0;
 			double T_TempZone_offset_Seasondependant = 0;
 			//TempZohne
@@ -219,10 +219,9 @@ void DeltaWorld::calcIceThicknes(double dt) {
 	if (this->regionID == 0) {//ocean
 		freezingTemp = _WATER_FREEZING_TEMPERATURE[1];
 	}
-	if (this->ground.layerTemp[0] < freezingTemp) {
+	if (this->temperature < freezingTemp) {
 		this->isFrozen = true;
-		int FrozenLayer = 1;
-		for (FrozenLayer; FrozenLayer < this->ground.amountLayers; FrozenLayer++) {
+		for (unsigned int FrozenLayer = 0; FrozenLayer < this->ground.amountLayers; FrozenLayer++) {
 			if (this->ground.layerTemp[FrozenLayer] > freezingTemp) { //this layer is not frozen anymore
 				//linear interpolation between this layer and the last
 				double a = (this->ground.layerTemp[FrozenLayer] - this->ground.layerTemp[FrozenLayer-1]) / R->getGroundProperties()->groundLayerThickness;
@@ -276,7 +275,18 @@ std::string DeltaWorld::getInfoString() {
 	info += "Region: \t" + Region::getRegionName(this->regionID) + "\n";
 	info += "Height: \t" + std::to_string(this->height) + " m\n";
 	info += "Temperatur: \t" + std::to_string(this->temperature) + " °C\n";
+	for (int i = 0; i < this->ground.amountLayers; i++) {
+		info += "Temperatur Ground Layer " + std::to_string((i+1)*this->_RG_->getRegion(this->regionID)->getGroundProperties()->groundLayerThickness) + "cm: \t" + std::to_string(this->ground.layerTemp[i]) + " °C\n";
+	}
+	info += "Temperatur Ground constLayer: \t" + std::to_string(this->ground.lastLayerTemp) + " °C\n";
 	info += "Season: \t" + this->getSeasonText() + "\n";
+	TemperateZone T;//todo safe pointer as attribute!!
+	for (int i = 0; i < _AMOUNT_SEASONS; i++) {
+		if (this->InfluencedByTempZone[i] > 0) {
+			T = TemperateZone(i);
+			info += std::to_string(this->InfluencedByTempZone[i]*100) + "% " + T.getZoneName()+"\n";
+		}
+	}
 	info += "Latitude: \t" + std::to_string(this->latitude) + " °\n\n";
 	//resources
 	info += "Resources:\n";

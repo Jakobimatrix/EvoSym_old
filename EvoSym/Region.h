@@ -37,9 +37,6 @@ private:
 	Season<double> TauFreshWater;
 	Season<double> TauPlants;
 
-	double tau_ice_growth; //how long it takes to grow full thickness
-	double max_ice_thickness; //max ice thickness in meter
-
 	GroundProperties groundProperties;
 
 public:
@@ -99,13 +96,6 @@ public:
 		return &this->TauPlants;
 	}
 
-	double getMaxIceThickness() {
-		return this->max_ice_thickness;
-	}
-
-	double getTauIceGrwoth() {
-		return this->tau_ice_growth;
-	}
 
 	static std::string getRegionName(int i) {
 		
