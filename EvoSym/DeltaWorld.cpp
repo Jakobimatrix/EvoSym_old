@@ -115,11 +115,13 @@ void DeltaWorld::calcTemp(double dt) {
 	//constante Abhängigkeit 
 	double dependency_neigbour = _TEMP_INFLUENCE_NEIGHBOURS;		//"nachbar abhängigkeit"
 	double dependency_T_TempZone_mean = _TEMP_INFLUENCE_TEMPERATE_ZONE;//"temp Zohne"
-	double dependency_T_ist = _TEMP_INFLUENCE_IS_TEMP;			//"temp speicher"
+	double dependency_T_ist = _TEMP_INFLUENCE_IS_TEMP;			//"temp speicher air"
+	double dependency_T_ground = _TEMP_INFLUENCE_GROUND; //"temp speicher ground"
 	if (!this->initilized) {
 		double dependency_neigbour = 0.0;
-		double dependency_T_TempZone_mean = 1;
+		double dependency_T_TempZone_mean = 1.0;
 		double dependency_T_ist = 0.0;
+		double dependency_T_ground = 0.0;
 	}
 	//alles zusammen muss 1 ergeben!!
 
@@ -200,7 +202,7 @@ void DeltaWorld::calcTemp(double dt) {
 	}
 
 	//calc new Temp
-	this->temperature = this->temperature*dependency_T_ist + T_mean_neigbours*dependency_neigbour + T_TempZone_mean*dependency_T_TempZone_mean;	
+	this->temperature = (this->temperature - this->TempDropDueHeight )*dependency_T_ist + T_mean_neigbours*dependency_neigbour + T_TempZone_mean*dependency_T_TempZone_mean + this->ground.layerTemp[0]*dependency_T_ground;
 	this->temperature += this->TempDropDueHeight; //beachte Höhe
 
 	this->temperature = this->temperature + T_Region_Offset + T_TempZone_Offset; //beachte Varianzen in TemperaturZohne und Region
@@ -210,48 +212,47 @@ void DeltaWorld::calcTemp(double dt) {
 }
 void DeltaWorld::calcIceThicknes(double dt) {
 
+	
+
 	Region *R = this->_RG_->getRegion(this->regionID);
-
-	//tau nehme linear zu mit dem Breitengrad: große Tau->langsameres EisWachstum
-	//zusätlich schmiltzt dickeres Eis langsamer als dünnens Eis.
-	//double Tau = R->getTauIceGrwoth() + this->latitude*_ice_tau_per_degree_latitude + this->iceThickness*_ice_tau_thickness_factor;
-	//todo relativeIceThickness more global
-	double Tau;
-	if (this->temperature > 0) {//Tau ist negativ und repräsentiert den schmeltzprozess
-		double relativeIceThickness = this->iceThickness + 0.8;
-		relativeIceThickness = std::pow(relativeIceThickness, 5.0);//je dicker das eis, desto langsamer Taut es
-
-		Tau = R->getTauIceGrwoth();//es Taut je nach Region schneller oder langsamer;
-		//Tau = relativeIceThickness*_ice_tau_thickness_factor;
-		Tau = Tau / (_ice_tau_per_grad_celsius_factor*std::pow(this->temperature*_ice_temperature_gradient, _ice_melt_temp_expo));//Tau soll kleiner werden je größer die Temperatur ist->schneller auftauen
-		//Tau = Tau / (this->latitude * _ice_tau_per_degree_latitude + 1); //Je steiler die Sonne steht, desto schneller Taut es
-		Tau = -Tau;
+	double freezingTemp = _WATER_FREEZING_TEMPERATURE[0];
+	if (this->regionID == 0) {//ocean
+		freezingTemp = _WATER_FREEZING_TEMPERATURE[1];
 	}
-	else {//Tau ist positiv und repräsentiert den zuwachs an von Eis
-		int waterType = 0;
-		if (this->regionID == 0) {
-			waterType = 1;
-		}
-		if (temperature < _WATER_FREEZING_TEMPERATURE[waterType]) {
-
-			Tau = R->getTauIceGrwoth();//es friert je nach Region schneller oder langsamer zu;
-			Tau = Tau / std::abs(_ice_tau_per_grad_celsius_factor*std::pow(this->temperature*_ice_temperature_gradient, _ice_freeze_temp_expo));  //je niedriger die Temp, desto schneller friert es
-		}
-		else {
-			return;
-		}
-	}
-
-	double max_ice_thickness = R->getMaxIceThickness();
-	double t = inverse_cosResurceGeneration(max_ice_thickness, Tau, this->iceThickness);
-
-	this->iceThickness = cosResurceGeneration(max_ice_thickness, Tau, t + dt);
-
-	if (iceThickness > 0) {
+	if (this->ground.layerTemp[0] < freezingTemp) {
 		this->isFrozen = true;
+		int FrozenLayer = 1;
+		for (FrozenLayer; FrozenLayer < this->ground.amountLayers; FrozenLayer++) {
+			if (this->ground.layerTemp[FrozenLayer] > freezingTemp) { //this layer is not frozen anymore
+				//linear interpolation between this layer and the last
+				double a = (this->ground.layerTemp[FrozenLayer] - this->ground.layerTemp[FrozenLayer-1]) / R->getGroundProperties()->groundLayerThickness;
+				double b = this->ground.layerTemp[FrozenLayer] - a*R->getGroundProperties()->groundLayerThickness*(FrozenLayer +1);
+				this->iceThickness = -b / a;
+				break;
+			}
+		}
 	}
 	else {
 		this->isFrozen = false;
+		this->iceThickness = 0.0;
+	}
+}
+
+void DeltaWorld::calcGroundTemp(double dt, double airTemp)
+{
+	int last_layer = this->ground.amountLayers - 1;
+	double pt_T = 1.0 / (this->_RG_->getRegion(this->regionID)->getGroundProperties()->groundPt1T / dt + 1); //see wikipedia pt1 for time discrete form
+
+	for (unsigned int i = 0; i < this->ground.amountLayers; i++) {
+		if (i == 0) { //erster Layer
+			this->ground.layerTemp[i] = pt_T * (this->_RG_->getRegion(this->regionID)->getGroundProperties()->groundaboveLayerFacator*airTemp + this->_RG_->getRegion(this->regionID)->getGroundProperties()->groundbelowLayerFacator*this->ground.layerTemp[i + 1] - this->ground.layerTemp[i]) + this->ground.layerTemp[i];
+		}
+		else if (i != last_layer) {
+			this->ground.layerTemp[i] = pt_T * (this->_RG_->getRegion(this->regionID)->getGroundProperties()->groundaboveLayerFacator*this->ground.layerTemp[i - 1] + this->_RG_->getRegion(this->regionID)->getGroundProperties()->groundbelowLayerFacator*this->ground.layerTemp[i + 1] - this->ground.layerTemp[i]) + this->ground.layerTemp[i];
+		}
+		else { //letzterLayer
+			this->ground.layerTemp[i] = pt_T * (this->_RG_->getRegion(this->regionID)->getGroundProperties()->groundaboveLayerFacator*this->ground.layerTemp[i - 1] + this->_RG_->getRegion(this->regionID)->getGroundProperties()->groundbelowLayerFacator*this->ground.lastLayerTemp - this->ground.layerTemp[i]) + this->ground.layerTemp[i];
+		}
 	}
 }
 
@@ -260,7 +261,7 @@ void DeltaWorld::update(double tnow) {
 	this->calcTemp(dt);
 	this->calcResources(dt);
 	this->calcIceThicknes(dt);
-	
+	this->calcGroundTemp(dt, this->temperature);	
 }
 void DeltaWorld::calcResources(double dt) {
 

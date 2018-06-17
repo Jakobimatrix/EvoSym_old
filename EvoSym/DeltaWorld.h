@@ -21,6 +21,12 @@
 #include "RegionGlobals.h"
 
 
+typedef struct Ground {
+	double* layerTemp; //array with the temperatures for all layers
+	unsigned int amountLayers; //number of layers
+	double lastLayerTemp; //temperature of the last layer
+}Ground;
+
 class DeltaWorld : public SimulatedUnit
 {
 private:
@@ -41,13 +47,15 @@ private:
 
 	double SeasonMultiplier[4];//-1 bis 1; //in welcher Season wir uns gerade befinden the positive numbers always add to 1 == 100%
 
-	int regionID;
+	int regionID;//todo region pointer instead
 
 	double height;
-	double temperature;
+	double temperature; //[°C] 
 
 	bool isFrozen;
 	double iceThickness;
+
+	Ground ground;
 
 	double TempDropDueHeight;
 	Resources resources;
@@ -97,6 +105,7 @@ public:
 		this->change_in_appearance = true;
 	}
 
+	//latitude in grad
 	void setPositionAndLatitude(const Point2d& position, double latitude) {
 		this->iceThickness = 0.0;
 		this->isFrozen = false;
@@ -148,12 +157,27 @@ public:
 		this->resources.setRegeneration_plants(*this->_RG_->getRegion(this->regionID)->getTauPlants());
 		this->resources.reset();
 
-		this->initilized = true;
 		this->change_in_appearance = true;
-		
+
+		//ground
+
+		GroundProperties* ground_properties = this->_RG_->getRegion(this->regionID)->getGroundProperties(); //object exists somewhere else, dont delete!
+		this->ground.amountLayers = (unsigned int)(ground_properties->groundDepth / ground_properties->groundLayerThickness); //calculate how many layers we will have
+		this->ground.layerTemp = new double[this->ground.amountLayers]; //memory must be allocated
+
+		//calculate the temperature of the last layer, assuming liniarity between min and max latitude
+		double a = (ground_properties->groundLastLayerTemp[1] - ground_properties->groundLastLayerTemp[0]) / (this->_G_->_BREITENGRAD.getSpan());
+		double b = ground_properties->groundLastLayerTemp[0] - a*this->_G_->_BREITENGRAD.min;
+		this->ground.lastLayerTemp = a*this->latitude + b;
+
+		//initiate all layers with the temp of the last layer
+		for (unsigned int i = 0; i < this->ground.amountLayers; i++) {
+			this->ground.layerTemp[i] = this->ground.lastLayerTemp;
+		}
+		this->initilized = true;		
 	}
 	~DeltaWorld(){	
-		//todo delete shared pointer
+		delete[] this->ground.layerTemp;
 	}
 
 
@@ -611,7 +635,13 @@ private:
 	void calcResources(double dt);
 	void calcIceThicknes(double dt);
 
-
+	/**
+	* @functionvoid update(double dt, double airTemp)
+	* @brief Calculates the temperature for each layer in dependancy of the air temperature.
+	* @param[in] dt: The time passed since the last update. This should not exceed 5 Days.
+	* @param[in] airTemp: The curret temperature of the ait above the ground.
+	**/
+	void calcGroundTemp(double dt, double airTemp);
 
 };
 

@@ -79,14 +79,15 @@ const double _INVERSE_MINUTE_IN_S = 1 / _MINUTE_IN_S; //[1/s] 1/60
 const double _TIME_DEPENDANTCY_FOR_TEMP_S = 60 * 60 * 24 *7; //[s] After this time intervall the calculation for the new temperature depends only on seasonal influences.
 const double _INVERSE_TIME_DEPENDANTCY_FOR_TEMP_S = 1/ _TIME_DEPENDANTCY_FOR_TEMP_S; //[1/s] After 1/(this time intervall) the calculation for the new temperature depends only on seasonal influences.
 //!!!The summ of all _TEMP_INFLUENCE_... has to be 1.0! 
-const double _TEMP_INFLUENCE_NEIGHBOURS = 0.45; //[ratio] How much influence neighbour tiles have on the temperature.
+const double _TEMP_INFLUENCE_NEIGHBOURS = 0.40; //[ratio] How much influence neighbour tiles have on the temperature.
 const double _TEMP_INFLUENCE_TEMPERATE_ZONE = 0.5; //[ratio] How much influence the temperate zone has on the temperature.
 const double _TEMP_INFLUENCE_IS_TEMP = 0.05; //[ratio] How much the temperature of the last simulation step influences the new temperature.
+const double _TEMP_INFLUENCE_GROUND = 0.05; //[ratio] How much the temperature of the ground influences the new temperature.
 //const double _TEMP_INFLUENCE_GROUND_TEMP; //[ratio] How much the groundtemperature the temperature influences.
 
 //simulation physics
 const double _WATER_FREEZING_TEMPERATURE[2] = { -0.2, -1.9 }; //[°C,°C] At this temperature [water, marine water] begin to freeze.
-const double _TEMPERATURE_DROP_PER_METER = -0.003; //[°C/m] With every meter the average temperature drops by this value.
+const double _TEMPERATURE_DROP_PER_METER = -0.01; //[°C/m] With every meter the average temperature drops by this value.
 const double _BEGIN_HEIGHT_TEMP_DROP = 0; //[m] Above this value the average temperature drops per meter with _TEMPERATURE_DROP_PER_METER.
 
 

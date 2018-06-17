@@ -90,6 +90,15 @@ void Region::setToOcean() {
 	this->possibleNeigbourChanseFaktor[10] = 10;		//mountain
 
 	this->minNeigboursWithSameRegion = 2;
+
+	this->groundProperties.groundPt1T = 777600; //T parameter of discrete Pt1 behaviour
+	this->groundProperties.groundaboveLayerFacator = 0.33; //weigheted mean factor for the layer above
+	this->groundProperties.groundbelowLayerFacator = 0.67; //weigheted mean factor for the layer below
+	this->groundProperties.groundDepth = 3.0; //[m] at which layer we have a stable temperature
+	this->groundProperties.groundLayerThickness = 0.25; //[m] how thik one layer shall be
+	this->groundProperties.groundLastLayerTemp[0] = -2.0; //[°C] The temperature of the last layer for latitude [0°]
+	this->groundProperties.groundLastLayerTemp[1] = 24.0; //[°C] The temperature of the last layer for latitude [90°]
+
 }
 void Region::setToLake() {
 	this->regionId = 1;
@@ -132,6 +141,14 @@ void Region::setToLake() {
 	this->possibleNeigbourChanseFaktor[10] = 5;		//mountain
 
 	this->minNeigboursWithSameRegion = 0;
+
+	this->groundProperties.groundPt1T = 1641600; //T parameter of discrete Pt1 behaviour
+	this->groundProperties.groundaboveLayerFacator = 0.75; //weigheted mean factor for the layer above
+	this->groundProperties.groundbelowLayerFacator = 0.25; //weigheted mean factor for the layer below
+	this->groundProperties.groundDepth = 20.0; //!todo make randoom between 30m 6m //[m] at which layer we have a stable temperature
+	this->groundProperties.groundLayerThickness = 2.0; //[m] how thik one layer shall be
+	this->groundProperties.groundLastLayerTemp[0] = 4.0; //[°C] The temperature of the last layer for latitude [0°]
+	this->groundProperties.groundLastLayerTemp[1] = 4.0; //[°C] The temperature of the last layer for latitude [90°]
 }
 void Region::setToMeadow() {
 	this->regionId = 2;
@@ -175,6 +192,15 @@ void Region::setToMeadow() {
 	this->possibleNeigbourChanseFaktor[10] = 5;		//mountain
 
 	this->minNeigboursWithSameRegion = 1;
+
+	this->groundProperties.groundPt1T = 201600; //T parameter of discrete Pt1 behaviour
+	this->groundProperties.groundaboveLayerFacator = 0.51; //weigheted mean factor for the layer above
+	this->groundProperties.groundbelowLayerFacator = 0.49; //weigheted mean factor for the layer below
+	this->groundProperties.groundDepth = 2.0; //[m] at which layer we have a stable temperature
+	this->groundProperties.groundLayerThickness = 0.25; //[m] how thik one layer shall be
+	this->groundProperties.groundLastLayerTemp[0] = -5.0; //[°C] The temperature of the last layer for latitude [0°]
+	this->groundProperties.groundLastLayerTemp[1] = 24.0; //[°C] The temperature of the last layer for latitude [90°]
+
 }
 void Region::setToForest() {
 	this->regionId = 3;
@@ -218,6 +244,15 @@ void Region::setToForest() {
 	this->possibleNeigbourChanseFaktor[10] = 1;		//mountain
 
 	this->minNeigboursWithSameRegion = 2;
+
+	this->groundProperties.groundPt1T = 201600; //T parameter of discrete Pt1 behaviour
+	this->groundProperties.groundaboveLayerFacator = 0.51; //weigheted mean factor for the layer above
+	this->groundProperties.groundbelowLayerFacator = 0.49; //weigheted mean factor for the layer below
+	this->groundProperties.groundDepth = 2.0; //[m] at which layer we have a stable temperature
+	this->groundProperties.groundLayerThickness = 0.25; //[m] how thik one layer shall be
+	this->groundProperties.groundLastLayerTemp[0] = -5.0; //[°C] The temperature of the last layer for latitude [0°]
+	this->groundProperties.groundLastLayerTemp[1] = 24.0; //[°C] The temperature of the last layer for latitude [90°]
+
 }
 void Region::setToSteppe() {
 	this->regionId = 4;
@@ -260,6 +295,16 @@ void Region::setToSteppe() {
 	this->possibleNeigbourChanseFaktor[10] = 1;		//mountain
 
 	this->minNeigboursWithSameRegion = 2;
+
+	//todo abhängig von trockenzeit = wüßte/regenzeit=meadow
+	this->groundProperties.groundPt1T = 201600; //T parameter of discrete Pt1 behaviour
+	this->groundProperties.groundaboveLayerFacator = 0.51; //weigheted mean factor for the layer above
+	this->groundProperties.groundbelowLayerFacator = 0.49; //weigheted mean factor for the layer below
+	this->groundProperties.groundDepth = 2.0; //[m] at which layer we have a stable temperature
+	this->groundProperties.groundLayerThickness = 0.25; //[m] how thik one layer shall be
+	this->groundProperties.groundLastLayerTemp[0] = -5.0; //[°C] The temperature of the last layer for latitude [0°]
+	this->groundProperties.groundLastLayerTemp[1] = 24.0; //[°C] The temperature of the last layer for latitude [90°]
+
 }
 void Region::setToDesert() {
 	this->regionId = 5;
@@ -302,6 +347,15 @@ void Region::setToDesert() {
 	this->possibleNeigbourChanseFaktor[10] = 0;		//mountain
 
 	this->minNeigboursWithSameRegion = 4;
+
+	this->groundProperties.groundPt1T = 86400; //T parameter of discrete Pt1 behaviour
+	this->groundProperties.groundaboveLayerFacator = 0.33; //weigheted mean factor for the layer above
+	this->groundProperties.groundbelowLayerFacator = 0.67; //weigheted mean factor for the layer below
+	this->groundProperties.groundDepth = 1.0; //[m] at which layer we have a stable temperature
+	this->groundProperties.groundLayerThickness = 0.25; //[m] how thik one layer shall be
+	this->groundProperties.groundLastLayerTemp[0] = 24.0; //[°C] The temperature of the last layer for latitude [0°]
+	this->groundProperties.groundLastLayerTemp[1] = 24.0; //[°C] The temperature of the last layer for latitude [90°]
+
 }
 void Region::setToMoor() {
 	this->regionId = 6;
@@ -345,6 +399,15 @@ void Region::setToMoor() {
 	this->possibleNeigbourChanseFaktor[10] = 1;		//mountain
 
 	this->minNeigboursWithSameRegion = 1;
+
+	this->groundProperties.groundPt1T = 345600; //T parameter of discrete Pt1 behaviour
+	this->groundProperties.groundaboveLayerFacator = 0.44; //weigheted mean factor for the layer above
+	this->groundProperties.groundbelowLayerFacator = 0.56; //weigheted mean factor for the layer below
+	this->groundProperties.groundDepth = 2.0; //[m] at which layer we have a stable temperature
+	this->groundProperties.groundLayerThickness = 0.25; //[m] how thik one layer shall be
+	this->groundProperties.groundLastLayerTemp[0] = 0.0; //[°C] The temperature of the last layer for latitude [0°]
+	this->groundProperties.groundLastLayerTemp[1] = 20.0; //[°C] The temperature of the last layer for latitude [90°]
+
 }
 void Region::setToTropicalForest() {
 	this->regionId = 7;
@@ -388,6 +451,15 @@ void Region::setToTropicalForest() {
 	this->possibleNeigbourChanseFaktor[10] = 2;	//mountain
 
 	this->minNeigboursWithSameRegion = 3;
+
+	this->groundProperties.groundPt1T = 777600; //T parameter of discrete Pt1 behaviour
+	this->groundProperties.groundaboveLayerFacator = 0.65; //weigheted mean factor for the layer above
+	this->groundProperties.groundbelowLayerFacator = 0.35; //weigheted mean factor for the layer below
+	this->groundProperties.groundDepth = 2.0; //[m] at which layer we have a stable temperature
+	this->groundProperties.groundLayerThickness = 0.25; //[m] how thik one layer shall be
+	this->groundProperties.groundLastLayerTemp[0] = 5.0; //[°C] The temperature of the last layer for latitude [0°]
+	this->groundProperties.groundLastLayerTemp[1] = 24.0; //[°C] The temperature of the last layer for latitude [90°]
+
 }
 void Region::setToIceDesert() {
 	this->regionId = 8;
@@ -430,6 +502,15 @@ void Region::setToIceDesert() {
 	this->possibleNeigbourChanseFaktor[10] = 2;	//mountain
 
 	this->minNeigboursWithSameRegion = 2;
+
+	this->groundProperties.groundPt1T = 489600; //T parameter of discrete Pt1 behaviour
+	this->groundProperties.groundaboveLayerFacator = 0.50; //weigheted mean factor for the layer above
+	this->groundProperties.groundbelowLayerFacator = 0.50; //weigheted mean factor for the layer below
+	this->groundProperties.groundDepth = 2.5; //[m] at which layer we have a stable temperature
+	this->groundProperties.groundLayerThickness = 0.25; //[m] how thik one layer shall be
+	this->groundProperties.groundLastLayerTemp[0] = -15; //[°C] The temperature of the last layer for latitude [0°]
+	this->groundProperties.groundLastLayerTemp[1] = 20.0; //[°C] The temperature of the last layer for latitude [90°]
+
 }
 void Region::setToHeighland() {
 	this->regionId = 9;
@@ -472,6 +553,15 @@ void Region::setToHeighland() {
 	this->possibleNeigbourChanseFaktor[10] = 10;		//mountain
 
 	this->minNeigboursWithSameRegion = 0;
+
+	this->groundProperties.groundPt1T = 201600; //T parameter of discrete Pt1 behaviour
+	this->groundProperties.groundaboveLayerFacator = 0.55; //weigheted mean factor for the layer above
+	this->groundProperties.groundbelowLayerFacator = 0.45; //weigheted mean factor for the layer below
+	this->groundProperties.groundDepth = 2.0; //[m] at which layer we have a stable temperature
+	this->groundProperties.groundLayerThickness = 0.25; //[m] how thik one layer shall be
+	this->groundProperties.groundLastLayerTemp[0] = -10.0; //[°C] The temperature of the last layer for latitude [0°]
+	this->groundProperties.groundLastLayerTemp[1] = 15.0; //[°C] The temperature of the last layer for latitude [90°]
+
 }
 void Region::setToMountain() {
 	this->regionId = 10;
@@ -514,6 +604,15 @@ void Region::setToMountain() {
 	this->possibleNeigbourChanseFaktor[10] = 8;		//mountain
 
 	this->minNeigboursWithSameRegion = 2;
+
+	this->groundProperties.groundPt1T = 489600; //T parameter of discrete Pt1 behaviour
+	this->groundProperties.groundaboveLayerFacator = 0.50; //weigheted mean factor for the layer above
+	this->groundProperties.groundbelowLayerFacator = 0.50; //weigheted mean factor for the layer below
+	this->groundProperties.groundDepth = 2.5; //[m] at which layer we have a stable temperature
+	this->groundProperties.groundLayerThickness = 0.25; //[m] how thik one layer shall be
+	this->groundProperties.groundLastLayerTemp[0] = -15; //[°C] The temperature of the last layer for latitude [0°]
+	this->groundProperties.groundLastLayerTemp[1] = 5.0; //[°C] The temperature of the last layer for latitude [90°]
+
 }
 void Region::setToDefault() {
 	this->setToMeadow();
@@ -524,4 +623,7 @@ Season<Propability>* Region::getAllSeasonDependantTempVariation() {
 }
 double Region::getSeasonDependantTempVariation(int seasonId) {
 	return this->VariationInTemperature.getValue(seasonId).mean_min;
+}
+GroundProperties* Region::getGroundProperties() {
+	return &this->groundProperties;
 }

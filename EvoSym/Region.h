@@ -6,7 +6,14 @@
 
 #include "Skills.h"
 
-
+typedef struct GroundProperties {
+	double groundPt1T; //T parameter of discrete Pt1 behaviour
+	double groundaboveLayerFacator; //weigheted mean factor for the layer above
+	double groundbelowLayerFacator; //weigheted mean factor for the layer below
+	double groundDepth; //[m] at which layer we have a stable temperature
+	double groundLayerThickness; //[m] how thik one layer shall be
+	double groundLastLayerTemp[2]; //[°C,°C] The temperature of the last layer for latitude [0°,90°]
+}GroundProperties;
 
 class Region
 {
@@ -32,6 +39,8 @@ private:
 
 	double tau_ice_growth; //how long it takes to grow full thickness
 	double max_ice_thickness; //max ice thickness in meter
+
+	GroundProperties groundProperties;
 
 public:
 	Region() {
@@ -245,6 +254,8 @@ public:
 			}
 		}
 	}
+
+	GroundProperties* getGroundProperties();
 };
 
 #endif // !_REGION_
