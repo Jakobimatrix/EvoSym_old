@@ -89,6 +89,9 @@ public:
 		this->isFrozen = false;
 		this->show_info = false;
 		this->change_in_appearance = true;
+		for (int i = 0; i < _AMOUNT_TEMPERATE_ZONES; i++) {
+			this->InfluencedByTempZone[i] = 0;
+		}
 	}
 
 	/**
@@ -111,6 +114,9 @@ public:
 		this->isFrozen = false;
 		this->_G_ = &this->_G_->getInstance();
 		this->_RG_ = &this->_RG_->getInstance();
+		//numerical errors with latitude
+		if (latitude > this->_G_->_BREITENGRAD.max) latitude = this->_G_->_BREITENGRAD.max;
+
 		//parameter
 		this->deltaT_Update = 1.0*_DAY_IN_S;//ein Tag
 		this->_G_->announceDeltaTime(this->deltaT_Update);
@@ -244,7 +250,7 @@ public:
 	* @retval int:
 	**/
 	double getTempZoneInfluence(int TempZoneId) {
-		if (TempZoneId > -1 && TempZoneId < 4) {
+		if (TempZoneId > -1 && TempZoneId < _AMOUNT_TEMPERATE_ZONES) {
 			return this->InfluencedByTempZone[TempZoneId];
 		}
 		return 0.0;		

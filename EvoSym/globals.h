@@ -76,8 +76,9 @@ const double _MINUTE_IN_S = 60; //[s] 60
 const double _INVERSE_MINUTE_IN_S = 1 / _MINUTE_IN_S; //[1/s] 1/60
 
 //simulation temperature
-const double _TIME_DEPENDANTCY_FOR_TEMP_S = 60 * 60 * 24 *7; //[s] After this time intervall the calculation for the new temperature depends only on seasonal influences.
-const double _INVERSE_TIME_DEPENDANTCY_FOR_TEMP_S = 1/ _TIME_DEPENDANTCY_FOR_TEMP_S; //[1/s] After 1/(this time intervall) the calculation for the new temperature depends only on seasonal influences.
+const double _TIME_DEPENDANTCY_FOR_TEMP_IN_S = 60 * 60 * 24 *7; //[s] After this time intervall the calculation for the new temperature depends only on seasonal influences.
+const double _INVERSE_TIME_DEPENDANTCY_FOR_TEMP_IN_S = 1/ _TIME_DEPENDANTCY_FOR_TEMP_IN_S; //[1/s] After 1/(this time intervall) the calculation for the new temperature depends only on seasonal influences.
+const double _PT_1_T_SEASONAL_OFFSET = 10000000; //[/] Good values between: [4.233.600 - 86.313.600] Pt_1 diskrete time constant for the change of the seasonal offset between years.
 //!!!The summ of all _TEMP_INFLUENCE_... has to be 1.0! 
 const double _TEMP_INFLUENCE_NEIGHBOURS = 0.32; //[ratio] How much influence neighbour tiles have on the temperature.
 const double _TEMP_INFLUENCE_TEMPERATE_ZONE = 0.5; //[ratio] How much influence the temperate zone has on the temperature.
@@ -214,10 +215,16 @@ private:
 
 		this->_SeasonShift = 0.0;
 		this->_BREITENGRAD = MinMax(0.0, 90.0);
-		this->_POLAR_latitude = MinMax(0.0, 14.0);
-		this->_MODERATE_latitude = MinMax(14.0, 40.0);
-		this->_SUBTROPE_latitude = MinMax(40.0, 60.0);
-		this->_TROPICAL_latitude = MinMax(60.0, 90.0);
+		/*Wikipedia:
+		Tropen von 0°–23,5°			90° - 66,5°
+		Subtropen von 23,5°–40°		66,5°-50°
+		gemäßigte Zone von 40°–60°	50° - 30°
+		kalte Zone von 60°–90°		30° - 0°
+		*/
+		this->_POLAR_latitude = MinMax(0.0, 16.0);
+		this->_MODERATE_latitude = MinMax(16.0, 50.0);
+		this->_SUBTROPE_latitude = MinMax(50.0, 70.0);
+		this->_TROPICAL_latitude = MinMax(70.0, 90.0);
 
 		for (int i = 0; i < 4; i++) {
 			this->CurrentYearTempOffset[i] = 0.0;

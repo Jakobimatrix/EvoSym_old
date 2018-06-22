@@ -76,7 +76,7 @@ public:
 	void reset() {
 		this->time = 0;
 		this->Animals.clear();
-		if (!init) {
+		if (!this->init) {
 			for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
 				this->WorldParts[i] = new DeltaWorld();
 			}
@@ -86,12 +86,12 @@ public:
 				this->WorldParts[i]->reset();
 			}
 		}
-		this->createWorld();
-		init = true;
+		this->init = this->createWorld();
 	}
+	bool getIsReady();
 private:
 	void World::setTemperateZone();
-	void World::createWorld();	
+	bool World::createWorld();	
 
 	void createSetHeightPredefined();
 	void createSetHeightRand();

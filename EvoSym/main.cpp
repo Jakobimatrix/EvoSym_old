@@ -141,10 +141,14 @@ int main()
 
 	
 
-	WorldView worldview;
+	
 	World SimulatedWorld = World(_DEFINED_MAP);
 	//World SimulatedWorld = World();
 
+	if (!SimulatedWorld.getIsReady()) {
+		return 0;
+	}
+	WorldView worldview;
 
 	while (worldview.window.isOpen())
 	{

@@ -31,21 +31,20 @@ void DeltaWorld::setRandRegion(double height, int notThisRegion) {
 		PossibleRegion[ir] = 0.0;
 		if (this->_RG_->getRegion(ir)->occoursInHeight(height)) {//kommt die Region in dieser Höhe vor?
 			//Ja
-			for (int it = 0; it < 4; it++) {
-				PossibleRegion[ir] += this->getTempZoneInfluence(it) * TrueFalseTo10(this->_RG_->getRegion(ir)->occoursInTempZone(it));
+			for (int it = 0; it < _AMOUNT_TEMPERATE_ZONES; it++) {//wie wharscheinlich kommt die Region in der Tempertur Zohne vor?
+				if (!IsNaN(this->getTempZoneInfluence(it))) {
+					PossibleRegion[ir] += this->getTempZoneInfluence(it) * TrueFalseTo10(this->_RG_->getRegion(ir)->occoursInTempZone(it));
+				}
 			}
 		}
-		else {
-			PossibleRegion[ir] = 0.0;//Zohne kommt nicht in der Höhe vor
-		}
 	}
-	if (-1 < notThisRegion && notThisRegion < _AMOUNT_REGIONS) {
+	if (-1 < notThisRegion && notThisRegion < _AMOUNT_REGIONS) {//schließe die Region aus, die Übergeben wurde.
 		PossibleRegion[notThisRegion] = 0.0;
 	}
 
 	//Die Region muss sich mit den Regionen der Nachbar DeltaWorlds vertragen
 
-	for (int in = 0; in < 7; in++) {
+	for (int in = 0; in < 8; in++) {//8 Nachbarn
 		DeltaWorld* D = this->getNeigbour(in);
 		if (D) {
 			if (D->isInitialized()) {
@@ -72,6 +71,8 @@ void DeltaWorld::setRandRegion(double height, int notThisRegion) {
 			}
 		}
 		this->setRegion_and_height(this->_RG_->getDefaultRegionID(height, polar), height);
+		std::cout << "Warning: One Region had to be set up as default:"<<std::endl;
+		return;
 	}
 	else {
 		double RandRegion = uniform_double_dist(0.0, TotalChanse);
@@ -83,7 +84,10 @@ void DeltaWorld::setRandRegion(double height, int notThisRegion) {
 				return;
 			}
 		}
+		std::cout << "Warning: Deltla Worls was not initialized!" << std::endl;
+		std::getchar();
 	}
+	return;
 }
 
 void DeltaWorld::calcTemp(double dt) {
@@ -91,39 +95,12 @@ void DeltaWorld::calcTemp(double dt) {
 	double tempAlt = this->temperature;
 	//dependencys: height, t neigbours, season, region, temperateZone
 
-	double T_TempZone_mean = 0;//Mittlere Temperatur in der TempZohne  -> Abhängig von der Season
+	double T_TempZone_mean	= 0;//Mittlere Temperatur in der TempZohne  -> Abhängig von der Season
 	//this->TempDropDueHeight //Pro 100m Fällt die Durchschnittstemperatur um 1 °C
 	double T_mean_neigbours = 0;//Die Temperatur ist von den Temperaturen der Nachbarregionen abhängig
-	double T_Region_Offset = 0; //+- Varianz_tagesrauschen: Jede Region kann Währme besser/schlechter speichern  -> Abhängig von der Season
+	double T_Region_Offset	= 0; //+- Varianz_tagesrauschen: Jede Region kann Währme besser/schlechter speichern  -> Abhängig von der Season
 	double T_TempZone_Offset = 0; //+- Varianz_Jahresrauschen: In jeder TempZohne Treten temperaturschwankungen anders auf  -> Abhängig von der Season
 	//this->temperature //ist Temperatur
-
-	
-	//je nachdem wie viel Zeit vergangen ist, müssen die istwerte (t ist und mean nachbar) weniger gewertet werden
-
-	/* Dynamische Abhängigkeit, aber mehr rechenzeit
-	//Formel: -e^(-x/T) + 1 ->nach T sekunden ist das Ergebnis 0.6, 3T~=0,95
-	//nach ~3Wochen sollte die Temp nicht mehr von der ist Temp abhängen -> T = 1 Wochen = 60*60*24*7 
-	//1/1209600 = 
-	double timeFactorSoll = -exp(-t_dif * _1_divided_time_dependency_for_temp_seconds_) + 1;
-	double timeFactorist = (1 - timeFactorSoll)*0.5;
-	//wie stark die verschiedenen Abhängigkeiten gewichtet sind zusammen = 1 !!
-	double dependency_neigbour = timeFactorist;
-	double dependency_T_TempZone_mean = timeFactorSoll;
-	double dependency_T_ist = timeFactorist;
-	*/
-	//constante Abhängigkeit 
-	double dependency_neigbour = _TEMP_INFLUENCE_NEIGHBOURS;		//"nachbar abhängigkeit"
-	double dependency_T_TempZone_mean = _TEMP_INFLUENCE_TEMPERATE_ZONE;//"temp Zohne"
-	double dependency_T_ist = _TEMP_INFLUENCE_IS_TEMP;			//"temp speicher air"
-	double dependency_T_ground = _TEMP_INFLUENCE_GROUND; //"temp speicher ground"
-	if (!this->initilized) {
-		double dependency_neigbour = 0.0;
-		double dependency_T_TempZone_mean = 1.0;
-		double dependency_T_ist = 0.0;
-		double dependency_T_ground = 0.0;
-	}
-	//alles zusammen muss 1 ergeben!!
 
 	//Season
 	for (int s = 0; s < _AMOUNT_SEASONS; s++) {
@@ -134,9 +111,11 @@ void DeltaWorld::calcTemp(double dt) {
 			//TempZohne
 			for (int TempZone = 0; TempZone < _AMOUNT_TEMPERATE_ZONES; TempZone++) {
 				T = TemperateZone(TempZone);
+				if (this->InfluencedByTempZone[TempZone] > 0) {
 				T_TempZone_mean_2 += T.getSeasonDependentTemp()->getValue(s) * this->InfluencedByTempZone[TempZone];
 									//mean temp.in TempZone in Season		//influence of TempZone 
 				T_TempZone_offset_Seasondependant += this->_G_->CurrentYearTempOffset[s] * this->InfluencedByTempZone[TempZone];
+				}
 			}
 
 			T_TempZone_mean += T_TempZone_mean_2 * this->SeasonMultiplier[s]; //einfluss momentane Season[0-1] auf mittlere Temp aller TempZonen
@@ -148,6 +127,12 @@ void DeltaWorld::calcTemp(double dt) {
 		}
 	}
 
+	if (!this->initilized) {//dann nur von Temperaturzohne abhängig
+		this->temperature = T_TempZone_mean + this->TempDropDueHeight + T_Region_Offset + T_TempZone_Offset;
+																					 
+		this->RecentDeltaTemperature += this->temperature - tempAlt;//for drawing purpose
+		return;
+	}
 
 
 	//Berechne MeanTemp nachbar
@@ -202,7 +187,7 @@ void DeltaWorld::calcTemp(double dt) {
 	}
 
 	//calc new Temp
-	this->temperature = (this->temperature - this->TempDropDueHeight )*dependency_T_ist + T_mean_neigbours*dependency_neigbour + T_TempZone_mean*dependency_T_TempZone_mean + this->ground.layerTemp[0]*dependency_T_ground;
+	this->temperature = (this->temperature - this->TempDropDueHeight )*_TEMP_INFLUENCE_IS_TEMP + T_mean_neigbours*_TEMP_INFLUENCE_NEIGHBOURS + T_TempZone_mean*_TEMP_INFLUENCE_TEMPERATE_ZONE + this->ground.layerTemp[0]* _TEMP_INFLUENCE_GROUND;
 	this->temperature += this->TempDropDueHeight; //beachte Höhe
 
 	this->temperature = this->temperature + T_Region_Offset + T_TempZone_Offset; //beachte Varianzen in TemperaturZohne und Region
@@ -211,8 +196,6 @@ void DeltaWorld::calcTemp(double dt) {
 	this->RecentDeltaTemperature += this->temperature - tempAlt;
 }
 void DeltaWorld::calcIceThicknes(double dt) {
-
-	
 
 	Region *R = this->_RG_->getRegion(this->regionID);
 	double freezingTemp = _WATER_FREEZING_TEMPERATURE[0];
@@ -240,7 +223,7 @@ void DeltaWorld::calcIceThicknes(double dt) {
 void DeltaWorld::calcGroundTemp(double dt, double airTemp)
 {
 	int last_layer = this->ground.amountLayers - 1;
-	double pt_T = 1.0 / (this->_RG_->getRegion(this->regionID)->getGroundProperties()->groundPt1T / dt + 1); //see wikipedia pt1 for time discrete form
+	double pt_T = PT1_T_Discrete(dt, this->_RG_->getRegion(this->regionID)->getGroundProperties()->groundPt1T); //get the discret t constant of a dynamic pt1 behaviour
 
 	for (unsigned int i = 0; i < this->ground.amountLayers; i++) {
 		if (i == 0) { //erster Layer
@@ -258,9 +241,12 @@ void DeltaWorld::calcGroundTemp(double dt, double airTemp)
 void DeltaWorld::update(double tnow) {
 	double dt = (tnow - this->t_lastUpdate);
 	this->calcTemp(dt);
-	this->calcResources(dt);
-	this->calcIceThicknes(dt);
-	this->calcGroundTemp(dt, this->temperature);	
+	if (this->initilized) {
+		this->calcResources(dt);
+		this->calcIceThicknes(dt);
+		this->calcGroundTemp(dt, this->temperature);
+	}
+	
 }
 void DeltaWorld::calcResources(double dt) {
 
@@ -275,7 +261,7 @@ std::string DeltaWorld::getInfoString() {
 	info += "Region: \t" + Region::getRegionName(this->regionID) + "\n";
 	info += "Height: \t" + std::to_string(this->height) + " m\n";
 	info += "Temperatur: \t" + std::to_string(this->temperature) + " °C\n";
-	for (int i = 0; i < this->ground.amountLayers; i++) {
+	for (unsigned int i = 0; i < this->ground.amountLayers; i++) {
 		info += "Temperatur Ground Layer " + std::to_string((i+1)*this->_RG_->getRegion(this->regionID)->getGroundProperties()->groundLayerThickness) + "cm: \t" + std::to_string(this->ground.layerTemp[i]) + " °C\n";
 	}
 	info += "Temperatur Ground constLayer: \t" + std::to_string(this->ground.lastLayerTemp) + " °C\n";

@@ -13,7 +13,7 @@ void World::setTemperateZone() {
 	this->Tropical		= TemperateZone(3);
 }
 
-void World::createWorld() {
+bool World::createWorld() {
 	//int *ary = new int[sizeX*sizeY];
 	//// ary[x][y] is then rewritten as
 	//ary[x*sizeY + y]
@@ -154,6 +154,14 @@ void World::createWorld() {
 	for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
 		delete indices[i];
 	}
+	for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
+		if (!this->WorldParts[i]->isInitialized()) {
+			std::cout << "ERROR: Some WorldParts remain uninitialized!" << std::endl;
+			std::getchar();
+			return false;
+		}
+	}
+	return true;
 }
 
 void World::createSetHeightRand() {
@@ -360,16 +368,19 @@ void World::Update() {
 	//shift season //if new year->update for each season::setNewYearTempVariation() 
 	this->_G_->_SeasonShift -= this->_G_->_DELTA_SEASON_CHANGE_RAD;
 
+	TemperateZone T;
 	if (this->_G_->_SeasonShift < -_2PI) {
-		this->_G_->_SeasonShift = 0;//ein Jahr ist um
-		TemperateZone T;
-		double offset = 0.0;
-		for (int s = 0; s < _AMOUNT_SEASONS; s++) {
+		this->_G_->_SeasonShift = this->_G_->_SeasonShift + _2PI;//ein Jahr ist um
+		for (int s = 0; s < _AMOUNT_SEASONS; s++) {//new temperature offset for the 4 Seasons
 			T = TemperateZone(s);
-			this->_G_->CurrentYearTempOffset[s] = this->_G_->NextYearTempOffset[s];
-			offset = 0.6 * offset + 0.4 * T.getNewYearTempVariation(); //damit der Unterschied zwischen zwei benachbarten Zohnen nicht zu arg unterschiedlich ist
-			this->_G_->NextYearTempOffset[s]	= 0.2 * offset + this->_G_->CurrentYearTempOffset[s] * 0.8; //adding the last difference to prevent huge changes and create trends
-		}
+			this->_G_->NextYearTempOffset[s] = T.getNewYearTempVariation();
+		}		
+	}
+	double pt_T = PT1_T_Discrete(this->_G_->_DeltaTime, _PT_1_T_SEASONAL_OFFSET); //get the discret t constant of a dynamic pt1 behaviour
+	for (int s = 0; s < _AMOUNT_SEASONS; s++) {
+		T = TemperateZone(s);
+		//To avoid sudden changes CurrentYearTempOffset is moddeled with a pt1 behaviour
+		this->_G_->CurrentYearTempOffset[s] = pt_T*(this->_G_->NextYearTempOffset[s] - this->_G_->CurrentYearTempOffset[s]) + this->_G_->CurrentYearTempOffset[s]; //adding the last difference to prevent huge changes and create trends
 	}
 
 	//UPDATE DeltaWorld
@@ -395,3 +406,6 @@ void World::Update() {
 	//Update Animal
 }
 
+bool World::getIsReady() {
+	return this->init;
+}

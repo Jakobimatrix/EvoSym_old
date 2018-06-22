@@ -93,7 +93,7 @@ void Region::setToOcean() {
 	this->groundProperties.groundbelowLayerFacator = 0.67; //weigheted mean factor for the layer below
 	this->groundProperties.groundDepth = 3.0; //[m] at which layer we have a stable temperature
 	this->groundProperties.groundLayerThickness = 0.25; //[m] how thik one layer shall be
-	this->groundProperties.groundLastLayerTemp[0] = -2.0; //[°C] The temperature of the last layer for latitude [0°]
+	this->groundProperties.groundLastLayerTemp[0] = -5.0; //[°C] The temperature of the last layer for latitude [0°]
 	this->groundProperties.groundLastLayerTemp[1] = 24.0; //[°C] The temperature of the last layer for latitude [90°]
 
 }
@@ -189,7 +189,7 @@ void Region::setToMeadow() {
 	this->groundProperties.groundbelowLayerFacator = 0.49; //weigheted mean factor for the layer below
 	this->groundProperties.groundDepth = 2.0; //[m] at which layer we have a stable temperature
 	this->groundProperties.groundLayerThickness = 0.25; //[m] how thik one layer shall be
-	this->groundProperties.groundLastLayerTemp[0] = -5.0; //[°C] The temperature of the last layer for latitude [0°]
+	this->groundProperties.groundLastLayerTemp[0] = -2.0; //[°C] The temperature of the last layer for latitude [0°]
 	this->groundProperties.groundLastLayerTemp[1] = 24.0; //[°C] The temperature of the last layer for latitude [90°]
 
 }
@@ -237,7 +237,7 @@ void Region::setToForest() {
 	this->groundProperties.groundbelowLayerFacator = 0.49; //weigheted mean factor for the layer below
 	this->groundProperties.groundDepth = 2.0; //[m] at which layer we have a stable temperature
 	this->groundProperties.groundLayerThickness = 0.25; //[m] how thik one layer shall be
-	this->groundProperties.groundLastLayerTemp[0] = -5.0; //[°C] The temperature of the last layer for latitude [0°]
+	this->groundProperties.groundLastLayerTemp[0] = -2.0; //[°C] The temperature of the last layer for latitude [0°]
 	this->groundProperties.groundLastLayerTemp[1] = 24.0; //[°C] The temperature of the last layer for latitude [90°]
 
 }
@@ -286,7 +286,7 @@ void Region::setToSteppe() {
 	this->groundProperties.groundbelowLayerFacator = 0.49; //weigheted mean factor for the layer below
 	this->groundProperties.groundDepth = 2.0; //[m] at which layer we have a stable temperature
 	this->groundProperties.groundLayerThickness = 0.25; //[m] how thik one layer shall be
-	this->groundProperties.groundLastLayerTemp[0] = -5.0; //[°C] The temperature of the last layer for latitude [0°]
+	this->groundProperties.groundLastLayerTemp[0] = 0.0; //[°C] The temperature of the last layer for latitude [0°]
 	this->groundProperties.groundLastLayerTemp[1] = 24.0; //[°C] The temperature of the last layer for latitude [90°]
 
 }
@@ -383,14 +383,14 @@ void Region::setToMoor() {
 	this->groundProperties.groundbelowLayerFacator = 0.56; //weigheted mean factor for the layer below
 	this->groundProperties.groundDepth = 2.0; //[m] at which layer we have a stable temperature
 	this->groundProperties.groundLayerThickness = 0.25; //[m] how thik one layer shall be
-	this->groundProperties.groundLastLayerTemp[0] = 0.0; //[°C] The temperature of the last layer for latitude [0°]
+	this->groundProperties.groundLastLayerTemp[0] = -8.0; //[°C] The temperature of the last layer for latitude [0°]
 	this->groundProperties.groundLastLayerTemp[1] = 20.0; //[°C] The temperature of the last layer for latitude [90°]
 
 }
 void Region::setToTropicalForest() {
 	this->regionId = 7;
 	this->VariationInTemperature = Season<Propability>(Propability(+5.0, 2.0), Propability(+5.0, 1.0), Propability(+5.0, 1.0), Propability(+5.0, 2.0));
-	this->Height = MinMax(-100,2300.0);
+	this->Height = MinMax(-100,2500.0);
 	this->occurrenceInTemperateZone[0] = false;
 	this->occurrenceInTemperateZone[1] = false;
 	this->occurrenceInTemperateZone[2] = false;
@@ -480,8 +480,8 @@ void Region::setToIceDesert() {
 	this->groundProperties.groundbelowLayerFacator = 0.50; //weigheted mean factor for the layer below
 	this->groundProperties.groundDepth = 2.5; //[m] at which layer we have a stable temperature
 	this->groundProperties.groundLayerThickness = 0.25; //[m] how thik one layer shall be
-	this->groundProperties.groundLastLayerTemp[0] = -15; //[°C] The temperature of the last layer for latitude [0°]
-	this->groundProperties.groundLastLayerTemp[1] = 20.0; //[°C] The temperature of the last layer for latitude [90°]
+	this->groundProperties.groundLastLayerTemp[0] = -20; //[°C] The temperature of the last layer for latitude [0°]
+	this->groundProperties.groundLastLayerTemp[1] = 0.0; //[°C] The temperature of the last layer for latitude [90°]
 
 }
 void Region::setToHeighland() {
@@ -529,7 +529,7 @@ void Region::setToHeighland() {
 	this->groundProperties.groundDepth = 2.0; //[m] at which layer we have a stable temperature
 	this->groundProperties.groundLayerThickness = 0.25; //[m] how thik one layer shall be
 	this->groundProperties.groundLastLayerTemp[0] = -10.0; //[°C] The temperature of the last layer for latitude [0°]
-	this->groundProperties.groundLastLayerTemp[1] = 15.0; //[°C] The temperature of the last layer for latitude [90°]
+	this->groundProperties.groundLastLayerTemp[1] = 20.0; //[°C] The temperature of the last layer for latitude [90°]
 
 }
 void Region::setToMountain() {
