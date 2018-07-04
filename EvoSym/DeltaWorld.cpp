@@ -25,6 +25,8 @@ void DeltaWorld::setRandRegion(double height, int notThisRegion) {
 	//region
 	//gehe alle Nachbarn durch, errechne für jeden Nachbarn die Wahrscheinlichkeit für this DeltaWorld Region
 	//Durch Höhe und Breitengrad wird die Auswahl begrenzt
+
+	//TODO make a vector
 	double PossibleRegion[_AMOUNT_REGIONS];//hier wird gespeichert, mit welcher warscheinlichkeit, welche Region diese DeltaWorld wird. 
 
 	for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {

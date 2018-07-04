@@ -22,36 +22,36 @@ T(deltaT,0.05)
 % resolution = 0.25; %meter
 % pt_T = 0.1; 
 % pt_K = 1;  
-% last_layer_temp = 24;%°C //tropic=24; //polar = -2;
+% last_layer_temp = 10;%°C //tropic=24; //polar = -2;
 % temp_max = -10; %°C //tropic=30; //polar = -10;
 % temp_min = -50;%°C  //tropic=30; //polar = -50;
 % topLayer = 0.33;
 % botLayer = 0.67;
 
 %watertemp lake
-depth_ground = 6; %meter
-resolution = 1; %meter
-pt_T = T(deltaT,0.05);%0.1; 
-pt_K = 1;  
-last_layer_temp = 4;%°C //tropic=24; //polar = -2;
-temp_max = 25; %°C //tropic=30; //polar = -10;
-temp_min = -10;%°C  //tropic=30; //polar = -50;
-topLayer = 0.55;
-botLayer = 0.45;
+% depth_ground = 6; %meter
+% resolution = 1; %meter
+% pt_T = T(deltaT,0.05);%0.1; 
+% pt_K = 1;  
+% last_layer_temp = 4;%°C //tropic=24; //polar = -2;
+% temp_max = 25; %°C //tropic=30; //polar = -10;
+% temp_min = -10;%°C  //tropic=30; //polar = -50;
+% topLayer = 0.55;
+% botLayer = 0.45;
 
 
 %soil temperature dessert: https://www.journals.uchicago.edu/doi/abs/10.1086/333411?journalCode=botanicalgazette
 % at 4cm between 17 - 70°C
-% at 100cm const 24 °C
-% depth_ground = 1; %meter
-% resolution = 0.25; %meter
-% pt_T = T(deltaT,0.5); 
-% pt_K = 1;  
-% topLayer = 0.33;
-% botLayer = 0.67;
-% last_layer_temp = 24;%°C
-% temp_max = 70; %°C 
-% temp_min = 30;%°C  
+%at 100cm const 24 °C
+depth_ground = 1; %meter
+resolution = 0.25; %meter
+pt_T = T(deltaT,0.5); 
+pt_K = 1;  
+topLayer = 0.33;
+botLayer = 0.67;
+last_layer_temp = 24;%°C
+temp_max = 70; %°C 
+temp_min = 30;%°C  
 
 % soil temperature meaddow: https://de.wikipedia.org/w/index.php?title=Datei:Bodentemperatur.png&filetimestamp=20110410101339&
 % best parameter fit:

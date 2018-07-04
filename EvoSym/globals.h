@@ -6,6 +6,10 @@
 #include <iostream>
 #include "structs.h"
 
+//constexpression constexbr -> ändern wird zur compilezeit erstellt
+//wind?
+
+
 //constants
 const double _PI = 3.141592653589793238463; //[math.const] The constant pi.
 const double _INVERSE_PI = 0.318309886183790671537; //[math.const] The inverse of the constant pi.
@@ -19,7 +23,7 @@ const int _AMOUNT_TEMPERATE_ZONES = 4; //[int] The amount of defined temperature
 const int _AMOUNT_SEASONS = 4; //[int] the amount of defined seasons.
 
 const double _LAND_TO_OCEAN_RATIO = 1.3; //[ratio] This ratio determines how much land compared to ocean there shall be.
-const int _DIMENSION_HALF = 150; //[DeltaWorld] The radius in tiles the world should consist of. Program Crashes for more than 150.
+const int _DIMENSION_HALF = 100; //[DeltaWorld] The radius in tiles the world should consist of. Program Crashes for more than 150.
 const int _WORLD_DIMENSION = _DIMENSION_HALF * 2; //[DeltaWorld] The diameter in tiles the world consist of.
 const int _AMOUNT_DELTA_WORLDS = _WORLD_DIMENSION * _WORLD_DIMENSION; //[DeltaWorld] The amount of all tiles creating this world.
 const double _WORLD_DIAMETER = 40000000.0; // [m] The Diameter of the created world in meters. This sets the size of the world in relation to the animals.
@@ -33,7 +37,7 @@ const int _TILE_RESULUTION = 500;//[pixel] Resulution of the individual tile pat
 
 //Drawing
 const double _VISUALIZED_TEMPERATURE_DIFFERENCE = 0.5; //[°C] At which temperature difference a tile should change apearence. The smaller this number the more often a tile has to be redrawn.
-const std::string _DEFINED_MAP = "bilder/map2.jpg"; //[path] Loades a hight profile from an black and white image. If empty the height profile will be randomized with perlian noise.
+const std::string _DEFINED_MAP = "";// "bilder/map2.jpg"; //[path] Loades a hight profile from an black and white image. If empty the height profile will be randomized with perlian noise.
 const int _WORLD_DIAMETER_IN_PIXEL = _WORLD_DIMENSION*_TILE_RESULUTION; //[pix] gesammt anzahl der Pixel in Länge und breite
 
 //Parameter for a random generated world with perlian noise.

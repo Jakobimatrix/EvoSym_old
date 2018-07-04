@@ -229,11 +229,10 @@ public:
 	}
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function void getAllTempInfluence(double(&TempZonenfluence)[4])
+	* @brief Writes in the given Array the Influences of the temperature.
+	* @param[out] TempZonenfluence: Attay with the Temp. influences
+	* @retval void:
 	**/
 	void getAllTempInfluence(double(&TempZonenfluence)[4]) {
 		TempZonenfluence[0] = this->InfluencedByTempZone[0];
