@@ -74,17 +74,17 @@ void Region::setToOcean() {
 	ResourceDistributionViaSkill[1] = 0.99;
 	ResourceDistributionViaSkill[2] = 0.0;
 
-	this->possibleNeigbourChanseFaktor[0] = 30;		//ocean
+	this->possibleNeigbourChanseFaktor[0] = 1000;		//ocean
 	this->possibleNeigbourChanseFaktor[1] = 0;		//lake
-	this->possibleNeigbourChanseFaktor[2] = 5;		//meadow
-	this->possibleNeigbourChanseFaktor[3] = 2;		//forest
-	this->possibleNeigbourChanseFaktor[4] = 2;		//steppe
-	this->possibleNeigbourChanseFaktor[5] = 5;		//desert
-	this->possibleNeigbourChanseFaktor[6] = 0;		//moor
-	this->possibleNeigbourChanseFaktor[7] = 5;		//tropical forest
-	this->possibleNeigbourChanseFaktor[8] = 5;		//ice desert
-	this->possibleNeigbourChanseFaktor[9] = 0;//10;		//highlands
-	this->possibleNeigbourChanseFaktor[10] = 10;		//mountain
+	this->possibleNeigbourChanseFaktor[2] = 70;		//meadow
+	this->possibleNeigbourChanseFaktor[3] = 50;		//forest
+	this->possibleNeigbourChanseFaktor[4] = 50;		//steppe
+	this->possibleNeigbourChanseFaktor[5] = 50;		//desert
+	this->possibleNeigbourChanseFaktor[6] = 50;		//moor
+	this->possibleNeigbourChanseFaktor[7] = 50;		//tropical forest
+	this->possibleNeigbourChanseFaktor[8] = 100;		//ice desert
+	this->possibleNeigbourChanseFaktor[9] = 0;		//highlands
+	this->possibleNeigbourChanseFaktor[10] = 200;	//mountain
 
 	this->minNeigboursWithSameRegion = 2;
 
@@ -100,7 +100,7 @@ void Region::setToOcean() {
 void Region::setToLake() {
 	this->regionId = 1;
 	this->VariationInTemperature = Season<Propability>(Propability(-1.5, 2.0), Propability(-0.75, 2.0), Propability(0.75, 2.0), Propability(1.8, 2.0));
-	this->Height = MinMax(100,5000.0);
+	this->Height = MinMax(10,5000.0);
 	this->occurrenceInTemperateZone[0] = false;
 	this->occurrenceInTemperateZone[1] = true;
 	this->occurrenceInTemperateZone[2] = true;
@@ -123,16 +123,16 @@ void Region::setToLake() {
 	ResourceDistributionViaSkill[2] = 0.0;
 
 	this->possibleNeigbourChanseFaktor[0] = 0;		//ocean
-	this->possibleNeigbourChanseFaktor[1] = 5;		//lake
-	this->possibleNeigbourChanseFaktor[2] = 10;		//meadow
-	this->possibleNeigbourChanseFaktor[3] = 10;		//forest
-	this->possibleNeigbourChanseFaktor[4] = 10;		//steppe
-	this->possibleNeigbourChanseFaktor[5] = 10;		//desert
-	this->possibleNeigbourChanseFaktor[6] = 10;		//moor
-	this->possibleNeigbourChanseFaktor[7] = 10;		//tropical forest
+	this->possibleNeigbourChanseFaktor[1] = 1;		//lake
+	this->possibleNeigbourChanseFaktor[2] = 100;		//meadow
+	this->possibleNeigbourChanseFaktor[3] = 100;		//forest
+	this->possibleNeigbourChanseFaktor[4] = 50;		//steppe
+	this->possibleNeigbourChanseFaktor[5] = 0;		//desert
+	this->possibleNeigbourChanseFaktor[6] = 50;		//moor
+	this->possibleNeigbourChanseFaktor[7] = 20;		//tropical forest
 	this->possibleNeigbourChanseFaktor[8] = 10;		//ice desert
-	this->possibleNeigbourChanseFaktor[9] = 10;		//highlands
-	this->possibleNeigbourChanseFaktor[10] = 5;		//mountain
+	this->possibleNeigbourChanseFaktor[9] = 0;		//highlands
+	this->possibleNeigbourChanseFaktor[10] = 140;		//mountain
 
 	this->minNeigboursWithSameRegion = 0;
 
@@ -147,7 +147,7 @@ void Region::setToLake() {
 void Region::setToMeadow() {
 	this->regionId = 2;
 	this->VariationInTemperature = Season<Propability>(Propability(1.0, 6.0), Propability(2.0, 3.0), Propability(-1.0, 7.0), Propability(-4, 5.0));
-	this->Height = MinMax(-100,3000.0);
+	this->Height = MinMax(-100,2500.0);
 	this->occurrenceInTemperateZone[0] = false;
 	this->occurrenceInTemperateZone[1] = true;
 	this->occurrenceInTemperateZone[2] = true;
@@ -170,19 +170,19 @@ void Region::setToMeadow() {
 	ResourceDistributionViaSkill[2] = 0.0;
 
 
-	this->possibleNeigbourChanseFaktor[0] = 7;	//ocean
-	this->possibleNeigbourChanseFaktor[1] = 5;		//lake
-	this->possibleNeigbourChanseFaktor[2] = 15;		//meadow
-	this->possibleNeigbourChanseFaktor[3] = 7;		//forest
-	this->possibleNeigbourChanseFaktor[4] = 5;		//steppe
-	this->possibleNeigbourChanseFaktor[5] = 0;		//desert
-	this->possibleNeigbourChanseFaktor[6] = 6;		//moor
-	this->possibleNeigbourChanseFaktor[7] = 4;		//tropical forest
-	this->possibleNeigbourChanseFaktor[8] = 15;		//ice desert
+	this->possibleNeigbourChanseFaktor[0] = 10;	//ocean
+	this->possibleNeigbourChanseFaktor[1] = 3;		//lake
+	this->possibleNeigbourChanseFaktor[2] = 600;		//meadow
+	this->possibleNeigbourChanseFaktor[3] = 400;		//forest
+	this->possibleNeigbourChanseFaktor[4] = 100;		//steppe
+	this->possibleNeigbourChanseFaktor[5] = 10;		//desert
+	this->possibleNeigbourChanseFaktor[6] = 75;		//moor
+	this->possibleNeigbourChanseFaktor[7] = 100;		//tropical forest
+	this->possibleNeigbourChanseFaktor[8] = 10;		//ice desert
 	this->possibleNeigbourChanseFaktor[9] = 0;//6;		//highlands
-	this->possibleNeigbourChanseFaktor[10] = 5;		//mountain
+	this->possibleNeigbourChanseFaktor[10] = 150;		//mountain
 
-	this->minNeigboursWithSameRegion = 1;
+	this->minNeigboursWithSameRegion = 3;
 
 	this->groundProperties.groundPt1T = 201600; //T parameter of discrete Pt1 behaviour
 	this->groundProperties.groundaboveLayerFacator = 0.51; //weigheted mean factor for the layer above
@@ -218,19 +218,19 @@ void Region::setToForest() {
 	ResourceDistributionViaSkill[1] = 0.3;
 	ResourceDistributionViaSkill[2] = 0.2;
 
-	this->possibleNeigbourChanseFaktor[0] = 2;		//ocean
+	this->possibleNeigbourChanseFaktor[0] = 50;		//ocean
 	this->possibleNeigbourChanseFaktor[1] = 3;		//lake
-	this->possibleNeigbourChanseFaktor[2] = 6;		//meadow
-	this->possibleNeigbourChanseFaktor[3] = 15;	//forest
-	this->possibleNeigbourChanseFaktor[4] = 0;		//steppe
-	this->possibleNeigbourChanseFaktor[5] = 0;		//desert
-	this->possibleNeigbourChanseFaktor[6] = 4;		//moor
+	this->possibleNeigbourChanseFaktor[2] = 300;		//meadow
+	this->possibleNeigbourChanseFaktor[3] = 700;	//forest
+	this->possibleNeigbourChanseFaktor[4] = 50;		//steppe
+	this->possibleNeigbourChanseFaktor[5] = 10;		//desert
+	this->possibleNeigbourChanseFaktor[6] = 100;		//moor
 	this->possibleNeigbourChanseFaktor[7] = 10;		//tropical forest
-	this->possibleNeigbourChanseFaktor[8] = 0;		//ice desert
+	this->possibleNeigbourChanseFaktor[8] = 10;		//ice desert
 	this->possibleNeigbourChanseFaktor[9] = 0;//3;		//highlands
-	this->possibleNeigbourChanseFaktor[10] = 1;		//mountain
+	this->possibleNeigbourChanseFaktor[10] = 200;		//mountain
 
-	this->minNeigboursWithSameRegion = 2;
+	this->minNeigboursWithSameRegion = 3;
 
 	this->groundProperties.groundPt1T = 201600; //T parameter of discrete Pt1 behaviour
 	this->groundProperties.groundaboveLayerFacator = 0.51; //weigheted mean factor for the layer above
@@ -267,18 +267,18 @@ void Region::setToSteppe() {
 	ResourceDistributionViaSkill[2] = 0.8;
 
 	this->possibleNeigbourChanseFaktor[0] = 10;		//ocean
-	this->possibleNeigbourChanseFaktor[1] = 2;		//lake
-	this->possibleNeigbourChanseFaktor[2] = 4;		//meadow
-	this->possibleNeigbourChanseFaktor[3] = 0;		//forest
-	this->possibleNeigbourChanseFaktor[4] = 6;	//steppe
-	this->possibleNeigbourChanseFaktor[5] = 5;		//desert
-	this->possibleNeigbourChanseFaktor[6] = 0;		//moor
-	this->possibleNeigbourChanseFaktor[7] = 2;		//tropical forest
+	this->possibleNeigbourChanseFaktor[1] = 3;		//lake
+	this->possibleNeigbourChanseFaktor[2] = 70;		//meadow
+	this->possibleNeigbourChanseFaktor[3] = 10;		//forest
+	this->possibleNeigbourChanseFaktor[4] = 800;	//steppe
+	this->possibleNeigbourChanseFaktor[5] = 300;		//desert
+	this->possibleNeigbourChanseFaktor[6] = 10;		//moor
+	this->possibleNeigbourChanseFaktor[7] = 100;		//tropical forest
 	this->possibleNeigbourChanseFaktor[8] = 0;		//ice desert
 	this->possibleNeigbourChanseFaktor[9] = 0;//3;		//highlands
-	this->possibleNeigbourChanseFaktor[10] = 1;		//mountain
+	this->possibleNeigbourChanseFaktor[10] = 110;		//mountain
 
-	this->minNeigboursWithSameRegion = 2;
+	this->minNeigboursWithSameRegion = 4;
 
 	//todo abhängig von trockenzeit = wüßte/regenzeit=meadow
 	this->groundProperties.groundPt1T = 201600; //T parameter of discrete Pt1 behaviour
@@ -293,7 +293,7 @@ void Region::setToSteppe() {
 void Region::setToDesert() {
 	this->regionId = 5;
 	this->VariationInTemperature = Season<Propability>(Propability(10.0, 4.0), Propability(18.0, 4.0), Propability(14.0, 4.0), Propability(10.0, 4.0));
-	this->Height = MinMax(-100,700.0);
+	this->Height = MinMax(-100,1000.0);
 	this->occurrenceInTemperateZone[0] = false;
 	this->occurrenceInTemperateZone[1] = false;
 	this->occurrenceInTemperateZone[2] = false;
@@ -315,19 +315,19 @@ void Region::setToDesert() {
 	ResourceDistributionViaSkill[1] = 0.99;
 	ResourceDistributionViaSkill[2] = 0.0;
 
-	this->possibleNeigbourChanseFaktor[0] = 10;		//ocean
-	this->possibleNeigbourChanseFaktor[1] = 0;		//lake
-	this->possibleNeigbourChanseFaktor[2] = 0;		//meadow
+	this->possibleNeigbourChanseFaktor[0] = 600;		//ocean
+	this->possibleNeigbourChanseFaktor[1] = 3;		//lake
+	this->possibleNeigbourChanseFaktor[2] = 20;		//meadow
 	this->possibleNeigbourChanseFaktor[3] = 0;		//forest
-	this->possibleNeigbourChanseFaktor[4] = 8;		//steppe
-	this->possibleNeigbourChanseFaktor[5] = 20;	//desert
+	this->possibleNeigbourChanseFaktor[4] = 400;		//steppe
+	this->possibleNeigbourChanseFaktor[5] = 800;	//desert
 	this->possibleNeigbourChanseFaktor[6] = 0;		//moor
-	this->possibleNeigbourChanseFaktor[7] = 0;		//tropical forest
+	this->possibleNeigbourChanseFaktor[7] = 10;		//tropical forest
 	this->possibleNeigbourChanseFaktor[8] = 0;		//ice desert
 	this->possibleNeigbourChanseFaktor[9] = 0;// 5;		//highlands
-	this->possibleNeigbourChanseFaktor[10] = 0;		//mountain
+	this->possibleNeigbourChanseFaktor[10] = 150;		//mountain
 
-	this->minNeigboursWithSameRegion = 4;
+	this->minNeigboursWithSameRegion = 3;
 
 	this->groundProperties.groundPt1T = 86400; //T parameter of discrete Pt1 behaviour
 	this->groundProperties.groundaboveLayerFacator = 0.33; //weigheted mean factor for the layer above
@@ -364,19 +364,19 @@ void Region::setToMoor() {
 	ResourceDistributionViaSkill[1] = 0.9;
 	ResourceDistributionViaSkill[2] = 0.0;
 
-	this->possibleNeigbourChanseFaktor[0] = 0;		//ocean
-	this->possibleNeigbourChanseFaktor[1] = 7;		//lake
-	this->possibleNeigbourChanseFaktor[2] = 5;		//meadow
-	this->possibleNeigbourChanseFaktor[3] = 1;		//forest
-	this->possibleNeigbourChanseFaktor[4] = 0;		//steppe
+	this->possibleNeigbourChanseFaktor[0] = 10;		//ocean
+	this->possibleNeigbourChanseFaktor[1] = 20;		//lake
+	this->possibleNeigbourChanseFaktor[2] = 300;		//meadow
+	this->possibleNeigbourChanseFaktor[3] = 200;		//forest
+	this->possibleNeigbourChanseFaktor[4] = 10;		//steppe
 	this->possibleNeigbourChanseFaktor[5] = 0;		//desert
-	this->possibleNeigbourChanseFaktor[6] = 10;		//moor
-	this->possibleNeigbourChanseFaktor[7] = 0;		//tropical forest
-	this->possibleNeigbourChanseFaktor[8] = 0;		//ice desert
+	this->possibleNeigbourChanseFaktor[6] = 500;		//moor
+	this->possibleNeigbourChanseFaktor[7] = 10;		//tropical forest
+	this->possibleNeigbourChanseFaktor[8] = 10;		//ice desert
 	this->possibleNeigbourChanseFaktor[9] = 0;//4;		//highlands
-	this->possibleNeigbourChanseFaktor[10] = 1;		//mountain
+	this->possibleNeigbourChanseFaktor[10] = 150;		//mountain
 
-	this->minNeigboursWithSameRegion = 1;
+	this->minNeigboursWithSameRegion = 2;
 
 	this->groundProperties.groundPt1T = 345600; //T parameter of discrete Pt1 behaviour
 	this->groundProperties.groundaboveLayerFacator = 0.44; //weigheted mean factor for the layer above
@@ -413,19 +413,19 @@ void Region::setToTropicalForest() {
 	ResourceDistributionViaSkill[1] = 0.1;
 	ResourceDistributionViaSkill[2] = 0.3;
 
-	this->possibleNeigbourChanseFaktor[0] = 5;		//ocean
-	this->possibleNeigbourChanseFaktor[1] = 1;		//lake
-	this->possibleNeigbourChanseFaktor[2] = 5;		//meadow
+	this->possibleNeigbourChanseFaktor[0] = 10;		//ocean
+	this->possibleNeigbourChanseFaktor[1] = 20;		//lake
+	this->possibleNeigbourChanseFaktor[2] = 50;		//meadow
 	this->possibleNeigbourChanseFaktor[3] = 10;		//forest
-	this->possibleNeigbourChanseFaktor[4] = 4;		//steppe
-	this->possibleNeigbourChanseFaktor[5] = 0;		//desert
-	this->possibleNeigbourChanseFaktor[6] = 0;		//moor
-	this->possibleNeigbourChanseFaktor[7] = 13;	//tropical forest
+	this->possibleNeigbourChanseFaktor[4] = 50;		//steppe
+	this->possibleNeigbourChanseFaktor[5] = 10;		//desert
+	this->possibleNeigbourChanseFaktor[6] = 50;		//moor
+	this->possibleNeigbourChanseFaktor[7] = 900;	//tropical forest
 	this->possibleNeigbourChanseFaktor[8] = 0;		//ice desert
 	this->possibleNeigbourChanseFaktor[9] = 0;//4;		//highlands
-	this->possibleNeigbourChanseFaktor[10] = 5;	//mountain
+	this->possibleNeigbourChanseFaktor[10] = 400;	//mountain
 
-	this->minNeigboursWithSameRegion = 2;
+	this->minNeigboursWithSameRegion = 3;
 
 	this->groundProperties.groundPt1T = 777600; //T parameter of discrete Pt1 behaviour
 	this->groundProperties.groundaboveLayerFacator = 0.65; //weigheted mean factor for the layer above
@@ -461,19 +461,19 @@ void Region::setToIceDesert() {
 	ResourceDistributionViaSkill[1] = 0.0;
 	ResourceDistributionViaSkill[2] = 0.0;
 
-	this->possibleNeigbourChanseFaktor[0] = 5;		//ocean
+	this->possibleNeigbourChanseFaktor[0] = 400;		//ocean
 	this->possibleNeigbourChanseFaktor[1] = 1;		//lake
-	this->possibleNeigbourChanseFaktor[2] = 2;		//meadow
-	this->possibleNeigbourChanseFaktor[3] = 0;		//forest
+	this->possibleNeigbourChanseFaktor[2] = 50;		//meadow
+	this->possibleNeigbourChanseFaktor[3] = 50;		//forest
 	this->possibleNeigbourChanseFaktor[4] = 0;		//steppe
 	this->possibleNeigbourChanseFaktor[5] = 0;		//desert
-	this->possibleNeigbourChanseFaktor[6] = 0;		//moor
+	this->possibleNeigbourChanseFaktor[6] = 50;		//moor
 	this->possibleNeigbourChanseFaktor[7] = 0;		//tropical forest
-	this->possibleNeigbourChanseFaktor[8] = 10;		//ice desert
+	this->possibleNeigbourChanseFaktor[8] = 900;		//ice desert
 	this->possibleNeigbourChanseFaktor[9] = 0;//4;		//highlands
-	this->possibleNeigbourChanseFaktor[10] = 2;	//mountain
+	this->possibleNeigbourChanseFaktor[10] = 200;	//mountain
 
-	this->minNeigboursWithSameRegion = 2;
+	this->minNeigboursWithSameRegion = 4;
 
 	this->groundProperties.groundPt1T = 489600; //T parameter of discrete Pt1 behaviour
 	this->groundProperties.groundaboveLayerFacator = 0.50; //weigheted mean factor for the layer above
@@ -509,17 +509,17 @@ void Region::setToHeighland() {
 	ResourceDistributionViaSkill[1] = 0.1;
 	ResourceDistributionViaSkill[2] = 0.8;
 
-	this->possibleNeigbourChanseFaktor[0] = 10;		//ocean
-	this->possibleNeigbourChanseFaktor[1] = 1;		//lake
-	this->possibleNeigbourChanseFaktor[2] = 5;		//meadow
-	this->possibleNeigbourChanseFaktor[3] = 2;		//forest
-	this->possibleNeigbourChanseFaktor[4] = 1;		//steppe
-	this->possibleNeigbourChanseFaktor[5] = 1;		//desert
-	this->possibleNeigbourChanseFaktor[6] = 1;		//moor
-	this->possibleNeigbourChanseFaktor[7] = 2;		//tropical forest
-	this->possibleNeigbourChanseFaktor[8] = 5;		//ice desert
+	this->possibleNeigbourChanseFaktor[0] = 100;		//ocean
+	this->possibleNeigbourChanseFaktor[1] = 10;		//lake
+	this->possibleNeigbourChanseFaktor[2] = 50;		//meadow
+	this->possibleNeigbourChanseFaktor[3] = 20;		//forest
+	this->possibleNeigbourChanseFaktor[4] = 10;		//steppe
+	this->possibleNeigbourChanseFaktor[5] = 10;		//desert
+	this->possibleNeigbourChanseFaktor[6] = 10;		//moor
+	this->possibleNeigbourChanseFaktor[7] = 20;		//tropical forest
+	this->possibleNeigbourChanseFaktor[8] = 50;		//ice desert
 	this->possibleNeigbourChanseFaktor[9] = 0;//10;		//highlands
-	this->possibleNeigbourChanseFaktor[10] = 10;		//mountain
+	this->possibleNeigbourChanseFaktor[10] = 100;		//mountain
 
 	this->minNeigboursWithSameRegion = 0;
 
@@ -535,7 +535,7 @@ void Region::setToHeighland() {
 void Region::setToMountain() {
 	this->regionId = 10;
 	this->VariationInTemperature = Season<Propability>(Propability(-5,10.0), Propability(-1, 10.0), Propability(-2.0, 10.0), Propability(-6, 10.0));
-	this->Height = MinMax(1000.0, _MAX_TERRANE_HEIGHT);
+	this->Height = MinMax(800.0, _MAX_TERRANE_HEIGHT);
 	this->occurrenceInTemperateZone[0] = true;
 	this->occurrenceInTemperateZone[1] = true;
 	this->occurrenceInTemperateZone[2] = true;
@@ -557,19 +557,19 @@ void Region::setToMountain() {
 	ResourceDistributionViaSkill[1] = 0.1;
 	ResourceDistributionViaSkill[2] = 0.0;
 
-	this->possibleNeigbourChanseFaktor[0] = 5;		//ocean
+	this->possibleNeigbourChanseFaktor[0] = 10;		//ocean
 	this->possibleNeigbourChanseFaktor[1] = 1;		//lake
-	this->possibleNeigbourChanseFaktor[2] = 1;		//meadow
-	this->possibleNeigbourChanseFaktor[3] = 1;		//forest
-	this->possibleNeigbourChanseFaktor[4] = 0;		//steppe
-	this->possibleNeigbourChanseFaktor[5] = 0;		//desert
-	this->possibleNeigbourChanseFaktor[6] = 2;		//moor
-	this->possibleNeigbourChanseFaktor[7] = 2;		//tropical forest
-	this->possibleNeigbourChanseFaktor[8] = 2;		//ice desert
+	this->possibleNeigbourChanseFaktor[2] = 100;		//meadow
+	this->possibleNeigbourChanseFaktor[3] = 150;		//forest
+	this->possibleNeigbourChanseFaktor[4] = 40;		//steppe
+	this->possibleNeigbourChanseFaktor[5] = 10;		//desert
+	this->possibleNeigbourChanseFaktor[6] = 100;		//moor
+	this->possibleNeigbourChanseFaktor[7] = 150;		//tropical forest
+	this->possibleNeigbourChanseFaktor[8] = 10;		//ice desert
 	this->possibleNeigbourChanseFaktor[9] = 0;// 5;		//highlands
-	this->possibleNeigbourChanseFaktor[10] = 8;		//mountain
+	this->possibleNeigbourChanseFaktor[10] = 800;		//mountain
 
-	this->minNeigboursWithSameRegion = 2;
+	this->minNeigboursWithSameRegion = 4;
 
 	this->groundProperties.groundPt1T = 489600; //T parameter of discrete Pt1 behaviour
 	this->groundProperties.groundaboveLayerFacator = 0.50; //weigheted mean factor for the layer above

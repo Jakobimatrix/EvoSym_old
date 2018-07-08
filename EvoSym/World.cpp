@@ -68,13 +68,11 @@ bool World::createWorld() {
 
 	/*cleanup der Regionen
 	Erosion*/
-	int i_er = 0;
-	int imax = 10;
-	bool erosion;
+	volatile int i_er = 0;
+	volatile int imax = 30;
+	volatile bool erosion;
 
-	//array with all indices
-
-	std::vector<int> indices;
+	std::vector<int> indices;	//array with all indices
 	indices.reserve(_AMOUNT_DELTA_WORLDS);
 	for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
 		indices.emplace_back(i);
@@ -84,15 +82,16 @@ bool World::createWorld() {
 		erosion = false;
 		i_er++;
 		for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-			if (! this->_RG_->getRegion(this->WorldParts[indices.at(i)].getRegionId())->hasEnoughNeigboursWithSameRegion(this->getNumNeigboursSameRegion(indices.at(i), this->WorldParts.at(indices.at(i)).getRegionId())) ){
+			if (! this->_RG_->getRegion(this->WorldParts[indices[i]].getRegionId())->hasEnoughNeigboursWithSameRegion(this->getNumNeigboursSameRegion(indices[i], this->WorldParts[indices[i]].getRegionId())) ){
 				
 				int Region_of_neigbours[8];
-				this->getNeigbourRegionIdAT(Region_of_neigbours, indices.at(i));
-				this->WorldParts.at(indices.at(i)).changeRegionToFitNeigbours(Region_of_neigbours);
-				bool erosion = true;
+				this->getNeigbourRegionIdAT(Region_of_neigbours, indices[i]);
+				this->WorldParts[indices[i]].changeRegionToFitNeigbours(Region_of_neigbours);
+				erosion = true;
 			}
 		}
-	} while (erosion && i_er < imax);
+		std::cout << "erosion Nr. " << i_er << std::endl;
+	} while (erosion && (i_er < imax));
 
 	std::vector<int>().swap(indices);//That will create an empty vector with no memory allocated and swap it with indices, effectively deallocating the memory.
 
@@ -335,19 +334,19 @@ void World::Update() {
 	//UPDATE DeltaWorld
 
 	//BOOST_FOREACH
-	/*BOOST_FOREACH(DeltaWorld WorldPart, this->WorldParts) {
+	BOOST_FOREACH(DeltaWorld &WorldPart, this->WorldParts) {
 		WorldPart.setSeason(this->_G_->_SeasonShift + WorldPart.getPosition().getArg());
 		WorldPart.simulate(this->time);
-	}*/	
+	}	
 	//BOOST_FOREACH
 
-	for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
+	/*for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
 		this->WorldParts[i].setSeason(this->_G_->_SeasonShift + this->WorldParts[i].getPosition().getArg());
 		this->WorldParts[i].simulate(this->time);
-	}
+	}*/
 
 	//update temp for every neigbour
-	/*double NeigbourTemp[8];
+	double NeigbourTemp[8];
 	int i;
 	for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {
 		for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {
@@ -355,7 +354,7 @@ void World::Update() {
 			this->getNeigbourTempXY(this->WorldParts[i].getTemp(), NeigbourTemp, xi, yi);
 			this->WorldParts[i].setNeigboursTemperature(NeigbourTemp);
 		}
-	}*/
+	}
 
 	BOOST_FOREACH(Animal animal, this->Animals) {
 		animal.simulate(this->time);

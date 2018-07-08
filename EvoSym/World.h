@@ -87,14 +87,14 @@ public:
 			}
 			for (unsigned int x = 0; x < _WORLD_DIMENSION; x++) {
 				for (unsigned int y = 0; y < _WORLD_DIMENSION; y++) {
-					this->at2xy_LOOKUPTABLE.at(x*_WORLD_DIMENSION + y).x = x;
-					this->at2xy_LOOKUPTABLE.at(x*_WORLD_DIMENSION + y).y = y;
+					this->at2xy_LOOKUPTABLE[x*_WORLD_DIMENSION + y].x = x;
+					this->at2xy_LOOKUPTABLE[x*_WORLD_DIMENSION + y].y = y;
 				}
 			}
 		}
 		else {
 			for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-				this->WorldParts.at(i).reset();
+				this->WorldParts[i].reset();
 			}
 		}
 		this->init = this->createWorld();

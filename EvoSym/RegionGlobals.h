@@ -21,6 +21,8 @@ public:
 			return &this->Regions[i];
 		}
 		else {
+			std::cout << "ERROR: This region ID is not valide: " << std::to_string(i) << std::endl;
+			getchar();
 			return this->getDefaultRegion();//Default meaddow
 		}
 	}

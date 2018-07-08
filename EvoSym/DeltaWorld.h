@@ -80,7 +80,7 @@ public:
 	DeltaWorld(){
 		this->_G_ = &this->_G_->getInstance();
 		this->_RG_ = &this->_RG_->getInstance();
-		this->regionID = _RG_->getDefaultRegionID();
+		this->regionID = -1;
 		this->initilized = false;
 		this->iceThickness = 0.0;
 		this->isFrozen = false;
@@ -121,7 +121,7 @@ public:
 		this->latitude = latitude;
 		this->position = position;
 
-		this->regionID = _RG_->getDefaultRegionID();
+		this->regionID = -1;
 		this->initilized = false;
 
 		TemperateZone::getAllTempZoneInfluence(this->InfluencedByTempZone, latitude);

@@ -67,7 +67,10 @@ public:
 		return this->Height.isWithin(h);
 	}
 	int getRegionChanseFaktor(int region) {
-		if (region > _AMOUNT_REGIONS) return 0;
+		if (region > _AMOUNT_REGIONS) {
+			std::cout << "ERROR: Region ID not valide" << std::endl;
+			return 0;
+		}
 		return this->possibleNeigbourChanseFaktor[region];
 	}
 
