@@ -3,25 +3,19 @@
 
 
 //left right top bottom
-void DeltaWorld::setNeigbours(DeltaWorld* left, DeltaWorld* right, DeltaWorld* top, DeltaWorld* bottom, DeltaWorld* bottom_right, DeltaWorld* bottom_left, DeltaWorld* top_left, DeltaWorld* top_right){
-    this->left = left;
-	this->right = right;
-	this->top = top;
-	this->bottom = bottom;
-
-	this->bottom_left = bottom_left;
-	this->bottom_right = bottom_right;
-	this->top_left = top_left;
-	this->top_right = top_right;
+void DeltaWorld::setNeigboursTemperature(double temps[], const int num_neigbours = 8){
+	for (int i = 0; i < num_neigbours; i++) {
+		this->TempNeigbours[i] = temps[i];
+	}
 }
 
-void DeltaWorld::changeRegionToFitNeigbours() {
+void DeltaWorld::changeRegionToFitNeigbours(int regionNeigbour[], const int num_neigbours = 8) {
 
-	this->setRandRegion(this->height,this->regionID);
+	this->setRandRegion(this->height, regionNeigbour, num_neigbours, this->regionID);
 
 }
 
-void DeltaWorld::setRandRegion(double height, int notThisRegion) {
+void DeltaWorld::setRandRegion(double height, int regionNeigbour[], const int num_neigbours = 8, int notThisRegion = -1) {
 	//region
 	//gehe alle Nachbarn durch, errechne für jeden Nachbarn die Wahrscheinlichkeit für this DeltaWorld Region
 	//Durch Höhe und Breitengrad wird die Auswahl begrenzt
@@ -46,15 +40,12 @@ void DeltaWorld::setRandRegion(double height, int notThisRegion) {
 
 	//Die Region muss sich mit den Regionen der Nachbar DeltaWorlds vertragen
 
-	for (int in = 0; in < 8; in++) {//8 Nachbarn
-		DeltaWorld* D = this->getNeigbour(in);
-		if (D) {
-			if (D->isInitialized()) {
-				for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
-					PossibleRegion[ir] = PossibleRegion[ir] * (double)(this->_RG_->getRegion(D->getRegionId())->getRegionChanseFaktor(ir));
-					//P(Region_i) = P(Region_i|Klimazohne) * P(Region_i|NachbarRegion)
-				}
-			}
+	for (int in = 0; in < num_neigbours; in++) {//8 Nachbarn
+		if (!regionNeigbour[in] < 0) {
+			for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
+				PossibleRegion[ir] = PossibleRegion[ir] * (double)(this->_RG_->getRegion(regionNeigbour[in])->getRegionChanseFaktor(ir));
+				//P(Region_i) = P(Region_i|Klimazohne) * P(Region_i|NachbarRegion)
+			}			
 		}
 	}
 
@@ -139,55 +130,11 @@ void DeltaWorld::calcTemp(double dt) {
 
 
 	//Berechne MeanTemp nachbar
-	int i = 0;
-
-	///!!!die Forschleife ist langsamer, als das darunter
-	//for (int ii = 0; ii < 4; ii++) {
-	//	DeltaWorld* neigbour = this->getNeigbour(ii);
-	//	if (neigbour != NULL && neigbour->isInitialized()) {
-	//		i++;
-	//		T_mean_neigbours += neigbour->getTemp();
-	//	}
-	//}
-	if (this->left != NULL && this->left->isInitialized()) {
-		i++;
-		T_mean_neigbours += this->left->getTemp();
+	for (int i = 0; i < 8; i++) {
+		T_mean_neigbours += this->TempNeigbours[i];
 	}
-	if (this->right != NULL && this->right->isInitialized()) {
-		i++;
-		T_mean_neigbours += this->right->getTemp();
-	}
-	if (this->top != NULL && this->top->isInitialized()) {
-		i++;
-		T_mean_neigbours += this->top->getTemp();
-	}
-	if (this->bottom != NULL && this->bottom->isInitialized()) {
-		i++;
-		T_mean_neigbours += this->bottom->getTemp();
-	}
-	if (this->bottom_left != NULL && this->bottom_left->isInitialized()) {
-		i++;
-		T_mean_neigbours += this->bottom_left->getTemp();
-	}
-	if (this->bottom_right != NULL && this->bottom_right->isInitialized()) {
-		i++;
-		T_mean_neigbours += this->bottom_right->getTemp();
-	}
-	if (this->top_left != NULL && this->top_left->isInitialized()) {
-		i++;
-		T_mean_neigbours += this->top_left->getTemp();
-	}
-	if (this->top_right != NULL && this->top_right->isInitialized()) {
-		i++;
-		T_mean_neigbours += this->top_right->getTemp();
-	}
-
-	if (i == 0) {//keiner der Nachbarn ist initiert
-		T_mean_neigbours = this->temperature;
-	}
-	else {
-		T_mean_neigbours = T_mean_neigbours / (double)i;
-	}
+	T_mean_neigbours = T_mean_neigbours / 8;
+	
 
 	//calc new Temp
 	this->temperature = (this->temperature - this->TempDropDueHeight )*_TEMP_INFLUENCE_IS_TEMP + T_mean_neigbours*_TEMP_INFLUENCE_NEIGHBOURS + T_TempZone_mean*_TEMP_INFLUENCE_TEMPERATE_ZONE + this->ground.layerTemp[0]* _TEMP_INFLUENCE_GROUND;

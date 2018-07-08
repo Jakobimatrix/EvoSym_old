@@ -31,14 +31,7 @@ class DeltaWorld : public SimulatedUnit
 {
 private:
 	//neigbours
-	DeltaWorld* left;
-	DeltaWorld* top_left;
-	DeltaWorld* bottom_left;
-	DeltaWorld* right;
-	DeltaWorld* top_right;
-	DeltaWorld* bottom_right;
-	DeltaWorld* top;
-	DeltaWorld* bottom;
+	double TempNeigbours[8];//right;topRight;top;topLeft;left;botLeft;bot;botRight;
 
 	bool initilized;
 
@@ -154,6 +147,8 @@ public:
 			this->TempDropDueHeight = this->height * _TEMPERATURE_DROP_PER_METER;
 		}
 		this->temperature = 0.0;
+		std::fill(this->TempNeigbours[0], this->TempNeigbours[7], 0.0);
+	
 
 		//resources
 		
@@ -203,7 +198,7 @@ public:
 	* @param[out] name:
 	* @retval int:
 	**/
-	void DeltaWorld::setNeigbours(DeltaWorld* left, DeltaWorld* right, DeltaWorld* top, DeltaWorld* bottom, DeltaWorld* bottom_right, DeltaWorld* bottom_left, DeltaWorld* top_left, DeltaWorld* top_right);
+	void DeltaWorld::setNeigboursTemperature(double temps[], const int num_neigbours = 8);
 
 	/**
 	* @function int f()
@@ -288,89 +283,6 @@ public:
 		return this->regionID;
 	}
 
-	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
-	**/
-	DeltaWorld* getLeftNeigbour() {
-		return this->left;
-	}
-
-	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
-	**/
-	DeltaWorld* getRightNeigbour() {
-		return this->right;
-	}
-
-	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
-	**/
-	DeltaWorld* getTopNeigbour() {
-		return this->top;
-	}
-
-	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
-	**/
-	DeltaWorld* getBottomNeigbour() {
-		return this->bottom;
-	}
-
-	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
-	**/
-	DeltaWorld* getNeigbour(int i) {
-		switch (i)
-		{
-		case 0:
-			return this->left;
-			break;
-		case 1: 
-			return this->right;
-			break;
-		case 2:
-			return this->top;
-			break;
-		case 3:
-			return this->bottom;
-			break;
-		case 4:
-			return this->top_left;
-			break;
-		case 5:
-			return this->top_right;
-			break;
-		case 6:
-			return this->bottom_left;
-			break;
-		case 7:
-			return this->bottom_right;
-			break;
-		default:
-			return this->left;
-			break;
-		}
-	}
 
 	/**
 	* @function int f()
@@ -449,22 +361,20 @@ public:
 	}
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function changeRegionToFitNeigbours(int regionNeigbour[], const int num_neigbours = 8)
+	* @brief changes the current region to fit the neigbours reagion.
+	* @param[in] regionNeigbour[]: Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
 	**/
-	void changeRegionToFitNeigbours();
+	void changeRegionToFitNeigbours(int regionNeigbour[], const int num_neigbours = 8);
 
 	/**
-	* @function int f()
+	* @function setRandRegion(double height, int regionNeigbour[], const int num_neigbours = 8, int notThisRegion = -1);
 	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @param[in] height: the height of this region???
+	* @param[in] regionNeigbour[]: Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
+	* @param[in] notThisRegion: If a specific region shall not be choosen, notThisRegion must be the id of that region.
 	**/
-	void setRandRegion(double height, int notThisRegion = -1);
+	void setRandRegion(double height, int regionNeigbour[], const int num_neigbours = 8, int notThisRegion = -1);
 
 	/**
 	* @function int f()

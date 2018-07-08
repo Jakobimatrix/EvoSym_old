@@ -51,11 +51,11 @@ bool World::createWorld() {
 			//2.TemperateZone;
 			//done in constructor of delta world using latitude
 			
-			this->WorldParts[i]->setPositionAndLatitude(DeltaPosition, latitude);
-			this->WorldParts[i]->setSeason(angle);//season
+			this->WorldParts.at(i).setPositionAndLatitude(DeltaPosition, latitude);
+			this->WorldParts.at(i).setSeason(angle);//season
 		}
 	}
-
+	/*
 	//4.Give every DeltaWorld his Neigbours
 	for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {//pixel
 		for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {//pixel
@@ -118,6 +118,7 @@ bool World::createWorld() {
 			this->WorldParts[i]->setNeigbours(left, right, top, bottom, bottom_right, bottom_left,top_left,top_right);
 		}
 	}
+	*/
 
 	////5.Region and Height and initTemp and resources
 	if (this->loadFromImage) {
@@ -135,27 +136,33 @@ bool World::createWorld() {
 	bool erosion;
 
 	//array with all indices
-	int* indices[_AMOUNT_DELTA_WORLDS];
+
+	std::vector<int> indices;
+	indices.reserve(_AMOUNT_DELTA_WORLDS);
 	for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-		indices[i] = new int(i);
+		indices.push_back(i);
 	}
 	do{
-		std::random_shuffle(indices, indices + _AMOUNT_DELTA_WORLDS);//shuffle the idices for rand access
+		std::random_shuffle(indices.begin(), indices.end());//shuffle the idices for rand access
 		erosion = false;
 		i_er++;
 		for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-			if (! this->_RG_->getRegion(this->WorldParts[*indices[i]]->getRegionId())->hasEnoughNeigboursWithSameRegion(this->WorldParts[*indices[i]]->getNumNeigboursWithSameRegion())) {
-				this->WorldParts[*indices[i]]->changeRegionToFitNeigbours();
+			if (! this->_RG_->getRegion(this->WorldParts[indices.at(i)].getRegionId())->hasEnoughNeigboursWithSameRegion(this->WorldParts[indices.at(i)].getNumNeigboursWithSameRegion())) {
+				
+				int Region_of_neigbours[8];
+				for (int i = 0; i < 8; i++) {
+					//TODO Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
+				}
+				this->WorldParts.at(indices.at(i)).changeRegionToFitNeigbours(Region_of_neigbours);
 				bool erosion = true;
 			}
 		}
 	} while (erosion && i_er < imax);
 
+	std::vector<int>().swap(indices);//That will create an empty vector with no memory allocated and swap it with indices, effectively deallocating the memory.
+
 	for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-		delete indices[i];
-	}
-	for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-		if (!this->WorldParts[i]->isInitialized()) {
+		if (!this->WorldParts[i].isInitialized()) {
 			std::cout << "ERROR: Some WorldParts remain uninitialized!" << std::endl;
 			std::getchar();
 			return false;
@@ -171,7 +178,9 @@ void World::createSetHeightRand() {
 	int y;//koordinaten
 	int xOffset;
 	int yOffset;
-	double* perlNoiseSmootFaktor[_AMOUNT_DELTA_WORLDS];//smoothfactor für die Höhendistribution
+
+	std::vector<double> perlNoiseSmootFaktor;
+	perlNoiseSmootFaktor.reserve(_AMOUNT_DELTA_WORLDS);
 
 	SimplexNoise1234 Noise = SimplexNoise1234(true);
 	//Verteilung der Krümmung
@@ -183,10 +192,10 @@ void World::createSetHeightRand() {
 			x = xi - _DIMENSION_HALF;
 			y = yi - _DIMENSION_HALF;
 			int i = (xi)*_WORLD_DIMENSION + yi;
-			perlNoiseSmootFaktor[i] = new double(Noise.noise(x*_CURVATURE_CHANGE_RATE_PERLIAN_NOISE + xOffset, y*_CURVATURE_CHANGE_RATE_PERLIAN_NOISE + yOffset));//-1...1
-			*perlNoiseSmootFaktor[i] = (*perlNoiseSmootFaktor[i] + 0.1) / 2.0;//0...1
-			*perlNoiseSmootFaktor[i] = *perlNoiseSmootFaktor[i] * (_MIN_CURVATURE_PERLIAN_NOISE + _MAX_CURVATURE_PERLIAN_NOISE);//0..._max - _min
-			*perlNoiseSmootFaktor[i] = *perlNoiseSmootFaktor[i] + _MIN_CURVATURE_PERLIAN_NOISE;//_max ... _min
+			perlNoiseSmootFaktor.push_back(double(Noise.noise(x*_CURVATURE_CHANGE_RATE_PERLIAN_NOISE + xOffset, y*_CURVATURE_CHANGE_RATE_PERLIAN_NOISE + yOffset)));//-1...1
+			perlNoiseSmootFaktor.at(i) = (perlNoiseSmootFaktor.at(i) + 0.1) / 2.0;//0...1
+			perlNoiseSmootFaktor.at(i) = perlNoiseSmootFaktor.at(i) * (_MIN_CURVATURE_PERLIAN_NOISE + _MAX_CURVATURE_PERLIAN_NOISE);//0..._max - _min
+			perlNoiseSmootFaktor.at(i) = perlNoiseSmootFaktor.at(i) + _MIN_CURVATURE_PERLIAN_NOISE;//_max ... _min
 		}
 	}
 	//in perlNoiseSmootFaktor[i] steht jetzt, wie schnell sich die Krümmung ändern darf in i
@@ -201,10 +210,10 @@ void World::createSetHeightRand() {
 			x = xi - _DIMENSION_HALF;
 			y = yi - _DIMENSION_HALF;
 			int i = (xi)*_WORLD_DIMENSION + yi;
-			*perlNoiseSmootFaktor[i] = Noise.noise(x**perlNoiseSmootFaktor[i] + xOffset, y**perlNoiseSmootFaktor[i] + yOffset);
-			*perlNoiseSmootFaktor[i] = (*perlNoiseSmootFaktor[i] + 0.1) / 2.0;//0...1
-			*perlNoiseSmootFaktor[i] = *perlNoiseSmootFaktor[i] * (_MIN_DISTORTION_PERLIAN_NOISE + _MAX_DISTORTION_PERLIAN_NOISE);
-			*perlNoiseSmootFaktor[i] = *perlNoiseSmootFaktor[i] + _MIN_DISTORTION_PERLIAN_NOISE;
+			perlNoiseSmootFaktor.at(i) = Noise.noise(x*perlNoiseSmootFaktor.at(i) + xOffset, y*perlNoiseSmootFaktor.at(i) + yOffset);
+			perlNoiseSmootFaktor.at(i) = (perlNoiseSmootFaktor.at(i) + 0.1) / 2.0;//0...1
+			perlNoiseSmootFaktor.at(i) = perlNoiseSmootFaktor.at(i) * (_MIN_DISTORTION_PERLIAN_NOISE + _MAX_DISTORTION_PERLIAN_NOISE);
+			perlNoiseSmootFaktor.at(i) = perlNoiseSmootFaktor.at(i) + _MIN_DISTORTION_PERLIAN_NOISE;
 		}
 	}
 	//in perlNoiseSmootFaktor[i] steht jetzt, wie schnell sich die Steigung ändern darf in i
@@ -218,10 +227,10 @@ void World::createSetHeightRand() {
 			x = xi - _DIMENSION_HALF;
 			y = yi - _DIMENSION_HALF;
 			int i = (xi)*_WORLD_DIMENSION + yi;
-			*perlNoiseSmootFaktor[i] = Noise.noise(x**perlNoiseSmootFaktor[i] + xOffset, y**perlNoiseSmootFaktor[i] + yOffset);
-			*perlNoiseSmootFaktor[i] = (*perlNoiseSmootFaktor[i] + 0.1) / 2.0;//0...1
-			*perlNoiseSmootFaktor[i] = *perlNoiseSmootFaktor[i] * (_MIN_ZOOM_PERLIAN_NOISE + _MAX_ZOOM_PERLIAN_NOISE);
-			*perlNoiseSmootFaktor[i] = *perlNoiseSmootFaktor[i] + _MIN_ZOOM_PERLIAN_NOISE;
+			perlNoiseSmootFaktor.at(i) = Noise.noise(x*perlNoiseSmootFaktor.at(i) + xOffset, y*perlNoiseSmootFaktor.at(i) + yOffset);
+			perlNoiseSmootFaktor.at(i) = (perlNoiseSmootFaktor.at(i) + 0.1) / 2.0;//0...1
+			perlNoiseSmootFaktor.at(i) = perlNoiseSmootFaktor.at(i) * (_MIN_ZOOM_PERLIAN_NOISE + _MAX_ZOOM_PERLIAN_NOISE);
+			perlNoiseSmootFaktor.at(i) = perlNoiseSmootFaktor.at(i) + _MIN_ZOOM_PERLIAN_NOISE;
 		}
 	}
 	//in perlNoiseSmootFaktor[i] steht jetzt, wie schnell sich die Höhe ändern darf in i
@@ -237,7 +246,7 @@ void World::createSetHeightRand() {
 			int i = (xi)*_WORLD_DIMENSION + yi;
 			//height
 
-			double height = Noise.noise(x*(*perlNoiseSmootFaktor[i]) + xOffset, y*(*perlNoiseSmootFaktor[i]) + yOffset);//return [-1,1]
+			double height = Noise.noise(x*perlNoiseSmootFaktor.at(i) + xOffset, y*perlNoiseSmootFaktor.at(i) + yOffset);//return [-1,1]
 
 			//|-1        |0       |1 => ratio Land/Ocean		 = 1/1-> dx = 0;
 			//dx |-2/5   |0          |8/5 => ratio Land/Ocean	 = 4-> dx = 3/5
@@ -259,16 +268,19 @@ void World::createSetHeightRand() {
 			//region
 			//gehe alle Nachbarn durch, errechne für jeden Nachbarn die Wahrscheinlichkeit für this DeltaWorld Region
 			//Durch Höhe und Breitengrad wird die Auswahl begrenzt
-			this->WorldParts[i]->setRandRegion(height);
+			int NeigbourRegionId[8];
+			for (int i = 0; i < 8; i++) {
+				//TODO Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
+			}
+			this->WorldParts.at(i).setRandRegion(height, NeigbourRegionId);
 		}
 	}
-	for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-		delete perlNoiseSmootFaktor[i];
-	}
+	std::vector<double>().swap(perlNoiseSmootFaktor);//That will create an empty vector with no memory allocated and swap it with perlNoiseSmootFaktor, effectively deallocating the memory.
+
 }
 
 void World::createSetHeightPredefined() {
-
+	std::cout << "create world from predefined image" << std::endl;
 	sf::Vector2u ImageSize = this->WorldHeightMap.getSize();
 
 	u_int *a = new u_int[ImageSize.x*ImageSize.y];//array aller Pixel RGB
@@ -300,7 +312,13 @@ void World::createSetHeightPredefined() {
 			//region
 			//gehe alle Nachbarn durch, errechne für jeden Nachbarn die Wahrscheinlichkeit für this DeltaWorld Region
 			//Durch Höhe und Breitengrad wird die Auswahl begrenzt
-			this->WorldParts[i]->setRandRegion(height);
+
+			int NeigbourRegionId[8];
+			int Region_of_neigbours[8];
+			for (int i = 0; i < 8; i++) {
+				//TODO Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
+			}
+			this->WorldParts.at(i).setRandRegion(height, NeigbourRegionId);
 		}
 	}
 	delete[] a;
@@ -386,9 +404,9 @@ void World::Update() {
 	//UPDATE DeltaWorld
 
 	//BOOST_FOREACH
-	BOOST_FOREACH(DeltaWorld* WorldPart, this->WorldParts) {
-		WorldPart->setSeason(this->_G_->_SeasonShift + WorldPart->getPosition().getArg());
-		WorldPart->simulate(this->time);
+	BOOST_FOREACH(DeltaWorld WorldPart, this->WorldParts) {
+		WorldPart.setSeason(this->_G_->_SeasonShift + WorldPart.getPosition().getArg());
+		WorldPart.simulate(this->time);
 	}
 	//BOOST_FOREACH
 
@@ -408,4 +426,19 @@ void World::Update() {
 
 bool World::getIsReady() {
 	return this->init;
+}
+
+void World::getNeigbourRegionId(int neigbourRegionId[], int x, int y, const int num_neigbours = 8) {
+	//Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
+	neigbourRegionId[0] = this->WorldParts.at((x+1)*_WORLD_DIMENSION + y).getRegionId();
+	neigbourRegionId[0] = this->WorldParts.at((x + 1)*_WORLD_DIMENSION + y-1).getRegionId();
+	neigbourRegionId[0] = this->WorldParts.at((x + 1)*_WORLD_DIMENSION + y).getRegionId();
+	neigbourRegionId[0] = this->WorldParts.at((x + 1)*_WORLD_DIMENSION + y).getRegionId();
+	neigbourRegionId[0] = this->WorldParts.at((x + 1)*_WORLD_DIMENSION + y).getRegionId();
+	neigbourRegionId[0] = this->WorldParts.at((x + 1)*_WORLD_DIMENSION + y).getRegionId();
+	neigbourRegionId[0] = this->WorldParts.at((x + 1)*_WORLD_DIMENSION + y).getRegionId();
+
+}
+void World::getNeigbourRegionId(int neigbourRegionId[], int at, const int num_neigbours = 8) {
+	//Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
 }

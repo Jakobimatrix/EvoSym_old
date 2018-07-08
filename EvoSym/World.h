@@ -33,7 +33,7 @@ public:
 	//int *ary = new int[sizeX*sizeY];
 	//// ary[i][j] is then rewritten as
 	//ary[i*sizeY + j]
-	DeltaWorld* WorldParts[_AMOUNT_DELTA_WORLDS];
+	std::vector<DeltaWorld> WorldParts;
 	std::vector<Animal> Animals;
 private:
 
@@ -53,6 +53,7 @@ private:
 public:
 	World(std::string imgSRC = "")
 	{
+		this->WorldParts.reserve(_AMOUNT_DELTA_WORLDS);
 		if (imgSRC != "" && WorldHeightMap.loadFromFile(imgSRC)) {
 			this->loadFromImage = true;
 		}
@@ -62,14 +63,12 @@ public:
 		this->_G_ = &this->_G_->getInstance();
 		this->_RG_ = &this->_RG_->getInstance();
 
-		init = false;
+		this->init = false;
 		this->reset();
 	}
 	~World()
 	{
-		for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-			delete this->WorldParts[i];
-		}
+		std::vector<DeltaWorld>().swap(WorldParts);
 	}
 	void World::Update();
 	std::string GetTimeReadable(bool y = true, bool d = true, bool h = false, bool m = false, bool s = false);
@@ -78,12 +77,12 @@ public:
 		this->Animals.clear();
 		if (!this->init) {
 			for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-				this->WorldParts[i] = new DeltaWorld();
+				this->WorldParts.push_back(DeltaWorld());
 			}
 		}
 		else {
 			for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-				this->WorldParts[i]->reset();
+				this->WorldParts.at(i).reset();
 			}
 		}
 		this->init = this->createWorld();
@@ -95,6 +94,9 @@ private:
 
 	void createSetHeightPredefined();
 	void createSetHeightRand();
+
+	void getNeigbourRegionId(int neigbourRegionId[],  int x, int y, const int num_neigbours = 8);
+	void getNeigbourRegionId(int neigbourRegionId[], int at, const int num_neigbours = 8);
 };
 
 
