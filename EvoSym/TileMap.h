@@ -26,7 +26,7 @@ public:
 		for (unsigned int x = 0; x < _WORLD_DIMENSION; x++){
 			for (unsigned int y = 0; y < _WORLD_DIMENSION; y++)
 			{
-				this->updateOne(x, y, W.WorldParts[y + x * _WORLD_DIMENSION], representation);
+				this->updateOne(x, y, &W.WorldParts[y + x * _WORLD_DIMENSION], representation);
 			}
 		}
 

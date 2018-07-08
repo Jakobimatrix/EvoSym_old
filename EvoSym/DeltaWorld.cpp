@@ -2,20 +2,19 @@
 
 
 
-//left right top bottom
-void DeltaWorld::setNeigboursTemperature(double temps[], const int num_neigbours = 8){
+void DeltaWorld::setNeigboursTemperature(double temps[], const int num_neigbours){
 	for (int i = 0; i < num_neigbours; i++) {
 		this->TempNeigbours[i] = temps[i];
 	}
 }
 
-void DeltaWorld::changeRegionToFitNeigbours(int regionNeigbour[], const int num_neigbours = 8) {
+void DeltaWorld::changeRegionToFitNeigbours(int regionNeigbour[], const int num_neigbours) {
 
 	this->setRandRegion(this->height, regionNeigbour, num_neigbours, this->regionID);
 
 }
 
-void DeltaWorld::setRandRegion(double height, int regionNeigbour[], const int num_neigbours = 8, int notThisRegion = -1) {
+void DeltaWorld::setRandRegion(double height, int regionNeigbour[], const int num_neigbours, int notThisRegion) {
 	//region
 	//gehe alle Nachbarn durch, errechne für jeden Nachbarn die Wahrscheinlichkeit für this DeltaWorld Region
 	//Durch Höhe und Breitengrad wird die Auswahl begrenzt
@@ -41,7 +40,7 @@ void DeltaWorld::setRandRegion(double height, int regionNeigbour[], const int nu
 	//Die Region muss sich mit den Regionen der Nachbar DeltaWorlds vertragen
 
 	for (int in = 0; in < num_neigbours; in++) {//8 Nachbarn
-		if (!regionNeigbour[in] < 0) {
+		if (!(regionNeigbour[in] < 0)) {
 			for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
 				PossibleRegion[ir] = PossibleRegion[ir] * (double)(this->_RG_->getRegion(regionNeigbour[in])->getRegionChanseFaktor(ir));
 				//P(Region_i) = P(Region_i|Klimazohne) * P(Region_i|NachbarRegion)

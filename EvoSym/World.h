@@ -26,7 +26,10 @@
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
 
-
+struct xy {
+	unsigned int x;
+	unsigned int y;
+};
 class World
 {
 public:
@@ -35,6 +38,7 @@ public:
 	//ary[i*sizeY + j]
 	std::vector<DeltaWorld> WorldParts;
 	std::vector<Animal> Animals;
+	std::vector<xy> at2xy;
 private:
 
 	GlobalSingleton* _G_;
@@ -78,6 +82,13 @@ public:
 		if (!this->init) {
 			for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
 				this->WorldParts.push_back(DeltaWorld());
+				this->at2xy.push_back(xy());//init
+			}
+			for (unsigned int x = 0; x < _WORLD_DIMENSION; x++) {
+				for (unsigned int y = 0; y < _WORLD_DIMENSION; y++) {
+					this->at2xy.at(x*_WORLD_DIMENSION + y).x = x;
+					this->at2xy.at(x*_WORLD_DIMENSION + y).y = y;
+				}
 			}
 		}
 		else {
@@ -95,8 +106,12 @@ private:
 	void createSetHeightPredefined();
 	void createSetHeightRand();
 
-	void getNeigbourRegionId(int neigbourRegionId[],  int x, int y, const int num_neigbours = 8);
-	void getNeigbourRegionId(int neigbourRegionId[], int at, const int num_neigbours = 8);
+	void getNeigbourRegionIdXY(int neigbourRegionId[], int x, int y, const int num_neigbours = 8);
+	void getNeigbourRegionIdAT(int neigbourRegionId[], int at, const int num_neigbours = 8);
+
+	void getNeigbourTempXY(double temp, double neigbourTemp[], int x, int y, const int num_neigbours = 8);
+
+	int getNumNeigboursSameRegion(int at, int regionId);
 };
 
 

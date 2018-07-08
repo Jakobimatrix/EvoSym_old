@@ -328,37 +328,6 @@ public:
 		return;
 	}
 
-	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
-	**/
-	int getNumNeigboursWithSameRegion() {
-		int num = 0;
-		if (this->left != nullptr && this->left->isInitialized()) {
-			if (this->left->getRegionId() == this->regionID) {
-				num++;
-			}
-		}
-		if (this->right != nullptr && this->right->isInitialized()) {
-			if (this->right->getRegionId() == this->regionID) {
-				num++;
-			}
-		}
-		if (this->top != nullptr && this->top->isInitialized()) {
-			if (this->top->getRegionId() == this->regionID) {
-				num++;
-			}
-		}
-		if (this->bottom != nullptr && this->bottom->isInitialized()) {
-			if (this->bottom->getRegionId() == this->regionID) {
-				num++;
-			}
-		}
-		return num;
-	}
 
 	/**
 	* @function changeRegionToFitNeigbours(int regionNeigbour[], const int num_neigbours = 8)

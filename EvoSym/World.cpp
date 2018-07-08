@@ -147,12 +147,10 @@ bool World::createWorld() {
 		erosion = false;
 		i_er++;
 		for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-			if (! this->_RG_->getRegion(this->WorldParts[indices.at(i)].getRegionId())->hasEnoughNeigboursWithSameRegion(this->WorldParts[indices.at(i)].getNumNeigboursWithSameRegion())) {
+			if (! this->_RG_->getRegion(this->WorldParts[indices.at(i)].getRegionId())->hasEnoughNeigboursWithSameRegion(this->getNumNeigboursSameRegion(i, this->WorldParts.at(indices.at(i)).getRegionId())) ){
 				
 				int Region_of_neigbours[8];
-				for (int i = 0; i < 8; i++) {
-					//TODO Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
-				}
+				this->getNeigbourRegionIdAT(Region_of_neigbours, i);
 				this->WorldParts.at(indices.at(i)).changeRegionToFitNeigbours(Region_of_neigbours);
 				bool erosion = true;
 			}
@@ -269,9 +267,7 @@ void World::createSetHeightRand() {
 			//gehe alle Nachbarn durch, errechne für jeden Nachbarn die Wahrscheinlichkeit für this DeltaWorld Region
 			//Durch Höhe und Breitengrad wird die Auswahl begrenzt
 			int NeigbourRegionId[8];
-			for (int i = 0; i < 8; i++) {
-				//TODO Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
-			}
+			this->getNeigbourRegionIdXY(NeigbourRegionId, xi, yi);
 			this->WorldParts.at(i).setRandRegion(height, NeigbourRegionId);
 		}
 	}
@@ -313,12 +309,10 @@ void World::createSetHeightPredefined() {
 			//gehe alle Nachbarn durch, errechne für jeden Nachbarn die Wahrscheinlichkeit für this DeltaWorld Region
 			//Durch Höhe und Breitengrad wird die Auswahl begrenzt
 
-			int NeigbourRegionId[8];
 			int Region_of_neigbours[8];
-			for (int i = 0; i < 8; i++) {
-				//TODO Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
-			}
-			this->WorldParts.at(i).setRandRegion(height, NeigbourRegionId);
+			this->getNeigbourRegionIdXY(Region_of_neigbours, x, y);
+
+			this->WorldParts.at(i).setRandRegion(height, Region_of_neigbours);
 		}
 	}
 	delete[] a;
@@ -407,8 +401,19 @@ void World::Update() {
 	BOOST_FOREACH(DeltaWorld WorldPart, this->WorldParts) {
 		WorldPart.setSeason(this->_G_->_SeasonShift + WorldPart.getPosition().getArg());
 		WorldPart.simulate(this->time);
-	}
+	}	
 	//BOOST_FOREACH
+
+	//update temp for every neigbour
+	double NeigbourTemp[8];
+	int i;
+	for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {
+		for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {
+			i = (xi)*_WORLD_DIMENSION + yi;
+			this->getNeigbourTempXY(this->WorldParts[i].getTemp(), NeigbourTemp, xi, yi);
+			this->WorldParts[i].setNeigboursTemperature(NeigbourTemp);
+		}
+	}
 
 	BOOST_FOREACH(Animal animal, this->Animals) {
 		animal.simulate(this->time);
@@ -428,17 +433,248 @@ bool World::getIsReady() {
 	return this->init;
 }
 
-void World::getNeigbourRegionId(int neigbourRegionId[], int x, int y, const int num_neigbours = 8) {
+void World::getNeigbourRegionIdXY(int neigbourRegionId[], int x, int y, const int num_neigbours) {
 	//Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
-	neigbourRegionId[0] = this->WorldParts.at((x+1)*_WORLD_DIMENSION + y).getRegionId();
-	neigbourRegionId[0] = this->WorldParts.at((x + 1)*_WORLD_DIMENSION + y-1).getRegionId();
-	neigbourRegionId[0] = this->WorldParts.at((x + 1)*_WORLD_DIMENSION + y).getRegionId();
-	neigbourRegionId[0] = this->WorldParts.at((x + 1)*_WORLD_DIMENSION + y).getRegionId();
-	neigbourRegionId[0] = this->WorldParts.at((x + 1)*_WORLD_DIMENSION + y).getRegionId();
-	neigbourRegionId[0] = this->WorldParts.at((x + 1)*_WORLD_DIMENSION + y).getRegionId();
-	neigbourRegionId[0] = this->WorldParts.at((x + 1)*_WORLD_DIMENSION + y).getRegionId();
 
+			bool left_border_violated = (x - 1 > -1) ? false : true;
+			bool right_border_violated = (x + 1 < _WORLD_DIMENSION) ? false : true;
+
+			bool top_border_violated = (y - 1 > -1) ? false : true;
+			bool bottom_border_violated = (y + 1 < _WORLD_DIMENSION) ? false : true;
+
+			int in;
+			if (!left_border_violated) {//left
+				in = (x - 1)*_WORLD_DIMENSION + y;
+				neigbourRegionId[4] = this->WorldParts.at(in).getRegionId();
+			}
+			else {
+				neigbourRegionId[4] = -1;
+			}
+			if (!right_border_violated) {//right
+				in = (x + 1)*_WORLD_DIMENSION + y;
+				neigbourRegionId[0] = this->WorldParts.at(in).getRegionId();
+			}
+			else {
+				neigbourRegionId[0] = -1;
+			}
+			if (!bottom_border_violated) {//bottom
+				in = (x)*_WORLD_DIMENSION + y + 1;
+				neigbourRegionId[6] = this->WorldParts.at(in).getRegionId();
+
+				if (!left_border_violated) {//bottom-left
+					in = (x - 1)*_WORLD_DIMENSION + y + 1;
+					neigbourRegionId[5] = this->WorldParts.at(in).getRegionId();
+				}
+				else {
+					neigbourRegionId[5] = -1;
+				}
+
+				if (!right_border_violated) {//bottom-right
+					in = (x + 1)*_WORLD_DIMENSION + y + 1;
+					neigbourRegionId[7] = this->WorldParts.at(in).getRegionId();
+				}
+				else {
+					neigbourRegionId[7] = -1;
+				}
+			}
+			else {//botto outer range
+				neigbourRegionId[5] = -1;
+				neigbourRegionId[6] = -1;
+				neigbourRegionId[7] = -1;
+			}
+			if (!top_border_violated) {//top
+				in = (x)*_WORLD_DIMENSION + y - 1;
+				neigbourRegionId[2] = this->WorldParts.at(in).getRegionId();
+
+				if (!left_border_violated) {//top-left
+					in = (x - 1)*_WORLD_DIMENSION +  - 1;
+					neigbourRegionId[3] = this->WorldParts.at(in).getRegionId();
+				}
+				else {
+					neigbourRegionId[3] = -1;
+				}
+
+				if (!right_border_violated) {//top-right
+					in = (x + 1)*_WORLD_DIMENSION + y - 1;
+					neigbourRegionId[1] = this->WorldParts.at(in).getRegionId();
+				}
+				else {
+					neigbourRegionId[1] = -1;
+				}
+			}
+			else {//top outer range
+				neigbourRegionId[1] = -1;
+				neigbourRegionId[2] = -1;
+				neigbourRegionId[3] = -1;
+			}
 }
-void World::getNeigbourRegionId(int neigbourRegionId[], int at, const int num_neigbours = 8) {
+void World::getNeigbourRegionIdAT(int neigbourRegionId[], int at, const int num_neigbours) {
 	//Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
+
+	//at to x y
+
+	int x = this->at2xy.at(at).x;
+	int y = this->at2xy.at(at).y;
+
+	bool left_border_violated = (x - 1 > -1) ? false : true;
+	bool right_border_violated = (x + 1 < _WORLD_DIMENSION) ? false : true;
+
+	bool top_border_violated = (y - 1 > -1) ? false : true;
+	bool bottom_border_violated = (y + 1 < _WORLD_DIMENSION) ? false : true;
+
+	int in;
+	if (!left_border_violated) {//left
+		in = (x - 1)*_WORLD_DIMENSION + y;
+		neigbourRegionId[4] = this->WorldParts.at(in).getRegionId();
+	}
+	else {
+		neigbourRegionId[4] = -1;
+	}
+	if (!right_border_violated) {//right
+		in = (x + 1)*_WORLD_DIMENSION + y;
+		neigbourRegionId[0] = this->WorldParts.at(in).getRegionId();
+	}
+	else {
+		neigbourRegionId[0] = -1;
+	}
+	if (!bottom_border_violated) {//bottom
+		in = (x)*_WORLD_DIMENSION + y + 1;
+		neigbourRegionId[6] = this->WorldParts.at(in).getRegionId();
+
+		if (!left_border_violated) {//bottom-left
+			in = (x - 1)*_WORLD_DIMENSION + y + 1;
+			neigbourRegionId[5] = this->WorldParts.at(in).getRegionId();
+		}
+		else {
+			neigbourRegionId[5] = -1;
+		}
+
+		if (!right_border_violated) {//bottom-right
+			in = (x + 1)*_WORLD_DIMENSION + y + 1;
+			neigbourRegionId[7] = this->WorldParts.at(in).getRegionId();
+		}
+		else {
+			neigbourRegionId[7] = -1;
+		}
+	}
+	else {//botto outer range
+		neigbourRegionId[5] = -1;
+		neigbourRegionId[6] = -1;
+		neigbourRegionId[7] = -1;
+	}
+	if (!top_border_violated) {//top
+		in = (x)*_WORLD_DIMENSION + y - 1;
+		neigbourRegionId[2] = this->WorldParts.at(in).getRegionId();
+
+		if (!left_border_violated) {//top-left
+			in = (x - 1)*_WORLD_DIMENSION + -1;
+			neigbourRegionId[3] = this->WorldParts.at(in).getRegionId();
+		}
+		else {
+			neigbourRegionId[3] = -1;
+		}
+
+		if (!right_border_violated) {//top-right
+			in = (x + 1)*_WORLD_DIMENSION + y - 1;
+			neigbourRegionId[1] = this->WorldParts.at(in).getRegionId();
+		}
+		else {
+			neigbourRegionId[1] = -1;
+		}
+	}
+	else {//top outer range
+		neigbourRegionId[1] = -1;
+		neigbourRegionId[2] = -1;
+		neigbourRegionId[3] = -1;
+	}
+}
+void World::getNeigbourTempXY(double temp, double neigbourTemp[], int x, int y, const int num_neigbours) {
+	//Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
+
+	bool left_border_violated = (x - 1 > -1) ? false : true;
+	bool right_border_violated = (x + 1 < _WORLD_DIMENSION) ? false : true;
+
+	bool top_border_violated = (y - 1 > -1) ? false : true;
+	bool bottom_border_violated = (y + 1 < _WORLD_DIMENSION) ? false : true;
+
+	int in;
+	if (!left_border_violated) {//left
+		in = (x - 1)*_WORLD_DIMENSION + y;
+		neigbourTemp[4] = this->WorldParts[in].getTemp();
+	}
+	else {
+		neigbourTemp[4] = temp;
+	}
+	if (!right_border_violated) {//right
+		in = (x + 1)*_WORLD_DIMENSION + y;
+		neigbourTemp[0] = this->WorldParts[in].getTemp();
+	}
+	else {
+		neigbourTemp[0] = temp;
+	}
+	if (!bottom_border_violated) {//bottom
+		in = (x)*_WORLD_DIMENSION + y + 1;
+		neigbourTemp[6] = this->WorldParts[in].getTemp();
+
+		if (!left_border_violated) {//bottom-left
+			in = (x - 1)*_WORLD_DIMENSION + y + 1;
+			neigbourTemp[5] = this->WorldParts[in].getTemp();
+		}
+		else {
+			neigbourTemp[5] = temp;
+		}
+
+		if (!right_border_violated) {//bottom-right
+			in = (x + 1)*_WORLD_DIMENSION + y + 1;
+			neigbourTemp[7] = this->WorldParts[in].getTemp();
+		}
+		else {
+			neigbourTemp[7] = temp;
+		}
+	}
+	else {//botto outer range
+		neigbourTemp[5] = temp;
+		neigbourTemp[6] = temp;
+		neigbourTemp[7] = temp;
+	}
+	if (!top_border_violated) {//top
+		in = (x)*_WORLD_DIMENSION + y - 1;
+		neigbourTemp[2] = this->WorldParts[in].getTemp();
+
+		if (!left_border_violated) {//top-left
+			in = (x - 1)*_WORLD_DIMENSION + -1;
+			neigbourTemp[3] = this->WorldParts[in].getTemp();
+		}
+		else {
+			neigbourTemp[3] = temp;
+		}
+
+		if (!right_border_violated) {//top-right
+			in = (x + 1)*_WORLD_DIMENSION + y - 1;
+			neigbourTemp[1] = this->WorldParts[in].getTemp();
+		}
+		else {
+			neigbourTemp[1] = temp;
+		}
+	}
+	else {//top outer range
+		neigbourTemp[1] = temp;
+		neigbourTemp[2] = temp;
+		neigbourTemp[3] = temp;
+	}
+}
+
+int World::getNumNeigboursSameRegion(int at, int regionId) {
+	
+	int Region_of_neigbours[8];
+	this->getNeigbourRegionIdAT(Region_of_neigbours,at);
+
+	int num = 0;
+	for (int i = 0; i < 8; i++) {
+		if (Region_of_neigbours[i] == regionId) {
+			num++;
+		}
+	}
+
+	return num;
 }
