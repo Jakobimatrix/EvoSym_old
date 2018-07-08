@@ -52,7 +52,6 @@ bool World::createWorld() {
 			//done in constructor of delta world using latitude
 			
 			this->WorldParts.at(i).setPositionAndLatitude(DeltaPosition, latitude);
-			this->WorldParts.at(i).setSeason(angle);//season
 		}
 	}
 	
@@ -324,6 +323,7 @@ void World::Update() {
 			this->_G_->NextYearTempOffset[s] = T.getNewYearTempVariation();
 		}		
 	}
+	this->_G_->setSeason();
 	double pt_T = PT1_T_Discrete(this->_G_->_DeltaTime, _PT_1_T_SEASONAL_OFFSET); //get the discret t constant of a dynamic pt1 behaviour
 	for (int s = 0; s < _AMOUNT_SEASONS; s++) {
 		T = TemperateZone(s);
@@ -335,24 +335,16 @@ void World::Update() {
 
 	//BOOST_FOREACH
 	BOOST_FOREACH(DeltaWorld &WorldPart, this->WorldParts) {
-		WorldPart.setSeason(this->_G_->_SeasonShift + WorldPart.getPosition().getArg());
 		WorldPart.simulate(this->time);
 	}	
 	//BOOST_FOREACH
 
-	/*for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-		this->WorldParts[i].setSeason(this->_G_->_SeasonShift + this->WorldParts[i].getPosition().getArg());
-		this->WorldParts[i].simulate(this->time);
-	}*/
-
 	//update temp for every neigbour
-	double NeigbourTemp[8];
 	int i;
 	for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {
 		for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {
 			i = (xi)*_WORLD_DIMENSION + yi;
-			this->getNeigbourTempXY(this->WorldParts[i].getTemp(), NeigbourTemp, xi, yi);
-			this->WorldParts[i].setNeigboursTemperature(NeigbourTemp);
+			this->WorldParts[i].setNeigboursTemperature(this->getNeigbourMeanTempXY(this->WorldParts[i].getTemp(), xi, yi));
 		}
 	}
 
@@ -604,7 +596,71 @@ void World::getNeigbourTempXY(double temp, double neigbourTemp[], int x, int y, 
 		neigbourTemp[3] = temp;
 	}
 }
+double World::getNeigbourMeanTempXY(double temp, int x, int y) {
+	//Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
+	double meantTemp = 0;
+	int count = 0;
+	bool left_border_violated = (x - 1 > -1) ? false : true;
+	bool right_border_violated = (x + 1 < _WORLD_DIMENSION) ? false : true;
 
+	bool top_border_violated = (y - 1 > -1) ? false : true;
+	bool bottom_border_violated = (y + 1 < _WORLD_DIMENSION) ? false : true;
+
+	int in;
+	if (!left_border_violated) {//left
+		in = (x - 1)*_WORLD_DIMENSION + y;
+		meantTemp += this->WorldParts[in].getTemp();
+		count++;
+	}
+
+	if (!right_border_violated) {//right
+		in = (x + 1)*_WORLD_DIMENSION + y;
+		meantTemp += this->WorldParts[in].getTemp();
+		count++;
+	}
+	if (!bottom_border_violated) {//bottom
+		in = (x)*_WORLD_DIMENSION + y + 1;
+		meantTemp += this->WorldParts[in].getTemp();
+		count++;
+
+		if (!left_border_violated) {//bottom-left
+			in = (x - 1)*_WORLD_DIMENSION + y + 1;
+			meantTemp += this->WorldParts[in].getTemp();
+			count++;
+		}
+
+		if (!right_border_violated) {//bottom-right
+			in = (x + 1)*_WORLD_DIMENSION + y + 1;
+			meantTemp += this->WorldParts[in].getTemp();
+			count++;
+		}
+	}
+
+	if (!top_border_violated) {//top
+		in = (x)*_WORLD_DIMENSION + y - 1;
+		meantTemp += this->WorldParts[in].getTemp();
+		count++;
+
+		if (!left_border_violated) {//top-left
+			in = (x - 1)*_WORLD_DIMENSION + y - 1;
+			meantTemp += this->WorldParts[in].getTemp();
+			count++;
+		}
+
+		if (!right_border_violated) {//top-right
+			in = (x + 1)*_WORLD_DIMENSION + y - 1;
+			meantTemp += this->WorldParts[in].getTemp();
+			count++;
+		}
+	}
+
+	if (count > 0) {
+		return meantTemp / count;
+	}
+	else {
+		return temp;
+	}
+}
 int World::getNumNeigboursSameRegion(int at, int regionId) {
 	
 	int Region_of_neigbours[8];

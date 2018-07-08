@@ -35,14 +35,12 @@ class DeltaWorld : public SimulatedUnit
 {
 private:
 	//neigbours
-	double TempNeigbours[8];//right;topRight;top;topLeft;left;botLeft;bot;botRight;
+	double meanTempNeigbour;
 
 	bool initilized;
 
 	double InfluencedByTempZone[4];//the entrys always adds to 1 == 100%
 	double latitude;
-
-	double SeasonMultiplier[4];//-1 bis 1; //in welcher Season wir uns gerade befinden the positive numbers always add to 1 == 100%
 
 	int regionID;//todo region pointer instead
 
@@ -151,10 +149,8 @@ public:
 			this->TempDropDueHeight = this->height * _TEMPERATURE_DROP_PER_METER;
 		}
 		this->temperature = 0.0;
+		this->meanTempNeigbour = 0.0; 
 
-		for (int i = 0; i < 8; i++) {
-			this->TempNeigbours[i] = 0.0; 
-		}
 
 		//resources
 		
@@ -196,15 +192,6 @@ public:
 	* @retval int:
 	**/
 	std::string DeltaWorld::getUnitName() { return std::to_string(this->position.x) + "X " + std::to_string(this->position.x) + "Y"; }
-
-	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
-	**/
-	void DeltaWorld::setNeigboursTemperature(double temps[], const int num_neigbours = 8);
 
 	/**
 	* @function int f()
@@ -301,39 +288,15 @@ public:
 		int season = 0;
 		double max = 0;
 		for (int i = 0; i < _AMOUNT_SEASONS; i++) {
-			if (this->SeasonMultiplier[i] > max) {
-				max = this->SeasonMultiplier[i];
+			if (this->_G_->SeasonMultiplier[i] > max) {
+				max = this->_G_->SeasonMultiplier[i];
 				season = i;
 			}
 		}
 		return season;
 	}
 
-	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
-	**/
-	void setSeason(double angle) {
-		this->SeasonMultiplier[0] = sin(angle);
-		this->SeasonMultiplier[1] = cos(angle);
-		double vzSin = 1.0;
-		double vzCos = 1.0;
-		if (this->SeasonMultiplier[0] < 0) {
-			vzSin = -1.0;
-		}
-		if (this->SeasonMultiplier[1] < 0) {
-			vzCos = -1.0;
-		}
-		this->SeasonMultiplier[0] = vzSin * this->SeasonMultiplier[0] * this->SeasonMultiplier[0];
-		this->SeasonMultiplier[1] = vzCos * this->SeasonMultiplier[1] * this->SeasonMultiplier[1];
-		this->SeasonMultiplier[2] = -this->SeasonMultiplier[0];
-		this->SeasonMultiplier[3] = -this->SeasonMultiplier[1];
-		return;
-	}
-
+	void setNeigboursTemperature(double meanTemp);
 
 	/**
 	* @function changeRegionToFitNeigbours(int regionNeigbour[], const int num_neigbours = 8)
@@ -481,8 +444,8 @@ public:
 		int season = 0;
 		double max = 0;
 		for (int i = 0; i < _AMOUNT_SEASONS; i++) {
-			if (this->SeasonMultiplier[i] > max) {
-				max = this->SeasonMultiplier[i];
+			if (this->_G_->SeasonMultiplier[i] > max) {
+				max = this->_G_->SeasonMultiplier[i];
 				season = i;
 			}
 		}

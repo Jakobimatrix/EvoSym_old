@@ -1,6 +1,7 @@
 #ifndef _RESOURCES_
 #define _RESOURCES_
 #include <vector>
+#include "globals.h"
 #include "structs.h"
 #include "Skills.h"
 #include "Region.h"
@@ -15,8 +16,11 @@ private:
 	double max_plants;//Kg per m^2
 	double plants;//ist
 
+	GlobalSingleton* _G_;
+
 public:
 	Resources(){
+		this->_G_ = &this->_G_->getInstance();
 		this->reset();
 	}
 	void reset() {
@@ -30,7 +34,7 @@ public:
 	void setRegeneration_freshwater(Season<double>& Regeneration_freshwater) {
 		this->Regeneration_freshwater_1_divided_Tau = Regeneration_freshwater;
 	}
-	void RegenerateFreshWater(double deltaT,double(&TempSeasonIfluence)[_AMOUNT_SEASONS], int regionID) {
+	void RegenerateFreshWater(double deltaT, int regionID) {
 		if (this->max_freshwater <= 0.0) {
 			this->freshwater = 0.0;
 			return;
@@ -39,8 +43,8 @@ public:
 		//calc Tau from Season
 		double Tau = 0;
 		for (int s = 0; s < _AMOUNT_SEASONS; s++) {
-			if (TempSeasonIfluence[s] > 0.0) {
-				Tau +=TempSeasonIfluence[s] * this->Regeneration_freshwater_1_divided_Tau.getValue(s);
+			if (this->_G_->SeasonMultiplier[s] > 0.0) {
+				Tau += this->_G_->SeasonMultiplier[s] * this->Regeneration_freshwater_1_divided_Tau.getValue(s);
 			}
 		}
 		Tau = 1.0 / Tau;
@@ -59,7 +63,7 @@ public:
 	void setRegeneration_plants(Season<double>& Regeneration_plants) {
 		this->Regeneration_plants_1_divided_Tau = Regeneration_plants;
 	}
-	void RegeneratePlants(double deltaT,double(&TempSeasonIfluence)[_AMOUNT_SEASONS], int regionID, double temperature) {
+	void RegeneratePlants(double deltaT, int regionID, double temperature) {
 		if (this->max_plants <= 0.0) {
 			this->plants = 0.0;
 			return;
@@ -69,8 +73,8 @@ public:
 		double Tau_temp = 0.0;
 		double Tau_region_season = 0.0;
 		for (int s = 0; s < _AMOUNT_SEASONS; s++) {
-			if (TempSeasonIfluence[s] > 0.0) {
-				Tau_region_season = Tau_region_season + (TempSeasonIfluence[s] * this->Regeneration_plants_1_divided_Tau.getValue(s));
+			if (this->_G_->SeasonMultiplier[s] > 0.0) {
+				Tau_region_season = Tau_region_season + (this->_G_->SeasonMultiplier[s] * this->Regeneration_plants_1_divided_Tau.getValue(s));
 				//todo better:? spaart für jede Kachel this->Regeneration_plants_1_divided_Tau
 				//Tau = Tau + (TempSeasonIfluence[s] * Region::getRegionBasedPlantGrowth(regionID).getValue(s));
 			}

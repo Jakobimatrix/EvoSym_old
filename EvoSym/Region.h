@@ -19,7 +19,7 @@ class Region
 {
 private:
 	
-	Season<Propability> VariationInTemperature; //regionalabhängiges Temperaturrauschen
+	Season<Propability> VariationInTemperature[4]; //regionalabhängiges Temperaturrauschen für polar,mediteran,subtrop,trop
 	MinMax Height;
 	bool occurrenceInTemperateZone[4];	//mit welcher wahrschenlichkeit diese Region in einer der 4 Klimazonen vorkommt
 		
@@ -74,9 +74,9 @@ public:
 		return this->possibleNeigbourChanseFaktor[region];
 	}
 
-	Season<Propability>* getAllSeasonDependantTempVariation();
+	Season<Propability>* getAllSeasonDependantTempVariation(int tempZohne);
 
-	double getSeasonDependantTempVariation(int seasonID);
+	double getSeasonDependantTempVariation(int seasonId, int tempZohne);
 
 	int getRegionId() {
 		return this->regionId;

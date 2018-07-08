@@ -23,7 +23,7 @@ constexpr int _AMOUNT_TEMPERATE_ZONES = 4; //[int] The amount of defined tempera
 constexpr int _AMOUNT_SEASONS = 4; //[int] the amount of defined seasons.
 
 constexpr double _LAND_TO_OCEAN_RATIO = 1.3; //[ratio] This ratio determines how much land compared to ocean there shall be.
-constexpr int _DIMENSION_HALF = 150; //[DeltaWorld] The radius in tiles the world should consist of. Program Crashes for more than 150.
+constexpr int _DIMENSION_HALF = 120; //[DeltaWorld] The radius in tiles the world should consist of. Program Crashes for more than 150.
 constexpr int _WORLD_DIMENSION = _DIMENSION_HALF * 2; //[DeltaWorld] The diameter in tiles the world consist of.
 constexpr int _AMOUNT_DELTA_WORLDS = _WORLD_DIMENSION * _WORLD_DIMENSION; //[DeltaWorld] The amount of all tiles creating this world.
 constexpr double _WORLD_DIAMETER = 40000000.0; // [m] The Diameter of the created world in meters. This sets the size of the world in relation to the animals.
@@ -84,8 +84,8 @@ constexpr double _TIME_DEPENDANTCY_FOR_TEMP_IN_S = 60 * 60 * 24 *7; //[s] After 
 constexpr double _INVERSE_TIME_DEPENDANTCY_FOR_TEMP_IN_S = 1/ _TIME_DEPENDANTCY_FOR_TEMP_IN_S; //[1/s] After 1/(this time intervall) the calculation for the new temperature depends only on seasonal influences.
 constexpr double _PT_1_T_SEASONAL_OFFSET = 10000000; //[/] Good values between: [4.233.600 - 86.313.600] Pt_1 diskrete time constant for the change of the seasonal offset between years.
 //!!!The summ of all _TEMP_INFLUENCE_... has to be 1.0! 
-constexpr double _TEMP_INFLUENCE_NEIGHBOURS = 0.32; //[ratio] How much influence neighbour tiles have on the temperature.
-constexpr double _TEMP_INFLUENCE_TEMPERATE_ZONE = 0.5; //[ratio] How much influence the temperate zone has on the temperature.
+constexpr double _TEMP_INFLUENCE_NEIGHBOURS = 0.37; //[ratio] How much influence neighbour tiles have on the temperature.
+constexpr double _TEMP_INFLUENCE_TEMPERATE_ZONE = 0.45; //[ratio] How much influence the temperate zone has on the temperature.
 constexpr double _TEMP_INFLUENCE_IS_TEMP = 0.09; //[ratio] How much the temperature of the last simulation step influences the new temperature.
 constexpr double _TEMP_INFLUENCE_GROUND = 0.09; //[ratio] How much the temperature of the ground influences the new temperature.
 //constexpr double _TEMP_INFLUENCE_GROUND_TEMP; //[ratio] How much the groundtemperature the temperature influences.
@@ -202,6 +202,8 @@ public:
 	double CurrentYearTempOffset[4];
 	double NextYearTempOffset[4];
 
+	double SeasonMultiplier[4];//-1 bis 1; //in welcher Season wir uns gerade befinden the positive numbers always add to 1 == 100%
+
 	int THREADS;
 	unsigned int logicalCores;
 	unsigned int Cores;
@@ -218,6 +220,7 @@ private:
 		this->announceDeltaTime(DeltaTime);
 
 		this->_SeasonShift = 0.0;
+		this->setSeason();
 		this->_BREITENGRAD = MinMax(0.0, 90.0);
 		/*Wikipedia:
 		Tropen von 0°–23,5°			90° - 66,5°
@@ -306,6 +309,22 @@ public:
 			this->_DELTA_SEASON_CHANGE_GRAD = (360.0  * _INVERSE_YEAR_IN_S) * this->_DeltaTime;
 			this->_DELTA_SEASON_CHANGE_RAD = Deg2Rad(this->_DELTA_SEASON_CHANGE_GRAD);
 		}
+	}
+	void setSeason() {
+		this->SeasonMultiplier[0] = sin(_SeasonShift);
+		this->SeasonMultiplier[1] = cos(_SeasonShift);
+		double vzSin = 1.0;
+		double vzCos = 1.0;
+		if (this->SeasonMultiplier[0] < 0) {
+			vzSin = -1.0;
+		}
+		if (this->SeasonMultiplier[1] < 0) {
+			vzCos = -1.0;
+		}
+		this->SeasonMultiplier[0] = vzSin * this->SeasonMultiplier[0] * this->SeasonMultiplier[0];
+		this->SeasonMultiplier[1] = vzCos * this->SeasonMultiplier[1] * this->SeasonMultiplier[1];
+		this->SeasonMultiplier[2] = -this->SeasonMultiplier[0];
+		this->SeasonMultiplier[3] = -this->SeasonMultiplier[1];
 	}
 };
 

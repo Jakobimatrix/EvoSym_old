@@ -51,7 +51,11 @@ void Region::setTo(int i) {
 
 void Region::setToOcean() {
 	this->regionId = 0;
-	this->VariationInTemperature = Season<Propability>(Propability(+2, 2.0), Propability(-2, 4.0), Propability(-1, 2.0), Propability(+4, 2.0));
+	this->VariationInTemperature[0] = Season<Propability>(Propability(-1, 2.0), Propability(-4, 4.0), Propability(-2.5, 2.0), Propability(-1, 2.0));
+	this->VariationInTemperature[1] = Season<Propability>(Propability(+1, 2.0), Propability(-2, 4.0), Propability(-1, 2.0), Propability(+4, 2.0));
+	this->VariationInTemperature[2] = Season<Propability>(Propability(0, 2.0), Propability(-2, 4.0), Propability(-1, 2.0), Propability(+3, 2.0));
+	this->VariationInTemperature[3] = Season<Propability>(Propability(0, 2.0), Propability(-2, 4.0), Propability(-2, 2.0), Propability(0, 2.0));
+	
 	this->Height = MinMax(_MIN_TERRANE_HEIGHT,10.0);
 	this->occurrenceInTemperateZone[0] = true;
 	this->occurrenceInTemperateZone[1] = true;
@@ -99,7 +103,11 @@ void Region::setToOcean() {
 }
 void Region::setToLake() {
 	this->regionId = 1;
-	this->VariationInTemperature = Season<Propability>(Propability(-1.5, 2.0), Propability(-0.75, 2.0), Propability(0.75, 2.0), Propability(1.8, 2.0));
+	this->VariationInTemperature[0] = Season<Propability>(Propability(-2.5, 2.0), Propability(-1.75, 2.0), Propability(0.0, 2.0), Propability(0, 2.0));
+	this->VariationInTemperature[1] = Season<Propability>(Propability(-1.5, 2.0), Propability(-1, 2.0), Propability(0.75, 2.0), Propability(1.8, 2.0));
+	this->VariationInTemperature[2] = Season<Propability>(Propability(-1.5, 2.0), Propability(-0.75, 2.0), Propability(0.75, 2.0), Propability(1.8, 2.0));
+	this->VariationInTemperature[3] = Season<Propability>(Propability(-0.5, 2.0), Propability(0.0, 2.0), Propability(0.75, 2.0), Propability(3, 2.0));
+
 	this->Height = MinMax(10,5000.0);
 	this->occurrenceInTemperateZone[0] = false;
 	this->occurrenceInTemperateZone[1] = true;
@@ -146,7 +154,11 @@ void Region::setToLake() {
 }
 void Region::setToMeadow() {
 	this->regionId = 2;
-	this->VariationInTemperature = Season<Propability>(Propability(1.0, 6.0), Propability(2.0, 3.0), Propability(-1.0, 7.0), Propability(-4, 5.0));
+	this->VariationInTemperature[0] = Season<Propability>(Propability(-3.0, 2.0), Propability(-1.0, 2.0), Propability(-4.0, 2.0), Propability(-7.0, 2.0));
+	this->VariationInTemperature[1] = Season<Propability>(Propability(1.0, 6.0), Propability(2.0, 3.0), Propability(-1.0, 7.0), Propability(-4, 5.0));
+	this->VariationInTemperature[2] = Season<Propability>(Propability(2.0, 4.0), Propability(3.0, 1.0), Propability(0.0, 5.0), Propability(-1, 3.0));
+	this->VariationInTemperature[3] = Season<Propability>(Propability(3.0, 2.0), Propability(4.0, 0.0), Propability(1.0, 4.0), Propability(0, 2.0));
+
 	this->Height = MinMax(-100,2500.0);
 	this->occurrenceInTemperateZone[0] = false;
 	this->occurrenceInTemperateZone[1] = true;
@@ -195,7 +207,11 @@ void Region::setToMeadow() {
 }
 void Region::setToForest() {
 	this->regionId = 3;
-	this->VariationInTemperature = Season<Propability>(Propability(0.0, 3.0), Propability(-1.0, 1.0), Propability(0.0, 1.0), Propability(0.0, 3.0));
+	this->VariationInTemperature[0] = Season<Propability>(Propability(-3.0, 3.0), Propability(-5.0, 1.0), Propability(-3.0, 1.0), Propability(-2.0, 3.0));
+	this->VariationInTemperature[1] = Season<Propability>(Propability(-1.0, 3.0), Propability(-2.0, 1.0), Propability(-1.0, 1.0), Propability(0.0, 3.0));
+	this->VariationInTemperature[2] = Season<Propability>(Propability(0.0, 2.0), Propability(0.0, 1.0), Propability(0.0, 1.0), Propability(0.0, 2.0));
+	this->VariationInTemperature[3] = Season<Propability>(Propability(5.0, 2.0), Propability(+5.0, 1.0), Propability(+5.0, 1.0), Propability(+5.0, 2.0));
+
 	this->Height = MinMax(-100,2200.0);
 	this->occurrenceInTemperateZone[0] = false;
 	this->occurrenceInTemperateZone[1] = true;
@@ -243,7 +259,11 @@ void Region::setToForest() {
 }
 void Region::setToSteppe() {
 	this->regionId = 4;
-	this->VariationInTemperature = Season<Propability>(Propability(4.0, 2.0), Propability(10.0, 5.0), Propability(6.0, 2.0), Propability(3.0, 1.0));
+	this->VariationInTemperature[0] = Season<Propability>(Propability(-6.0, 2.0), Propability(-2.0, 2.0), Propability(-6.0, 2.0), Propability(-11.0, 2.0));
+	this->VariationInTemperature[1] = Season<Propability>(Propability(1.0, 2.0), Propability(4.0, 5.0), Propability(3.0, 2.0), Propability(0.0, 1.0));
+	this->VariationInTemperature[2] = Season<Propability>(Propability(4.0, 2.0), Propability(10.0, 5.0), Propability(6.0, 2.0), Propability(3.0, 1.0));
+	this->VariationInTemperature[3] = Season<Propability>(Propability(5.0, 2.0), Propability(12.0, 5.0), Propability(7.0, 2.0), Propability(4.0, 1.0));
+
 	this->Height = MinMax(-100,800.0);
 	this->occurrenceInTemperateZone[0] = false;
 	this->occurrenceInTemperateZone[1] = false;
@@ -292,7 +312,11 @@ void Region::setToSteppe() {
 }
 void Region::setToDesert() {
 	this->regionId = 5;
-	this->VariationInTemperature = Season<Propability>(Propability(10.0, 4.0), Propability(18.0, 4.0), Propability(14.0, 4.0), Propability(10.0, 4.0));
+	this->VariationInTemperature[0] = Season<Propability>(Propability(-6.0, 2.0), Propability(-2.0, 2.0), Propability(-6.0, 2.0), Propability(-11.0, 2.0));
+	this->VariationInTemperature[1] = Season<Propability>(Propability(4.0, 4.0), Propability(9.0, 4.0), Propability(7.0, 4.0), Propability(0.0, 4.0));
+	this->VariationInTemperature[2] = Season<Propability>(Propability(7.0, 4.0), Propability(15.0, 4.0), Propability(13.0, 4.0), Propability(7.0, 4.0));
+	this->VariationInTemperature[3] = Season<Propability>(Propability(10.0, 4.0), Propability(18.0, 4.0), Propability(14.0, 4.0), Propability(10.0, 4.0));
+
 	this->Height = MinMax(-100,1000.0);
 	this->occurrenceInTemperateZone[0] = false;
 	this->occurrenceInTemperateZone[1] = false;
@@ -340,7 +364,11 @@ void Region::setToDesert() {
 }
 void Region::setToMoor() {
 	this->regionId = 6;
-	this->VariationInTemperature =	Season<Propability>(Propability(0.0, 7.0), Propability(0.0, 3.5), Propability(1.0, 6.5), Propability(-3.5, 6.5));
+	this->VariationInTemperature[0] = Season<Propability>(Propability(-1.0, 7.0), Propability(-1.0, 3.5), Propability(0.0, 6.5), Propability(-3.5, 6.5));
+	this->VariationInTemperature[1] = Season<Propability>(Propability(0.0, 7.0), Propability(0.0, 3.5), Propability(1.0, 6.5), Propability(-3.5, 6.5));
+	this->VariationInTemperature[2] = Season<Propability>(Propability(+1.0, 5.0), Propability(+1.0, 1.5), Propability(2.0, 3.5), Propability(-1, 3));
+	this->VariationInTemperature[3] = Season<Propability>(Propability(+2.0, 2.0), Propability(+2.0, 0.5), Propability(2.0, 1.5), Propability(0, 1.5));
+
 	this->Height = MinMax(-100,2000.0);
 	this->occurrenceInTemperateZone[0] = false;
 	this->occurrenceInTemperateZone[1] = true;
@@ -389,7 +417,11 @@ void Region::setToMoor() {
 }
 void Region::setToTropicalForest() {
 	this->regionId = 7;
-	this->VariationInTemperature = Season<Propability>(Propability(+5.0, 2.0), Propability(+5.0, 1.0), Propability(+5.0, 1.0), Propability(+5.0, 2.0));
+	this->VariationInTemperature[0] = Season<Propability>(Propability(0.0, 3.0), Propability(-1.0, 1.0), Propability(0.0, 1.0), Propability(0.0, 3.0));
+	this->VariationInTemperature[1] = Season<Propability>(Propability(1.5, 3.0), Propability(0.5, 1.0), Propability(1.5, 1.0), Propability(1.5, 3.0));
+	this->VariationInTemperature[2] = Season<Propability>(Propability(3.5, 2.0), Propability(2.5, 1.0), Propability(3.5, 1.0), Propability(3.5, 2.0));
+	this->VariationInTemperature[3] = Season<Propability>(Propability(5.0, 2.0), Propability(+5.0, 1.0), Propability(+5.0, 1.0), Propability(+5.0, 2.0));
+
 	this->Height = MinMax(-100,2500.0);
 	this->occurrenceInTemperateZone[0] = false;
 	this->occurrenceInTemperateZone[1] = false;
@@ -438,7 +470,11 @@ void Region::setToTropicalForest() {
 }
 void Region::setToIceDesert() {
 	this->regionId = 8;
-	this->VariationInTemperature = Season<Propability>(Propability(-6.0, 2.0), Propability(-2.0, 2.0), Propability(-6.0, 2.0), Propability(-11.0, 2.0));
+	this->VariationInTemperature[0] = Season<Propability>(Propability(-6.0, 2.0), Propability(-2.0, 2.0), Propability(-6.0, 2.0), Propability(-11.0, 2.0));
+	this->VariationInTemperature[1] = Season<Propability>(Propability(-6.0, 2.0), Propability(-2.0, 2.0), Propability(-6.0, 2.0), Propability(-11.0, 2.0));
+	this->VariationInTemperature[2] = Season<Propability>(Propability(-6.0, 2.0), Propability(-2.0, 2.0), Propability(-6.0, 2.0), Propability(-11.0, 2.0));
+	this->VariationInTemperature[3] = Season<Propability>(Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0, 0.0));
+
 	this->Height = MinMax(-100, _MAX_TERRANE_HEIGHT);
 	this->occurrenceInTemperateZone[0] = true;
 	this->occurrenceInTemperateZone[1] = false;
@@ -486,7 +522,11 @@ void Region::setToIceDesert() {
 }
 void Region::setToHeighland() {
 	this->regionId = 9;
-	this->VariationInTemperature = Season<Propability>(Propability(-5, 10.0), Propability(-3, 5.0), Propability(-5.0, 10.0), Propability(-9, 10.0));
+	this->VariationInTemperature[0] = Season<Propability>(Propability(-5, 10.0), Propability(-3, 5.0), Propability(-5.0, 10.0), Propability(-9, 10.0));
+	this->VariationInTemperature[1] = Season<Propability>(Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0, 0.0));
+	this->VariationInTemperature[2] = Season<Propability>(Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0, 0.0));
+	this->VariationInTemperature[3] = Season<Propability>(Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0, 0.0));
+
 	this->Height = MinMax(800,2000.0);
 	this->occurrenceInTemperateZone[0] = false;
 	this->occurrenceInTemperateZone[1] = false;
@@ -534,7 +574,11 @@ void Region::setToHeighland() {
 }
 void Region::setToMountain() {
 	this->regionId = 10;
-	this->VariationInTemperature = Season<Propability>(Propability(-5,10.0), Propability(-1, 10.0), Propability(-2.0, 10.0), Propability(-6, 10.0));
+	this->VariationInTemperature[0] = Season<Propability>(Propability(-10,4.0), Propability(-8, 4.0), Propability(-9.0, 4.0), Propability(-11, 4.0));
+	this->VariationInTemperature[1] = Season<Propability>(Propability(-5, 10.0), Propability(-2, 10.0), Propability(-3.0, 10.0), Propability(-7, 10.0));
+	this->VariationInTemperature[2] = Season<Propability>(Propability(-3, 4.0), Propability(-1, 4.0), Propability(-2.0, 4.0), Propability(-6, 4.0));
+	this->VariationInTemperature[3] = Season<Propability>(Propability(0.0, 2.0), Propability(0.0, 2.0), Propability(0.0, 2.0), Propability(0, 2.0));
+
 	this->Height = MinMax(800.0, _MAX_TERRANE_HEIGHT);
 	this->occurrenceInTemperateZone[0] = true;
 	this->occurrenceInTemperateZone[1] = true;
@@ -584,11 +628,11 @@ void Region::setToDefault() {
 	this->setToMeadow();
 }
 
-Season<Propability>* Region::getAllSeasonDependantTempVariation() {
-	return &this->VariationInTemperature;
+Season<Propability>* Region::getAllSeasonDependantTempVariation(int tempZohne) {
+	return &this->VariationInTemperature[tempZohne];
 }
-double Region::getSeasonDependantTempVariation(int seasonId) {
-	return this->VariationInTemperature.getValue(seasonId).mean_min;
+double Region::getSeasonDependantTempVariation(int seasonId, int tempZohne) {
+	return this->VariationInTemperature[tempZohne].getValue(seasonId).mean_min;
 }
 GroundProperties* Region::getGroundProperties() {
 	return &this->groundProperties;

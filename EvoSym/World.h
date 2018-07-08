@@ -111,6 +111,7 @@ private:
 	void getNeigbourRegionIdAT(int neigbourRegionId[], int at, const int num_neigbours = 8);
 
 	void getNeigbourTempXY(double temp, double neigbourTemp[], int x, int y, const int num_neigbours = 8);
+	double getNeigbourMeanTempXY(double temp, int x, int y);
 
 	int getNumNeigboursSameRegion(int at, int regionId);
 };

@@ -2,10 +2,8 @@
 
 
 
-void DeltaWorld::setNeigboursTemperature(double temps[], const int num_neigbours){
-	for (int i = 0; i < num_neigbours; i++) {
-		this->TempNeigbours[i] = temps[i];
-	}
+void DeltaWorld::setNeigboursTemperature(double meanTemp){
+	this->meanTempNeigbour = meanTemp;
 }
 
 void DeltaWorld::changeRegionToFitNeigbours(int regionNeigbour[], const int num_neigbours) {
@@ -134,16 +132,17 @@ void DeltaWorld::calcTemp(double dt) {
 
 	double T_TempZone_mean	= 0;//Mittlere Temperatur in der TempZohne  -> Abhängig von der Season
 	//this->TempDropDueHeight //Pro 100m Fällt die Durchschnittstemperatur um 1 °C
-	double T_mean_neigbours = 0;//Die Temperatur ist von den Temperaturen der Nachbarregionen abhängig
+	//this->meanTempNeigbour Die Temperatur ist von den Temperaturen der Nachbarregionen abhängig
 	double T_Region_Offset	= 0; //+- Varianz_tagesrauschen: Jede Region kann Währme besser/schlechter speichern  -> Abhängig von der Season
 	double T_TempZone_Offset = 0; //+- Varianz_Jahresrauschen: In jeder TempZohne Treten temperaturschwankungen anders auf  -> Abhängig von der Season
 	//this->temperature //ist Temperatur
-
+	
 	//Season
 	for (int s = 0; s < _AMOUNT_SEASONS; s++) {
-		if (this->SeasonMultiplier[s] > 0) {
+		if (this->_G_->SeasonMultiplier[s] > 0) {
 			TemperateZone T;//todo safe pointer as attribute!!
 			double T_TempZone_mean_2 = 0;
+			double T_Region_mean_2 = 0;
 			double T_TempZone_offset_Seasondependant = 0;
 			//TempZohne
 			for (int TempZone = 0; TempZone < _AMOUNT_TEMPERATE_ZONES; TempZone++) {
@@ -152,15 +151,17 @@ void DeltaWorld::calcTemp(double dt) {
 				T_TempZone_mean_2 += T.getSeasonDependentTemp()->getValue(s) * this->InfluencedByTempZone[TempZone];
 									//mean temp.in TempZone in Season		//influence of TempZone 
 				T_TempZone_offset_Seasondependant += this->_G_->CurrentYearTempOffset[s] * this->InfluencedByTempZone[TempZone];
+
+				T_Region_mean_2 += this->_RG_->getRegion(this->regionID)->getSeasonDependantTempVariation(s, TempZone) * this->InfluencedByTempZone[TempZone];
 				}
 			}
 
-			T_TempZone_mean += T_TempZone_mean_2 * this->SeasonMultiplier[s]; //einfluss momentane Season[0-1] auf mittlere Temp aller TempZonen
-			T_TempZone_Offset += T_TempZone_offset_Seasondependant * this->SeasonMultiplier[s]; //einfluss momentane Season[0-1] auf mittlere Varianz aller TempZonen
+			T_TempZone_mean += T_TempZone_mean_2 * this->_G_->SeasonMultiplier[s]; //einfluss momentane Season[0-1] auf mittlere Temp aller TempZonen
+			T_TempZone_Offset += T_TempZone_offset_Seasondependant * this->_G_->SeasonMultiplier[s]; //einfluss momentane Season[0-1] auf mittlere Varianz aller TempZonen
 
 							
 			//Region
-			T_Region_Offset += this->_RG_->getRegion(this->regionID)->getSeasonDependantTempVariation(s) * this->SeasonMultiplier[s];
+			T_Region_Offset += T_Region_mean_2 * this->_G_->SeasonMultiplier[s];
 		}
 	}
 
@@ -170,20 +171,13 @@ void DeltaWorld::calcTemp(double dt) {
 		this->RecentDeltaTemperature += this->temperature - tempAlt;//for drawing purpose
 		return;
 	}
-
-
-	//Berechne MeanTemp nachbar
-	for (int i = 0; i < 8; i++) {
-		T_mean_neigbours += this->TempNeigbours[i];
-	}
-	T_mean_neigbours = T_mean_neigbours / 8;
 	
 
 	//calc new Temp
-	this->temperature = (this->temperature - this->TempDropDueHeight )*_TEMP_INFLUENCE_IS_TEMP + T_mean_neigbours*_TEMP_INFLUENCE_NEIGHBOURS + T_TempZone_mean*_TEMP_INFLUENCE_TEMPERATE_ZONE + this->ground.layerTemp[0]* _TEMP_INFLUENCE_GROUND;
+	this->temperature = (this->temperature - this->TempDropDueHeight )*_TEMP_INFLUENCE_IS_TEMP + this->meanTempNeigbour*_TEMP_INFLUENCE_NEIGHBOURS + T_TempZone_mean*_TEMP_INFLUENCE_TEMPERATE_ZONE + this->ground.layerTemp[0]* _TEMP_INFLUENCE_GROUND;
 	this->temperature += this->TempDropDueHeight; //beachte Höhe
 
-	this->temperature = this->temperature + T_Region_Offset + T_TempZone_Offset; //beachte Varianzen in TemperaturZohne und Region
+	this->temperature = this->temperature + T_Region_Offset + T_TempZone_Offset; //beachte Varianzen in TemperaturZohne(Jährlich anders) und Region
 
 	//for drawing purpose
 	this->RecentDeltaTemperature += this->temperature - tempAlt;
@@ -201,7 +195,7 @@ void DeltaWorld::calcIceThicknes(double dt) {
 			if (this->ground.layerTemp[FrozenLayer] > freezingTemp) { //this layer is not frozen anymore
 				//linear interpolation between this layer and the last
 				double a = (this->ground.layerTemp[FrozenLayer] - this->ground.layerTemp[FrozenLayer-1]) / R->getGroundProperties()->groundLayerThickness;
-				double b = this->ground.layerTemp[FrozenLayer] - a*R->getGroundProperties()->groundLayerThickness*(FrozenLayer +1);
+				double b = this->ground.layerTemp[FrozenLayer] - a*R->getGroundProperties()->groundLayerThickness*(FrozenLayer+1);
 				this->iceThickness = -b / a;
 				break;
 			}
@@ -243,8 +237,8 @@ void DeltaWorld::update(double tnow) {
 }
 void DeltaWorld::calcResources(double dt) {
 
-	this->resources.RegeneratePlants(dt,this->SeasonMultiplier,this->regionID,this->temperature);
-	this->resources.RegenerateFreshWater(dt, this->SeasonMultiplier, this->regionID);
+	this->resources.RegeneratePlants(dt,this->regionID,this->temperature);
+	this->resources.RegenerateFreshWater(dt, this->regionID);
 }
 
 std::string DeltaWorld::getInfoString() {
@@ -253,7 +247,8 @@ std::string DeltaWorld::getInfoString() {
 	info += "Geology:\n";
 	info += "Region: \t" + Region::getRegionName(this->regionID) + "\n";
 	info += "Height: \t" + std::to_string(this->height) + " m\n";
-	info += "Temperatur: \t" + std::to_string(this->temperature) + " °C\n";
+	info += "Temperature: \t" + std::to_string(this->temperature) + " °C\n";
+	info += "Mean neigbour Temperature: \t" + std::to_string(this->meanTempNeigbour) + " °C\n";
 	for (unsigned int i = 0; i < this->ground.amountLayers; i++) {
 		info += "Temperatur Ground Layer " + std::to_string((i+1)*this->_RG_->getRegion(this->regionID)->getGroundProperties()->groundLayerThickness) + "cm: \t" + std::to_string(this->ground.layerTemp[i]) + " °C\n";
 	}
