@@ -205,9 +205,9 @@ void DeltaWorld::calcIceThicknes(double dt) {
 	if (this->regionID == 0) {//ocean
 		freezingTemp = _WATER_FREEZING_TEMPERATURE[1];
 	}
-	if (this->temperature < freezingTemp) {
+	if (this->ground.layerTemp[0] < freezingTemp) {
 		this->isFrozen = true;
-		for (unsigned int FrozenLayer = 0; FrozenLayer < this->ground.amountLayers; FrozenLayer++) {
+		for (unsigned int FrozenLayer = 1; FrozenLayer < this->ground.amountLayers; FrozenLayer++) {
 			if (this->ground.layerTemp[FrozenLayer] > freezingTemp) { //this layer is not frozen anymore
 				//linear interpolation between this layer and the last
 				double a = (this->ground.layerTemp[FrozenLayer] - this->ground.layerTemp[FrozenLayer-1]) / R->getGroundProperties()->groundLayerThickness;
