@@ -138,12 +138,8 @@ int main()
 	//}
 	//std::getchar();
 	//return 0;
-
-	
-
 	
 	World SimulatedWorld = World(_DEFINED_MAP);
-	//World SimulatedWorld = World();
 
 	if (!SimulatedWorld.getIsReady()) {
 		return 0;
@@ -155,10 +151,5 @@ int main()
 		worldview.Update(SimulatedWorld,true);
 		SimulatedWorld.Update();
 	}
-
-	
-
-
-
 	return 0;
 }

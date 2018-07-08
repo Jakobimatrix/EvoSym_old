@@ -11,104 +11,104 @@
 
 
 //constants
-const double _PI = 3.141592653589793238463; //[math.const] The constant pi.
-const double _INVERSE_PI = 0.318309886183790671537; //[math.const] The inverse of the constant pi.
-const double _2PI = 2 * 3.141592653589793238463; //[math.const] Two times the constant pi.
-const double _INVERSE_2PI = 1.0 / _2PI;	//[math.const] The inverse of two times the constant pi.
-const double _PI_QUARTER = 0.785398163397448309615; //[math.const] A fourth of the constant pi.
+constexpr double _PI = 3.141592653589793238463; //[math.const] The constant pi.
+constexpr double _INVERSE_PI = 0.318309886183790671537; //[math.const] The inverse of the constant pi.
+constexpr double _2PI = 2 * 3.141592653589793238463; //[math.const] Two times the constant pi.
+constexpr double _INVERSE_2PI = 1.0 / _2PI;	//[math.const] The inverse of two times the constant pi.
+constexpr double _PI_QUARTER = 0.785398163397448309615; //[math.const] A fourth of the constant pi.
 
 //Dimensiones of this world
-const int _AMOUNT_REGIONS = 11; //[int] The amount of defined regions.
-const int _AMOUNT_TEMPERATE_ZONES = 4; //[int] The amount of defined temperature zones.
-const int _AMOUNT_SEASONS = 4; //[int] the amount of defined seasons.
+constexpr int _AMOUNT_REGIONS = 11; //[int] The amount of defined regions.
+constexpr int _AMOUNT_TEMPERATE_ZONES = 4; //[int] The amount of defined temperature zones.
+constexpr int _AMOUNT_SEASONS = 4; //[int] the amount of defined seasons.
 
-const double _LAND_TO_OCEAN_RATIO = 1.3; //[ratio] This ratio determines how much land compared to ocean there shall be.
-const int _DIMENSION_HALF = 100; //[DeltaWorld] The radius in tiles the world should consist of. Program Crashes for more than 150.
-const int _WORLD_DIMENSION = _DIMENSION_HALF * 2; //[DeltaWorld] The diameter in tiles the world consist of.
-const int _AMOUNT_DELTA_WORLDS = _WORLD_DIMENSION * _WORLD_DIMENSION; //[DeltaWorld] The amount of all tiles creating this world.
-const double _WORLD_DIAMETER = 40000000.0; // [m] The Diameter of the created world in meters. This sets the size of the world in relation to the animals.
-const double _DELTA_SIZE = _WORLD_DIAMETER/ _AMOUNT_DELTA_WORLDS; //[m] The size of one tile of the world in meter.
-const double _MAX_TERRANE_HEIGHT = 3000;//[m] The highst possible point of the world.
-const double _MIN_TERRANE_HEIGHT = -3000;//[m] The lowest possible point of this world.
+constexpr double _LAND_TO_OCEAN_RATIO = 1.3; //[ratio] This ratio determines how much land compared to ocean there shall be.
+constexpr int _DIMENSION_HALF = 100; //[DeltaWorld] The radius in tiles the world should consist of. Program Crashes for more than 150.
+constexpr int _WORLD_DIMENSION = _DIMENSION_HALF * 2; //[DeltaWorld] The diameter in tiles the world consist of.
+constexpr int _AMOUNT_DELTA_WORLDS = _WORLD_DIMENSION * _WORLD_DIMENSION; //[DeltaWorld] The amount of all tiles creating this world.
+constexpr double _WORLD_DIAMETER = 40000000.0; // [m] The Diameter of the created world in meters. This sets the size of the world in relation to the animals.
+constexpr double _DELTA_SIZE = _WORLD_DIAMETER/ _AMOUNT_DELTA_WORLDS; //[m] The size of one tile of the world in meter.
+constexpr double _MAX_TERRANE_HEIGHT = 3000;//[m] The highst possible point of the world.
+constexpr double _MIN_TERRANE_HEIGHT = -3000;//[m] The lowest possible point of this world.
 
 //TileMap
 const std::string _SRC_TILE_IMAGE = "bilder/backgrounds/Tiles.png";//[path] Path to the tile map.
-const int _TILE_RESULUTION = 500;//[pixel] Resulution of the individual tile pattern in _SRC_TILE_IMAGE.
+constexpr int _TILE_RESULUTION = 500;//[pixel] Resulution of the individual tile pattern in _SRC_TILE_IMAGE.
 
 //Drawing
-const double _VISUALIZED_TEMPERATURE_DIFFERENCE = 0.5; //[°C] At which temperature difference a tile should change apearence. The smaller this number the more often a tile has to be redrawn.
-const std::string _DEFINED_MAP = "";// "bilder/map2.jpg"; //[path] Loades a hight profile from an black and white image. If empty the height profile will be randomized with perlian noise.
-const int _WORLD_DIAMETER_IN_PIXEL = _WORLD_DIMENSION*_TILE_RESULUTION; //[pix] gesammt anzahl der Pixel in Länge und breite
+constexpr double _VISUALIZED_TEMPERATURE_DIFFERENCE = 0.5; //[°C] At which temperature difference a tile should change apearence. The smaller this number the more often a tile has to be redrawn.
+const std::string _DEFINED_MAP = "bilder/map2.jpg"; //[path] Loades a hight profile from an black and white image. If empty the height profile will be randomized with perlian noise.
+constexpr int _WORLD_DIAMETER_IN_PIXEL = _WORLD_DIMENSION*_TILE_RESULUTION; //[pix] gesammt anzahl der Pixel in Länge und breite
 
 //Parameter for a random generated world with perlian noise.
 
 /*Perlian noise is like the pattern of a military uniform. This pattern is only pseudorandom but i can choose randoomly with
 the offset O (_MIN_OFFSET_PERLIAN_NOISE < O < _MAX_OFFSET_PERLIAN_NOISE) where to start on a large predifined pattern map.*/
-const int _MIN_OFFSET_PERLIAN_NOISE = -1000000;//[int] Empirical value, should not be less than -1000000.
-const int _MAX_OFFSET_PERLIAN_NOISE =  1000000;//[int] Empirical value, should not be more than  1000000.
+constexpr int _MIN_OFFSET_PERLIAN_NOISE = -1000000;//[int] Empirical value, should not be less than -1000000.
+constexpr int _MAX_OFFSET_PERLIAN_NOISE =  1000000;//[int] Empirical value, should not be more than  1000000.
 
 //divided by _DIMENSION_HALF to assure the same pattern independent from the amount of tiles 
 /*One way to make perlian noise more randoom is to zoom randoomly into the predefined pattern map.*/
-const double _MIN_ZOOM_PERLIAN_NOISE = 1.1 / _DIMENSION_HALF;//Min zoomfactor 1.1->less Islands.
-const double _MAX_ZOOM_PERLIAN_NOISE = 3.0 / _DIMENSION_HALF;//Max zoomfactor 3.0->many Islands. 
+constexpr double _MIN_ZOOM_PERLIAN_NOISE = 1.1 / _DIMENSION_HALF;//Min zoomfactor 1.1->less Islands.
+constexpr double _MAX_ZOOM_PERLIAN_NOISE = 3.0 / _DIMENSION_HALF;//Max zoomfactor 3.0->many Islands. 
 
 /*With these factors we can distort the pattern of the perlian noise with a second perlian noise pattern.*/
-const double _MIN_DISTORTION_PERLIAN_NOISE = 0.005 / _DIMENSION_HALF;//Min distorting factor for the perlian noise map. 0.005->weak distortion.
-const double _MAX_DISTORTION_PERLIAN_NOISE = 0.03 / _DIMENSION_HALF;//Max distorting factor for the perlian noise map. 0.03->strong distortion.
+constexpr double _MIN_DISTORTION_PERLIAN_NOISE = 0.005 / _DIMENSION_HALF;//Min distorting factor for the perlian noise map. 0.005->weak distortion.
+constexpr double _MAX_DISTORTION_PERLIAN_NOISE = 0.03 / _DIMENSION_HALF;//Max distorting factor for the perlian noise map. 0.03->strong distortion.
 
 /*With these factors we can distort the second perlian noise pattern with a third pattern. This will cause
 localy strong changes in the resulting pattern.*/
-const double _CURVATURE_CHANGE_RATE_PERLIAN_NOISE = 0.01 / _DIMENSION_HALF; //Constant changerate for the pattern. 0.01;
-const double _MIN_CURVATURE_PERLIAN_NOISE = 10.0 / _DIMENSION_HALF; //Min. factor 10.0 -> weak peaks / sudden changes in height. 
-const double _MAX_CURVATURE_PERLIAN_NOISE = 20.0 / _DIMENSION_HALF;//Max. factor 200.0 -> strong peaks / sudden changes in height.
+constexpr double _CURVATURE_CHANGE_RATE_PERLIAN_NOISE = 0.01 / _DIMENSION_HALF; //Constant changerate for the pattern. 0.01;
+constexpr double _MIN_CURVATURE_PERLIAN_NOISE = 10.0 / _DIMENSION_HALF; //Min. factor 10.0 -> weak peaks / sudden changes in height. 
+constexpr double _MAX_CURVATURE_PERLIAN_NOISE = 20.0 / _DIMENSION_HALF;//Max. factor 200.0 -> strong peaks / sudden changes in height.
 
 
 
 //Simulation Time units
-const double _YEAR_IN_S = 31536000.0; //[s] 365*24*60*60
-const double _QUARTER_YEAR_IN_S = _YEAR_IN_S*0.25; //[s] 365*24*60*60*0.25
-const double _INVERSE_QUARTER_YEAR_IN_S = 1.0/ _QUARTER_YEAR_IN_S; //[1/s] 1/(365*24*60*60*0.25)
-const double _INVERSE_YEAR_IN_S = 1.0/ _YEAR_IN_S; //[1/s] 1/(365*24*60*60)
-const double _MONTH_IN_S = 30 * 24 * 60 * 60; //[s] 30*24*60*60
-const double _INVERSE_MONTH_IN_S = 1.0/ _MONTH_IN_S; //[1/s] 1/(30*24*60*60)
-const double _YEAR_IN_D = 8544; //[s] 365*24
-const double _DAY_IN_S = 86400; //[s] 24*60*60
-const double _INVERSE_DAY_IN_S = 1/ _DAY_IN_S; //[1/s] 1/(24*60*60)
-const double _HOUR_IN_S = 3600; //[s] 60*60
-const double _INVERSE_HOUR_IN_S = 1 / _HOUR_IN_S; //[1/s] 17(60*60)
-const double _MINUTE_IN_S = 60; //[s] 60
-const double _INVERSE_MINUTE_IN_S = 1 / _MINUTE_IN_S; //[1/s] 1/60
+constexpr double _YEAR_IN_S = 31536000.0; //[s] 365*24*60*60
+constexpr double _QUARTER_YEAR_IN_S = _YEAR_IN_S*0.25; //[s] 365*24*60*60*0.25
+constexpr double _INVERSE_QUARTER_YEAR_IN_S = 1.0/ _QUARTER_YEAR_IN_S; //[1/s] 1/(365*24*60*60*0.25)
+constexpr double _INVERSE_YEAR_IN_S = 1.0/ _YEAR_IN_S; //[1/s] 1/(365*24*60*60)
+constexpr double _MONTH_IN_S = 30 * 24 * 60 * 60; //[s] 30*24*60*60
+constexpr double _INVERSE_MONTH_IN_S = 1.0/ _MONTH_IN_S; //[1/s] 1/(30*24*60*60)
+constexpr double _YEAR_IN_D = 8544; //[s] 365*24
+constexpr double _DAY_IN_S = 86400; //[s] 24*60*60
+constexpr double _INVERSE_DAY_IN_S = 1/ _DAY_IN_S; //[1/s] 1/(24*60*60)
+constexpr double _HOUR_IN_S = 3600; //[s] 60*60
+constexpr double _INVERSE_HOUR_IN_S = 1 / _HOUR_IN_S; //[1/s] 17(60*60)
+constexpr double _MINUTE_IN_S = 60; //[s] 60
+constexpr double _INVERSE_MINUTE_IN_S = 1 / _MINUTE_IN_S; //[1/s] 1/60
 
 //simulation temperature
-const double _TIME_DEPENDANTCY_FOR_TEMP_IN_S = 60 * 60 * 24 *7; //[s] After this time intervall the calculation for the new temperature depends only on seasonal influences.
-const double _INVERSE_TIME_DEPENDANTCY_FOR_TEMP_IN_S = 1/ _TIME_DEPENDANTCY_FOR_TEMP_IN_S; //[1/s] After 1/(this time intervall) the calculation for the new temperature depends only on seasonal influences.
-const double _PT_1_T_SEASONAL_OFFSET = 10000000; //[/] Good values between: [4.233.600 - 86.313.600] Pt_1 diskrete time constant for the change of the seasonal offset between years.
+constexpr double _TIME_DEPENDANTCY_FOR_TEMP_IN_S = 60 * 60 * 24 *7; //[s] After this time intervall the calculation for the new temperature depends only on seasonal influences.
+constexpr double _INVERSE_TIME_DEPENDANTCY_FOR_TEMP_IN_S = 1/ _TIME_DEPENDANTCY_FOR_TEMP_IN_S; //[1/s] After 1/(this time intervall) the calculation for the new temperature depends only on seasonal influences.
+constexpr double _PT_1_T_SEASONAL_OFFSET = 10000000; //[/] Good values between: [4.233.600 - 86.313.600] Pt_1 diskrete time constant for the change of the seasonal offset between years.
 //!!!The summ of all _TEMP_INFLUENCE_... has to be 1.0! 
-const double _TEMP_INFLUENCE_NEIGHBOURS = 0.32; //[ratio] How much influence neighbour tiles have on the temperature.
-const double _TEMP_INFLUENCE_TEMPERATE_ZONE = 0.5; //[ratio] How much influence the temperate zone has on the temperature.
-const double _TEMP_INFLUENCE_IS_TEMP = 0.09; //[ratio] How much the temperature of the last simulation step influences the new temperature.
-const double _TEMP_INFLUENCE_GROUND = 0.09; //[ratio] How much the temperature of the ground influences the new temperature.
-//const double _TEMP_INFLUENCE_GROUND_TEMP; //[ratio] How much the groundtemperature the temperature influences.
+constexpr double _TEMP_INFLUENCE_NEIGHBOURS = 0.32; //[ratio] How much influence neighbour tiles have on the temperature.
+constexpr double _TEMP_INFLUENCE_TEMPERATE_ZONE = 0.5; //[ratio] How much influence the temperate zone has on the temperature.
+constexpr double _TEMP_INFLUENCE_IS_TEMP = 0.09; //[ratio] How much the temperature of the last simulation step influences the new temperature.
+constexpr double _TEMP_INFLUENCE_GROUND = 0.09; //[ratio] How much the temperature of the ground influences the new temperature.
+//constexpr double _TEMP_INFLUENCE_GROUND_TEMP; //[ratio] How much the groundtemperature the temperature influences.
 
 //simulation physics
-const double _WATER_FREEZING_TEMPERATURE[2] = { -0.2, -1.9 }; //[°C,°C] At this temperature [water, marine water] begin to freeze.
-const double _TEMPERATURE_DROP_PER_METER = -0.005; //[°C/m] With every meter the average temperature drops by this value.
-const double _BEGIN_HEIGHT_TEMP_DROP = 0; //[m] Above this value the average temperature drops per meter with _TEMPERATURE_DROP_PER_METER.
+constexpr double _WATER_FREEZING_TEMPERATURE[2] = { -0.2, -1.9 }; //[°C,°C] At this temperature [water, marine water] begin to freeze.
+constexpr double _TEMPERATURE_DROP_PER_METER = -0.005; //[°C/m] With every meter the average temperature drops by this value.
+constexpr double _BEGIN_HEIGHT_TEMP_DROP = 0; //[m] Above this value the average temperature drops per meter with _TEMPERATURE_DROP_PER_METER.
 
 
-const double _plants_stop_growth_temp = 4.0;//this should be defined for each region 
+constexpr double _plants_stop_growth_temp = 4.0;//this should be defined for each region 
 
 
 
 ///animalPropertys
-const uint16_t _scent_decay[5] = { 0b101010101010101,0b101010101010101,0b101010101010101,0b101010101010101,0b101010101010101};
+constexpr uint16_t _scent_decay[5] = { 0b101010101010101,0b101010101010101,0b101010101010101,0b101010101010101,0b101010101010101};
 //energyconsumption
 //size: (factor*weight)^exponent
-const double _energy_consumption_size_factor = 2.0;
-const double _energy_consumption_size_exponent = 3.0;
+constexpr double _energy_consumption_size_factor = 2.0;
+constexpr double _energy_consumption_size_exponent = 3.0;
 //size: (factor*size)^exponent
-const double _energy_consumption_weight_factor = 0.2;
-const double _energy_consumption_weight_exponent = 5.2;
+constexpr double _energy_consumption_weight_factor = 0.2;
+constexpr double _energy_consumption_weight_exponent = 5.2;
 
 
 

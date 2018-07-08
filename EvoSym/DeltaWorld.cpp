@@ -74,6 +74,7 @@ void DeltaWorld::setRandRegion(double height, int notThisRegion) {
 		}
 		this->setRegion_and_height(this->_RG_->getDefaultRegionID(height, polar), height);
 		std::cout << "Warning: One Region had to be set up as default:"<<std::endl;
+		//TODO more information about this deltaWorld->height,tempZohne,neigbours,etc... all possibilityies
 		return;
 	}
 	else {

@@ -161,7 +161,7 @@ private:
 	void setToModerate() {
 		this->_G_ = &this->_G_->getInstance();
 		this->latitude = this->_G_->_MODERATE_latitude;
-		this->OverlapNextTemperateZone = 2.0;
+		this->OverlapNextTemperateZone = 4.0;
 		this->MeanTemp = Season<double>(7.0, 25.0, 13.0, -6.0);
 		this->VariationInTemp = Propability(0.0, 4.5);
 		this->TempZoneName = "moderate";
@@ -179,7 +179,7 @@ private:
 	void setToTropical() {
 		this->_G_ = &this->_G_->getInstance();
 		this->latitude = this->_G_->_TROPICAL_latitude;
-		this->OverlapNextTemperateZone = 2.0;
+		this->OverlapNextTemperateZone = 4.0;
 		this->MeanTemp = Season<double>(30.0, 30.0, 30.0, 30.0);
 		this->VariationInTemp = Propability(0, 1.3);
 		this->TempZoneName = "tropical";
