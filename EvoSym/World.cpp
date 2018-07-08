@@ -55,72 +55,9 @@ bool World::createWorld() {
 			this->WorldParts.at(i).setSeason(angle);//season
 		}
 	}
-	/*
-	//4.Give every DeltaWorld his Neigbours
-	for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {//pixel
-		for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {//pixel
+	
 
-			int i = (xi)*_WORLD_DIMENSION + yi;	//array element
-
-			DeltaWorld* left	= nullptr;
-			DeltaWorld* right	= nullptr;
-			DeltaWorld* top		= nullptr;
-			DeltaWorld* bottom	= nullptr;
-
-			DeltaWorld* top_left		= nullptr;
-			DeltaWorld* top_right		= nullptr;
-			DeltaWorld* bottom_left		= nullptr;
-			DeltaWorld* bottom_right	= nullptr;
-
-			bool left_border_violated	= (xi - 1 > -1) ? false : true;
-			bool right_border_violated	= (xi + 1 < _WORLD_DIMENSION) ? false : true;
-
-			bool top_border_violated	= (yi - 1 > -1) ? false : true;
-			bool bottom_border_violated = (yi + 1 < _WORLD_DIMENSION) ? false : true;
-			
-			int in;
-			if (!left_border_violated) {//left
-				in = (xi - 1)*_WORLD_DIMENSION + yi;
-				left = this->WorldParts[in];
-			}
-			if (!right_border_violated) {//right
-				in = (xi + 1)*_WORLD_DIMENSION + yi;
-				right = this->WorldParts[in];
-			}
-			if (!bottom_border_violated) {//bottom
-				in = (xi)*_WORLD_DIMENSION + yi + 1;
-				bottom = this->WorldParts[in];
-
-				if (!left_border_violated) {//bottom-left
-					in = (xi - 1)*_WORLD_DIMENSION + yi + 1;
-					bottom_left = this->WorldParts[in];
-				}
-
-				if (!right_border_violated) {//bottom-right
-					in = (xi + 1)*_WORLD_DIMENSION + yi + 1;
-					bottom_right = this->WorldParts[in];
-				}
-			}
-			if (!top_border_violated) {//top
-				in = (xi)*_WORLD_DIMENSION + yi - 1;
-				top = this->WorldParts[in];
-
-				if (!left_border_violated) {//top-left
-					in = (xi - 1)*_WORLD_DIMENSION + yi - 1;
-					top_left = this->WorldParts[in];
-				}
-
-				if (!right_border_violated) {//top-right
-					in = (xi + 1)*_WORLD_DIMENSION + yi - 1;
-					top_right = this->WorldParts[in];
-				}
-			}					
-			this->WorldParts[i]->setNeigbours(left, right, top, bottom, bottom_right, bottom_left,top_left,top_right);
-		}
-	}
-	*/
-
-	////5.Region and Height and initTemp and resources
+	////4.Region and Height and initTemp and resources
 	if (this->loadFromImage) {
 		this->createSetHeightPredefined();
 	}
@@ -140,17 +77,17 @@ bool World::createWorld() {
 	std::vector<int> indices;
 	indices.reserve(_AMOUNT_DELTA_WORLDS);
 	for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-		indices.push_back(i);
+		indices.emplace_back(i);
 	}
 	do{
 		std::random_shuffle(indices.begin(), indices.end());//shuffle the idices for rand access
 		erosion = false;
 		i_er++;
 		for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-			if (! this->_RG_->getRegion(this->WorldParts[indices.at(i)].getRegionId())->hasEnoughNeigboursWithSameRegion(this->getNumNeigboursSameRegion(i, this->WorldParts.at(indices.at(i)).getRegionId())) ){
+			if (! this->_RG_->getRegion(this->WorldParts[indices.at(i)].getRegionId())->hasEnoughNeigboursWithSameRegion(this->getNumNeigboursSameRegion(indices.at(i), this->WorldParts.at(indices.at(i)).getRegionId())) ){
 				
 				int Region_of_neigbours[8];
-				this->getNeigbourRegionIdAT(Region_of_neigbours, i);
+				this->getNeigbourRegionIdAT(Region_of_neigbours, indices.at(i));
 				this->WorldParts.at(indices.at(i)).changeRegionToFitNeigbours(Region_of_neigbours);
 				bool erosion = true;
 			}
@@ -190,7 +127,7 @@ void World::createSetHeightRand() {
 			x = xi - _DIMENSION_HALF;
 			y = yi - _DIMENSION_HALF;
 			int i = (xi)*_WORLD_DIMENSION + yi;
-			perlNoiseSmootFaktor.push_back(double(Noise.noise(x*_CURVATURE_CHANGE_RATE_PERLIAN_NOISE + xOffset, y*_CURVATURE_CHANGE_RATE_PERLIAN_NOISE + yOffset)));//-1...1
+			perlNoiseSmootFaktor.emplace_back(double(Noise.noise(x*_CURVATURE_CHANGE_RATE_PERLIAN_NOISE + xOffset, y*_CURVATURE_CHANGE_RATE_PERLIAN_NOISE + yOffset)));//-1...1
 			perlNoiseSmootFaktor.at(i) = (perlNoiseSmootFaktor.at(i) + 0.1) / 2.0;//0...1
 			perlNoiseSmootFaktor.at(i) = perlNoiseSmootFaktor.at(i) * (_MIN_CURVATURE_PERLIAN_NOISE + _MAX_CURVATURE_PERLIAN_NOISE);//0..._max - _min
 			perlNoiseSmootFaktor.at(i) = perlNoiseSmootFaktor.at(i) + _MIN_CURVATURE_PERLIAN_NOISE;//_max ... _min
@@ -398,14 +335,19 @@ void World::Update() {
 	//UPDATE DeltaWorld
 
 	//BOOST_FOREACH
-	BOOST_FOREACH(DeltaWorld WorldPart, this->WorldParts) {
+	/*BOOST_FOREACH(DeltaWorld WorldPart, this->WorldParts) {
 		WorldPart.setSeason(this->_G_->_SeasonShift + WorldPart.getPosition().getArg());
 		WorldPart.simulate(this->time);
-	}	
+	}*/	
 	//BOOST_FOREACH
 
+	for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
+		this->WorldParts[i].setSeason(this->_G_->_SeasonShift + this->WorldParts[i].getPosition().getArg());
+		this->WorldParts[i].simulate(this->time);
+	}
+
 	//update temp for every neigbour
-	double NeigbourTemp[8];
+	/*double NeigbourTemp[8];
 	int i;
 	for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {
 		for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {
@@ -413,7 +355,7 @@ void World::Update() {
 			this->getNeigbourTempXY(this->WorldParts[i].getTemp(), NeigbourTemp, xi, yi);
 			this->WorldParts[i].setNeigboursTemperature(NeigbourTemp);
 		}
-	}
+	}*/
 
 	BOOST_FOREACH(Animal animal, this->Animals) {
 		animal.simulate(this->time);
@@ -487,7 +429,7 @@ void World::getNeigbourRegionIdXY(int neigbourRegionId[], int x, int y, const in
 				neigbourRegionId[2] = this->WorldParts.at(in).getRegionId();
 
 				if (!left_border_violated) {//top-left
-					in = (x - 1)*_WORLD_DIMENSION +  - 1;
+					in = (x - 1)*_WORLD_DIMENSION + y - 1;
 					neigbourRegionId[3] = this->WorldParts.at(in).getRegionId();
 				}
 				else {
@@ -513,8 +455,8 @@ void World::getNeigbourRegionIdAT(int neigbourRegionId[], int at, const int num_
 
 	//at to x y
 
-	int x = this->at2xy.at(at).x;
-	int y = this->at2xy.at(at).y;
+	int x = this->at2xy_LOOKUPTABLE.at(at).x;
+	int y = this->at2xy_LOOKUPTABLE.at(at).y;
 
 	bool left_border_violated = (x - 1 > -1) ? false : true;
 	bool right_border_violated = (x + 1 < _WORLD_DIMENSION) ? false : true;
@@ -567,7 +509,7 @@ void World::getNeigbourRegionIdAT(int neigbourRegionId[], int at, const int num_
 		neigbourRegionId[2] = this->WorldParts.at(in).getRegionId();
 
 		if (!left_border_violated) {//top-left
-			in = (x - 1)*_WORLD_DIMENSION + -1;
+			in = (x - 1)*_WORLD_DIMENSION + y -1;
 			neigbourRegionId[3] = this->WorldParts.at(in).getRegionId();
 		}
 		else {
@@ -642,7 +584,7 @@ void World::getNeigbourTempXY(double temp, double neigbourTemp[], int x, int y, 
 		neigbourTemp[2] = this->WorldParts[in].getTemp();
 
 		if (!left_border_violated) {//top-left
-			in = (x - 1)*_WORLD_DIMENSION + -1;
+			in = (x - 1)*_WORLD_DIMENSION + y -1;
 			neigbourTemp[3] = this->WorldParts[in].getTemp();
 		}
 		else {

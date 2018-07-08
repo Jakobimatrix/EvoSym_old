@@ -37,16 +37,17 @@ Am siebten Tag wollte ich mich eignendlich ausruhen und die Symulation laufen la
 
 #include <string>
 #include <math.h>
+#include <vector>
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
 
-#include "World.h"
+#include "world.h"
 #include "globals.h"
-#include "WorldView.h"
-#include "TileMap.h"
+#include "worldview.h"
+#include "tilemap.h"
 #include "functions.h"
-//#include "Timer.h"
+#include "timer.h"
 
 
 
@@ -138,7 +139,7 @@ int main()
 	//}
 	//std::getchar();
 	//return 0;
-	
+
 	World SimulatedWorld = World(_DEFINED_MAP);
 
 	if (!SimulatedWorld.getIsReady()) {

@@ -10,6 +10,7 @@
 
 #include <math.h> /* floor */
 #include <string>
+#include <vector>
 #include <SFML\Graphics.hpp>
 #include "Clickable.h"
 #include "globals.h"
@@ -22,9 +23,12 @@
 
 
 typedef struct Ground {
-	double* layerTemp; //array with the temperatures for all layers
+	std::vector<double> layerTemp; //array with the temperatures for all layers
 	unsigned int amountLayers; //number of layers
 	double lastLayerTemp; //temperature of the last layer
+	~Ground(){
+		std::vector<double>().swap(layerTemp);//That will create an empty vector with no memory allocated and swap it with layerTemp, effectively deallocating the memory.
+	}
 }Ground;
 
 class DeltaWorld : public SimulatedUnit
@@ -147,8 +151,10 @@ public:
 			this->TempDropDueHeight = this->height * _TEMPERATURE_DROP_PER_METER;
 		}
 		this->temperature = 0.0;
-		std::fill(this->TempNeigbours[0], this->TempNeigbours[7], 0.0);
-	
+
+		for (int i = 0; i < 8; i++) {
+			this->TempNeigbours[i] = 0.0; 
+		}
 
 		//resources
 		
@@ -164,7 +170,7 @@ public:
 
 		GroundProperties* ground_properties = this->_RG_->getRegion(this->regionID)->getGroundProperties(); //object exists somewhere else, dont delete!
 		this->ground.amountLayers = (unsigned int)(ground_properties->groundDepth / ground_properties->groundLayerThickness); //calculate how many layers we will have
-		this->ground.layerTemp = new double[this->ground.amountLayers]; //memory must be allocated
+		this->ground.layerTemp.reserve(this->ground.amountLayers); //memory must be allocated
 
 		//calculate the temperature of the last layer, assuming liniarity between min and max latitude
 		double a = (ground_properties->groundLastLayerTemp[1] - ground_properties->groundLastLayerTemp[0]) / (this->_G_->_BREITENGRAD.getSpan());
@@ -173,12 +179,12 @@ public:
 
 		//initiate all layers with the temp of the last layer
 		for (unsigned int i = 0; i < this->ground.amountLayers; i++) {
-			this->ground.layerTemp[i] = this->ground.lastLayerTemp;
+			this->ground.layerTemp.emplace_back(this->ground.lastLayerTemp);
 		}
 		this->initilized = true;		
 	}
 	~DeltaWorld(){	
-		delete[] this->ground.layerTemp;
+
 	}
 
 

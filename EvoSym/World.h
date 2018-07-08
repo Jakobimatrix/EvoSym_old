@@ -26,7 +26,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
 
-struct xy {
+struct xyMap {
 	unsigned int x;
 	unsigned int y;
 };
@@ -38,7 +38,7 @@ public:
 	//ary[i*sizeY + j]
 	std::vector<DeltaWorld> WorldParts;
 	std::vector<Animal> Animals;
-	std::vector<xy> at2xy;
+	std::vector<xyMap> at2xy_LOOKUPTABLE;
 private:
 
 	GlobalSingleton* _G_;
@@ -73,6 +73,7 @@ public:
 	~World()
 	{
 		std::vector<DeltaWorld>().swap(WorldParts);
+		std::vector<xyMap>().swap(at2xy_LOOKUPTABLE);
 	}
 	void World::Update();
 	std::string GetTimeReadable(bool y = true, bool d = true, bool h = false, bool m = false, bool s = false);
@@ -81,13 +82,13 @@ public:
 		this->Animals.clear();
 		if (!this->init) {
 			for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-				this->WorldParts.push_back(DeltaWorld());
-				this->at2xy.push_back(xy());//init
+				this->WorldParts.emplace_back(DeltaWorld());
+				this->at2xy_LOOKUPTABLE.emplace_back(xyMap());//init
 			}
 			for (unsigned int x = 0; x < _WORLD_DIMENSION; x++) {
 				for (unsigned int y = 0; y < _WORLD_DIMENSION; y++) {
-					this->at2xy.at(x*_WORLD_DIMENSION + y).x = x;
-					this->at2xy.at(x*_WORLD_DIMENSION + y).y = y;
+					this->at2xy_LOOKUPTABLE.at(x*_WORLD_DIMENSION + y).x = x;
+					this->at2xy_LOOKUPTABLE.at(x*_WORLD_DIMENSION + y).y = y;
 				}
 			}
 		}
