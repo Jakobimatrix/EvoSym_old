@@ -232,8 +232,7 @@ void DeltaWorld::update(double tnow) {
 		this->calcResources(dt);
 		this->calcIceThicknes(dt);
 		this->calcGroundTemp(dt, this->temperature);
-	}
-	
+	}	
 }
 void DeltaWorld::calcResources(double dt) {
 
