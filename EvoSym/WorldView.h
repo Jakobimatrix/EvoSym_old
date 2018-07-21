@@ -69,8 +69,8 @@ public:
 
 		this->_G_ = &this->_G_->getInstance();
 
-		this->window.create(sf::VideoMode(width, height, desktop.bitsPerPixel), "EvoSym", sf::Style::Fullscreen);
 		//this->window.create(sf::VideoMode(width, height, desktop.bitsPerPixel), "EvoSym", sf::Style::Default);
+		this->window.create(sf::VideoMode(width, height, desktop.bitsPerPixel), "EvoSym", sf::Style::Default);
 
 
 		this->window.setVerticalSyncEnabled(true); // refresh rate synchronized with the vertical frequency of the monitor

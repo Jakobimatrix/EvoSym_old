@@ -1,0 +1,48 @@
+Multithreading einzelne funktionen
+	#include <boost/thread.hpp>
+	#include <boost/bind.hpp>
+
+	boost::thread_group TG;
+	TG.create_thread(boost::bind(1,2,3,4...));
+	//1 == Referenz auf die Function z.B. &myFunc
+	//2 - n == alle variablen, die der Funktion übergeben werden sollen, auch die, die schon als default vordefiniert wurden
+	//1 == wenn eine Methode einer klasse aufgerufen werden soll, dann: &class::methode
+	//2 == Referenz auf die Classeninstance also
+	//class myClass;
+	//2 == &myClass
+	//3 - n == alle variablen, die der Funktion übergeben werden sollen, auch die, die schon als default vordefiniert wurden
+
+	zum schluss!!
+
+	TG.join_all(); //warte bis alle thread erledigt sind -> alle threads sollten etwa gleich lange dauern und !!! nicht voneinander abhängen
+
+	Multithreading using forloop
+	#include <boost/foreach.hpp>
+
+	FOREACH(A,B){
+		A.doThings();
+	}
+	A == Typ und name
+	B == Pointer auf erstes Element in /Array/vector etc
+
+
+	example 1
+	std::list<int> list_int(  );
+	BOOST_REVERSE_FOREACH(int i, list_int)
+	{
+		// do something with i
+	}
+
+	example 2
+	extern std::vector<float> get_vector_float();
+	BOOST_FOREACH( float f, get_vector_float() )
+	{
+	// Note: get_vector_float() will be called exactly once
+	}
+
+	exmple 3
+	BOOST_FOREACH(DeltaWorld* WorldPart, this->WorldParts) {
+		WorldPart->setSeason(this->_G_->_SeasonShift + WorldPart->getPosition().getArg());
+		WorldPart->simulate(this->time);
+	}
+	more examples http://www.boost.org/doc/libs/1_61_0/doc/html/foreach.html
