@@ -148,7 +148,7 @@ void WorldView::Update(World& W, bool forceUpdate) {
 
 		//DeltaWorldDetail highlight tile
 		if (this->focussed_delta_world > -1) {
-			W.WorldParts[this->focussed_delta_world].setShowInfo(true);
+			W.world_parts[this->focussed_delta_world].setShowInfo(true);
 		}
 		//int count = 0;
 		if (this->majorChange) {
@@ -171,8 +171,8 @@ void WorldView::Update(World& W, bool forceUpdate) {
 				for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {
 					//if (drawFromX < xi && xi < drawToX && drawFromY < yi && yi < drawToY) {//draw only visible Tiles //TODO doesnt work
 						int i = xi*_WORLD_DIMENSION + yi;
-						if (W.WorldParts[i].hadChangeInAppearance(this->DeltaWorldColoring)) {
-							this->map.updateOne(xi, yi, &W.WorldParts[i], this->DeltaWorldColoring);	
+						if (W.world_parts[i].hadChangeInAppearance(this->DeltaWorldColoring)) {
+							this->map.updateOne(xi, yi, &W.world_parts[i], this->DeltaWorldColoring);	
 						}
 					//}
 				}
@@ -180,7 +180,7 @@ void WorldView::Update(World& W, bool forceUpdate) {
 		}
 		//reset the highlight of the choosenDeltaWorld
 		if (this->focussed_delta_world > -1) {
-			W.WorldParts[this->focussed_delta_world].setShowInfo(false);
+			W.world_parts[this->focussed_delta_world].setShowInfo(false);
 		}
 		window.draw(map);
 		//set the view to defaut, that teh buttons and menues always stay at the same position
@@ -202,8 +202,8 @@ void WorldView::Update(World& W, bool forceUpdate) {
 
 		//Infobox
 		if (this->focussed_delta_world > -1) {
-			W.WorldParts[this->focussed_delta_world].setShowInfo(false);
-			this->info_text.setString(W.WorldParts[this->focussed_delta_world].getInfoString());
+			W.world_parts[this->focussed_delta_world].setShowInfo(false);
+			this->info_text.setString(W.world_parts[this->focussed_delta_world].getInfoString());
 			window.draw(this->info_box);
 			window.draw(this->info_text);
 		}

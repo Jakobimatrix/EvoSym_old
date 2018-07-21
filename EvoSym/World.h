@@ -36,9 +36,9 @@ public:
 	//int *ary = new int[sizeX*sizeY];
 	//// ary[i][j] is then rewritten as
 	//ary[i*sizeY + j]
-	std::vector<DeltaWorld> WorldParts;
-	std::vector<Animal> Animals;
-	std::vector<xyMap> at2xy_LOOKUPTABLE; //to find teh x y coordnate if just iterating through the WorldParts Vector.
+	std::vector<DeltaWorld> world_parts;
+	std::vector<Animal> animals;
+	std::vector<xyMap> at2xy_lookup_table; //to find teh x y coordnate if just iterating through the WorldParts Vector.
 private:
 
 	GlobalSingleton* _G_;
@@ -46,11 +46,8 @@ private:
 	double time;
 
 	bool init;
-	bool loadFromImage;
-	sf::Image WorldHeightMap;
-
-	double offset_x = 0;
-	double offset_y = 0;
+	bool load_from_image;
+	sf::Image world_height_map;
 
 public:
 
@@ -61,12 +58,12 @@ public:
 	**/
 	World(std::string imgSRC = "")
 	{
-		this->WorldParts.reserve(_AMOUNT_DELTA_WORLDS);
-		if (imgSRC != "" && WorldHeightMap.loadFromFile(imgSRC)) {
-			this->loadFromImage = true;
+		this->world_parts.reserve(_AMOUNT_DELTA_WORLDS);
+		if (imgSRC != "" && world_height_map.loadFromFile(imgSRC)) {
+			this->load_from_image = true;
 		}
 		else {
-			this->loadFromImage = false;
+			this->load_from_image = false;
 		}
 		this->_G_ = &this->_G_->getInstance();
 		this->_RG_ = &this->_RG_->getInstance();
@@ -81,8 +78,8 @@ public:
 	**/
 	~World()
 	{
-		std::vector<DeltaWorld>().swap(WorldParts);
-		std::vector<xyMap>().swap(at2xy_LOOKUPTABLE);
+		std::vector<DeltaWorld>().swap(world_parts);
+		std::vector<xyMap>().swap(at2xy_lookup_table);
 	}
 
 	/**

@@ -38,10 +38,10 @@ private:
 			//Code bodyProportions;		//weight/energy reservoir/size
 			//Code stats;		//ofense,defense,topspeed
 			//Code senses;	//hearing/smelling/vision/taste
-		}Gene;
+		}gene;
 
 		struct {
-			bool isAlive;
+			bool is_alive;
 			double size;		//m
 			double weight;		//Kg
 			double strength;	//kg bewegt werden kann
@@ -55,20 +55,16 @@ private:
 			double water_max;	//L
 
 			//factos to reduce calculationtime
-			double weightStrengthFactor;
+			double weight_strength_factor;
 
-		}isCondition;	
-
-		struct {
-			DeltaWorld CurrentEnvironment;
-		}localWorld;
+		}is_condition;	
 
 		struct {
 			double points;
 			
 		}evolution;
 
-	}AnimalCharacteristics;
+	}animal_characteristics;
 
 	///initiation
 	void init();
@@ -101,7 +97,7 @@ private:
 
 public:
 	bool isAlive() {
-		return this->AnimalCharacteristics.isCondition.isAlive;
+		return this->animal_characteristics.is_condition.is_alive;
 	}
 
 	void setEnvironment();

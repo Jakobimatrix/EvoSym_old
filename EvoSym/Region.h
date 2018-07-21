@@ -7,37 +7,37 @@
 #include "Skills.h"
 
 typedef struct GroundProperties {
-	double groundPt1T; //T parameter of discrete Pt1 behaviour
-	double groundaboveLayerFacator; //weigheted mean factor for the layer above
-	double groundbelowLayerFacator; //weigheted mean factor for the layer below
-	double groundDepth; //[m] at which layer we have a stable temperature
-	double groundLayerThickness; //[m] how thik one layer shall be
-	double groundLastLayerTemp[2]; //[°C,°C] The temperature of the last layer for latitude [0°,90°]
+	double ground_pt1_t; //T parameter of discrete Pt1 behaviour
+	double ground_above_layer_factor; //weigheted mean factor for the layer above
+	double ground_below_layer_factor; //weigheted mean factor for the layer below
+	double ground_depth; //[m] at which layer we have a stable temperature
+	double ground_layer_thickness; //[m] how thik one layer shall be
+	double ground_last_layer_temp[2]; //[°C,°C] The temperature of the last layer for latitude [0°,90°]
 }GroundProperties;
 
 class Region
 {
 private:
 	
-	Season<Propability> VariationInTemperature[4]; //regionalabhängiges Temperaturrauschen für polar,mediteran,subtrop,trop
-	MinMax Height;
-	bool occurrenceInTemperateZone[4];	//mit welcher wahrschenlichkeit diese Region in einer der 4 Klimazonen vorkommt
+	Season<Propability> variation_in_temperature[4]; //regionalabhängiges Temperaturrauschen für polar,mediteran,subtrop,trop
+	MinMax height;
+	bool occurrence_in_temperature_zone[4];	//mit welcher wahrschenlichkeit diese Region in einer der 4 Klimazonen vorkommt
 		
-	Skills SkillToCross[3];	//alle Skills, die ein Tier haben muss, um durch diese Region laufen/fliegen/schwimmen zu können
-	Skills SkillToReachResources[3]; //alle Skills, die notwendig sind um die resourcen erreichen zu können
-	double ResourceDistributionViaSkill[3];//wie viel Prozent der Resourcen mit diesem Skill zu erreichen sind
+	Skills skill_to_cross[3];	//alle Skills, die ein Tier haben muss, um durch diese Region laufen/fliegen/schwimmen zu können
+	Skills skill_to_reach_resources[3]; //alle Skills, die notwendig sind um die resourcen erreichen zu können
+	double resource_distribution_via_skill[3];//wie viel Prozent der Resourcen mit diesem Skill zu erreichen sind
 
-	int possibleNeigbourChanseFaktor[_AMOUNT_REGIONS];//rellative Wahrscheinlichkeit, mit der DIESE Region auftritt in Abhängigkeit eines Nachbarn
-	int regionId;
-	int minNeigboursWithSameRegion;//DIESE Region tritt nur auf, wenn es mindestens n Nachbarn gibt, die auch DIESE Region sind
+	int possible_neighbour_chanse_factor[_AMOUNT_REGIONS];//rellative Wahrscheinlichkeit, mit der DIESE Region auftritt in Abhängigkeit eines Nachbarn
+	int region_id;
+	int min_neighbour_with_same_region;//DIESE Region tritt nur auf, wenn es mindestens n Nachbarn gibt, die auch DIESE Region sind
 
-	double maxFreshWater;	//l per m^2
-	double maxPlants;		//Kg per m^2
-	double tempOptimalGroth;
-	Season<double> TauFreshWater;
-	Season<double> TauPlants;
+	double max_fresh_water;	//l per m^2
+	double max_plants;		//Kg per m^2
+	double temp_optimal_growth;
+	Season<double> tau_fresh_water;
+	Season<double> tau_plants;
 
-	GroundProperties groundProperties;
+	GroundProperties ground_properties;
 
 public:
 	Region() {
@@ -61,17 +61,17 @@ public:
 	bool occoursInTempZone(int i)
 	{
 		if (i > _AMOUNT_TEMPERATE_ZONES) return 0;
-		return this->occurrenceInTemperateZone[i];
+		return this->occurrence_in_temperature_zone[i];
 	}
 	bool occoursInHeight(double h) {
-		return this->Height.isWithin(h);
+		return this->height.isWithin(h);
 	}
 	int getRegionChanseFaktor(int region) {
 		if (region > _AMOUNT_REGIONS) {
 			std::cout << "ERROR: Region ID not valide" << std::endl;
 			return 0;
 		}
-		return this->possibleNeigbourChanseFaktor[region];
+		return this->possible_neighbour_chanse_factor[region];
 	}
 
 	Season<Propability>* getAllSeasonDependantTempVariation(int tempZohne);
@@ -79,24 +79,24 @@ public:
 	double getSeasonDependantTempVariation(int seasonId, int tempZohne);
 
 	int getRegionId() {
-		return this->regionId;
+		return this->region_id;
 	}
 
 	bool hasEnoughNeigboursWithSameRegion(int neigbours) {
-		return neigbours < this->minNeigboursWithSameRegion ? false : true;
+		return neigbours < this->min_neighbour_with_same_region ? false : true;
 	}
 
 	double getMaxPlants() {
-		return this->maxPlants;
+		return this->max_plants;
 	}
 	double  getMaxFreshWater() {
-		return this->maxFreshWater;
+		return this->max_fresh_water;
 	}
 	Season<double>* getTauFreshWater() {
-		return &this->TauFreshWater;
+		return &this->tau_fresh_water;
 	}
 	Season<double>* getTauPlants() {
-		return &this->TauPlants;
+		return &this->tau_plants;
 	}
 
 

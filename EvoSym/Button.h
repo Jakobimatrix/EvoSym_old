@@ -17,17 +17,17 @@
 
 class Button : public ClickableRectangleShape {
 public:
-	GlobalDrawSingleton* G; //global drawing information
+	GlobalDrawSingleton* _G_DRAW_; //global drawing information
 	sf::Text text; //the text on the button
-	sf::Color ButtonColor; //the colour ot the button
+	sf::Color button_color; //the colour ot the button
 
 	/**
 	* @function Button()
 	* @brief: Default constructor. Sets a default color but no position or shape.
 	**/
 	Button() {
-		this->G = &this->G->getInstance();
-		this->ButtonColor = sf::Color(200, 200, 200);
+		this->_G_DRAW_ = &this->_G_DRAW_->getInstance();
+		this->button_color = sf::Color(200, 200, 200);
 	}
 
 	/**
@@ -38,9 +38,9 @@ public:
 	**/
 	Button(sf::RectangleShape& Rshape, sf::Color& ButtonColor = sf::Color(200, 200, 200)):ClickableRectangleShape(Rshape)
 	{
-		this->G = &this->G->getInstance();
+		this->_G_DRAW_ = &this->_G_DRAW_->getInstance();
 		//this->shape = Rshape;
-		this->ButtonColor = ButtonColor;
+		this->button_color = ButtonColor;
 		this->shape.setFillColor(ButtonColor);
 	}
 
@@ -53,7 +53,7 @@ public:
 	**/
 	bool hover(sf::Vector2i& mousePosition, sf::Color& hooverColor = sf::Color(250, 250, 250)) {
 		if (this->Over(mousePosition)) {
-			this->shape.setFillColor(sf::Color(this->ButtonColor));
+			this->shape.setFillColor(sf::Color(this->button_color));
 			return true;
 		}
 		else {
@@ -92,7 +92,7 @@ public:
 	void setText(std::string& text, int charSize = 20, sf::Color& TextColor = sf::Color(0, 0, 0)) {
 		this->text.setString(text);
 		this->text.setPosition(this->shape.getPosition().x + this->shape.getSize().x *0.5f, this->shape.getPosition().y + this->shape.getSize().y * 0.5f);
-		this->text.setFont(G->arial);
+		this->text.setFont(_G_DRAW_->arial);
 		this->text.setFillColor(TextColor);
 		this->text.setCharacterSize(charSize);
 		this->text.setOrigin(this->text.getLocalBounds().width * 0.5f, this->text.getLocalBounds().height);

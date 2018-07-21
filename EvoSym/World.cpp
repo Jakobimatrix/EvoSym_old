@@ -9,22 +9,22 @@
 
 void World::reset() {
 	this->time = 0;
-	this->Animals.clear();
+	this->animals.clear();
 	if (!this->init) {
 		for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-			this->WorldParts.emplace_back(DeltaWorld());
-			this->at2xy_LOOKUPTABLE.emplace_back(xyMap());//init
+			this->world_parts.emplace_back(DeltaWorld());
+			this->at2xy_lookup_table.emplace_back(xyMap());//init
 		}
 		for (unsigned int x = 0; x < _WORLD_DIMENSION; x++) {
 			for (unsigned int y = 0; y < _WORLD_DIMENSION; y++) {
-				this->at2xy_LOOKUPTABLE[x*_WORLD_DIMENSION + y].x = x;
-				this->at2xy_LOOKUPTABLE[x*_WORLD_DIMENSION + y].y = y;
+				this->at2xy_lookup_table[x*_WORLD_DIMENSION + y].x = x;
+				this->at2xy_lookup_table[x*_WORLD_DIMENSION + y].y = y;
 			}
 		}
 	}
 	else {
 		for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-			this->WorldParts[i].reset();
+			this->world_parts[i].reset();
 		}
 	}
 	this->init = this->createWorld();
@@ -68,13 +68,13 @@ bool World::createWorld() {
 			//2.TemperateZone;
 			//done in constructor of delta world using latitude
 			
-			this->WorldParts.at(i).initSetPositionAndLatitude(DeltaPosition, latitude);
+			this->world_parts.at(i).initSetPositionAndLatitude(DeltaPosition, latitude);
 		}
 	}
 	
 
 	////4.Region and Height and initTemp and resources
-	if (this->loadFromImage) {
+	if (this->load_from_image) {
 		this->createSetHeightPredefined();
 	}
 	else {
@@ -98,11 +98,11 @@ bool World::createWorld() {
 		erosion = false;
 		i_er++;
 		for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-			if (! this->_RG_->getRegion(this->WorldParts[indices[i]].getRegionId())->hasEnoughNeigboursWithSameRegion(this->getNumNeigboursSameRegion(indices[i], this->WorldParts[indices[i]].getRegionId())) ){
+			if (! this->_RG_->getRegion(this->world_parts[indices[i]].getRegionId())->hasEnoughNeigboursWithSameRegion(this->getNumNeigboursSameRegion(indices[i], this->world_parts[indices[i]].getRegionId())) ){
 				
 				int Region_of_neigbours[8];
 				this->getNeigbourRegionIdAT(Region_of_neigbours, indices[i]);
-				this->WorldParts[indices[i]].changeRegionToFitNeigbours(Region_of_neigbours);
+				this->world_parts[indices[i]].changeRegionToFitNeigbours(Region_of_neigbours);
 				erosion = true;
 			}
 		}
@@ -112,7 +112,7 @@ bool World::createWorld() {
 	std::vector<int>().swap(indices);//That will create an empty vector with no memory allocated and swap it with indices, effectively deallocating the memory.
 
 	for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-		if (!this->WorldParts[i].isInitialized()) {
+		if (!this->world_parts[i].isInitialized()) {
 			std::cout << "ERROR: Some WorldParts remain uninitialized!" << std::endl;
 			std::getchar();
 			return false;
@@ -132,7 +132,7 @@ void World::createSetHeightRand() {
 	std::vector<double> perlNoiseSmootFaktor;
 	perlNoiseSmootFaktor.reserve(_AMOUNT_DELTA_WORLDS);
 
-	SimplexNoise1234 Noise = SimplexNoise1234(false);//TODO true
+	SimplexNoise1234 Noise = SimplexNoise1234(true);
 	//Verteilung der Krümmung
 	//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear. dont go in negativ offset.
 	xOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);
@@ -229,7 +229,7 @@ void World::createSetHeightRand() {
 			//Durch Höhe und Breitengrad wird die Auswahl begrenzt
 			int NeigbourRegionId[8];
 			this->getNeigbourRegionIdXY(NeigbourRegionId, xi, yi);
-			this->WorldParts.at(i).setRandRegion(height, NeigbourRegionId);
+			this->world_parts.at(i).setRandRegion(height, NeigbourRegionId);
 		}
 	}
 	std::vector<double>().swap(perlNoiseSmootFaktor);//That will create an empty vector with no memory allocated and swap it with perlNoiseSmootFaktor, effectively deallocating the memory.
@@ -238,14 +238,14 @@ void World::createSetHeightRand() {
 
 void World::createSetHeightPredefined() {
 	std::cout << "create world from predefined image" << std::endl;
-	sf::Vector2u ImageSize = this->WorldHeightMap.getSize();
+	sf::Vector2u ImageSize = this->world_height_map.getSize();
 
 	u_int *a = new u_int[ImageSize.x*ImageSize.y];//array aller Pixel RGB
 	u_char *b = new u_char[_AMOUNT_DELTA_WORLDS];//array resultierende Pixel GREY
 
 	for (unsigned int x = 0; x < ImageSize.x; x++) {
 		for (unsigned int y = 0; y < ImageSize.y; y++) {
-			sf::Color pix = this->WorldHeightMap.getPixel(x, y);
+			sf::Color pix = this->world_height_map.getPixel(x, y);
 			a[x*ImageSize.x + y] = (pix.r << 16) | (pix.g << 8) | (pix.b);
 		}
 	}
@@ -273,7 +273,7 @@ void World::createSetHeightPredefined() {
 			int Region_of_neigbours[8];
 			this->getNeigbourRegionIdXY(Region_of_neigbours, x, y);
 
-			this->WorldParts.at(i).setRandRegion(height, Region_of_neigbours);
+			this->world_parts.at(i).setRandRegion(height, Region_of_neigbours);
 		}
 	}
 	delete[] a;
@@ -360,7 +360,7 @@ void World::Update() {
 	//UPDATE DeltaWorld
 
 	//BOOST_FOREACH
-	BOOST_FOREACH(DeltaWorld &WorldPart, this->WorldParts) {
+	BOOST_FOREACH(DeltaWorld &WorldPart, this->world_parts) {
 		WorldPart.simulate(this->time);
 	}	
 	//BOOST_FOREACH
@@ -370,11 +370,11 @@ void World::Update() {
 	for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {
 		for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {
 			i = (xi)*_WORLD_DIMENSION + yi;
-			this->WorldParts[i].setNeigboursTemperature(this->getNeigbourMeanTempXY(this->WorldParts[i].getTemp(), xi, yi));
+			this->world_parts[i].setNeigboursTemperature(this->getNeigbourMeanTempXY(this->world_parts[i].getTemp(), xi, yi));
 		}
 	}
 
-	BOOST_FOREACH(Animal animal, this->Animals) {
+	BOOST_FOREACH(Animal animal, this->animals) {
 		animal.simulate(this->time);
 	}
 
@@ -404,25 +404,25 @@ void World::getNeigbourRegionIdXY(int neigbourRegionId[], int x, int y, const in
 			int in;
 			if (!left_border_violated) {//left
 				in = (x - 1)*_WORLD_DIMENSION + y;
-				neigbourRegionId[4] = this->WorldParts.at(in).getRegionId();
+				neigbourRegionId[4] = this->world_parts.at(in).getRegionId();
 			}
 			else {
 				neigbourRegionId[4] = -1;
 			}
 			if (!right_border_violated) {//right
 				in = (x + 1)*_WORLD_DIMENSION + y;
-				neigbourRegionId[0] = this->WorldParts.at(in).getRegionId();
+				neigbourRegionId[0] = this->world_parts.at(in).getRegionId();
 			}
 			else {
 				neigbourRegionId[0] = -1;
 			}
 			if (!bottom_border_violated) {//bottom
 				in = (x)*_WORLD_DIMENSION + y + 1;
-				neigbourRegionId[6] = this->WorldParts.at(in).getRegionId();
+				neigbourRegionId[6] = this->world_parts.at(in).getRegionId();
 
 				if (!left_border_violated) {//bottom-left
 					in = (x - 1)*_WORLD_DIMENSION + y + 1;
-					neigbourRegionId[5] = this->WorldParts.at(in).getRegionId();
+					neigbourRegionId[5] = this->world_parts.at(in).getRegionId();
 				}
 				else {
 					neigbourRegionId[5] = -1;
@@ -430,7 +430,7 @@ void World::getNeigbourRegionIdXY(int neigbourRegionId[], int x, int y, const in
 
 				if (!right_border_violated) {//bottom-right
 					in = (x + 1)*_WORLD_DIMENSION + y + 1;
-					neigbourRegionId[7] = this->WorldParts.at(in).getRegionId();
+					neigbourRegionId[7] = this->world_parts.at(in).getRegionId();
 				}
 				else {
 					neigbourRegionId[7] = -1;
@@ -443,11 +443,11 @@ void World::getNeigbourRegionIdXY(int neigbourRegionId[], int x, int y, const in
 			}
 			if (!top_border_violated) {//top
 				in = (x)*_WORLD_DIMENSION + y - 1;
-				neigbourRegionId[2] = this->WorldParts.at(in).getRegionId();
+				neigbourRegionId[2] = this->world_parts.at(in).getRegionId();
 
 				if (!left_border_violated) {//top-left
 					in = (x - 1)*_WORLD_DIMENSION + y - 1;
-					neigbourRegionId[3] = this->WorldParts.at(in).getRegionId();
+					neigbourRegionId[3] = this->world_parts.at(in).getRegionId();
 				}
 				else {
 					neigbourRegionId[3] = -1;
@@ -455,7 +455,7 @@ void World::getNeigbourRegionIdXY(int neigbourRegionId[], int x, int y, const in
 
 				if (!right_border_violated) {//top-right
 					in = (x + 1)*_WORLD_DIMENSION + y - 1;
-					neigbourRegionId[1] = this->WorldParts.at(in).getRegionId();
+					neigbourRegionId[1] = this->world_parts.at(in).getRegionId();
 				}
 				else {
 					neigbourRegionId[1] = -1;
@@ -472,8 +472,8 @@ void World::getNeigbourRegionIdAT(int neigbourRegionId[], int at, const int num_
 
 	//at to x y
 
-	int x = this->at2xy_LOOKUPTABLE.at(at).x;
-	int y = this->at2xy_LOOKUPTABLE.at(at).y;
+	int x = this->at2xy_lookup_table.at(at).x;
+	int y = this->at2xy_lookup_table.at(at).y;
 
 	bool left_border_violated = (x - 1 > -1) ? false : true;
 	bool right_border_violated = (x + 1 < _WORLD_DIMENSION) ? false : true;
@@ -484,25 +484,25 @@ void World::getNeigbourRegionIdAT(int neigbourRegionId[], int at, const int num_
 	int in;
 	if (!left_border_violated) {//left
 		in = (x - 1)*_WORLD_DIMENSION + y;
-		neigbourRegionId[4] = this->WorldParts.at(in).getRegionId();
+		neigbourRegionId[4] = this->world_parts.at(in).getRegionId();
 	}
 	else {
 		neigbourRegionId[4] = -1;
 	}
 	if (!right_border_violated) {//right
 		in = (x + 1)*_WORLD_DIMENSION + y;
-		neigbourRegionId[0] = this->WorldParts.at(in).getRegionId();
+		neigbourRegionId[0] = this->world_parts.at(in).getRegionId();
 	}
 	else {
 		neigbourRegionId[0] = -1;
 	}
 	if (!bottom_border_violated) {//bottom
 		in = (x)*_WORLD_DIMENSION + y + 1;
-		neigbourRegionId[6] = this->WorldParts.at(in).getRegionId();
+		neigbourRegionId[6] = this->world_parts.at(in).getRegionId();
 
 		if (!left_border_violated) {//bottom-left
 			in = (x - 1)*_WORLD_DIMENSION + y + 1;
-			neigbourRegionId[5] = this->WorldParts.at(in).getRegionId();
+			neigbourRegionId[5] = this->world_parts.at(in).getRegionId();
 		}
 		else {
 			neigbourRegionId[5] = -1;
@@ -510,7 +510,7 @@ void World::getNeigbourRegionIdAT(int neigbourRegionId[], int at, const int num_
 
 		if (!right_border_violated) {//bottom-right
 			in = (x + 1)*_WORLD_DIMENSION + y + 1;
-			neigbourRegionId[7] = this->WorldParts.at(in).getRegionId();
+			neigbourRegionId[7] = this->world_parts.at(in).getRegionId();
 		}
 		else {
 			neigbourRegionId[7] = -1;
@@ -523,11 +523,11 @@ void World::getNeigbourRegionIdAT(int neigbourRegionId[], int at, const int num_
 	}
 	if (!top_border_violated) {//top
 		in = (x)*_WORLD_DIMENSION + y - 1;
-		neigbourRegionId[2] = this->WorldParts.at(in).getRegionId();
+		neigbourRegionId[2] = this->world_parts.at(in).getRegionId();
 
 		if (!left_border_violated) {//top-left
 			in = (x - 1)*_WORLD_DIMENSION + y -1;
-			neigbourRegionId[3] = this->WorldParts.at(in).getRegionId();
+			neigbourRegionId[3] = this->world_parts.at(in).getRegionId();
 		}
 		else {
 			neigbourRegionId[3] = -1;
@@ -535,7 +535,7 @@ void World::getNeigbourRegionIdAT(int neigbourRegionId[], int at, const int num_
 
 		if (!right_border_violated) {//top-right
 			in = (x + 1)*_WORLD_DIMENSION + y - 1;
-			neigbourRegionId[1] = this->WorldParts.at(in).getRegionId();
+			neigbourRegionId[1] = this->world_parts.at(in).getRegionId();
 		}
 		else {
 			neigbourRegionId[1] = -1;
@@ -559,25 +559,25 @@ void World::getNeigbourTempXY(double temp, double neigbourTemp[], int x, int y, 
 	int in;
 	if (!left_border_violated) {//left
 		in = (x - 1)*_WORLD_DIMENSION + y;
-		neigbourTemp[4] = this->WorldParts[in].getTemp();
+		neigbourTemp[4] = this->world_parts[in].getTemp();
 	}
 	else {
 		neigbourTemp[4] = temp;
 	}
 	if (!right_border_violated) {//right
 		in = (x + 1)*_WORLD_DIMENSION + y;
-		neigbourTemp[0] = this->WorldParts[in].getTemp();
+		neigbourTemp[0] = this->world_parts[in].getTemp();
 	}
 	else {
 		neigbourTemp[0] = temp;
 	}
 	if (!bottom_border_violated) {//bottom
 		in = (x)*_WORLD_DIMENSION + y + 1;
-		neigbourTemp[6] = this->WorldParts[in].getTemp();
+		neigbourTemp[6] = this->world_parts[in].getTemp();
 
 		if (!left_border_violated) {//bottom-left
 			in = (x - 1)*_WORLD_DIMENSION + y + 1;
-			neigbourTemp[5] = this->WorldParts[in].getTemp();
+			neigbourTemp[5] = this->world_parts[in].getTemp();
 		}
 		else {
 			neigbourTemp[5] = temp;
@@ -585,7 +585,7 @@ void World::getNeigbourTempXY(double temp, double neigbourTemp[], int x, int y, 
 
 		if (!right_border_violated) {//bottom-right
 			in = (x + 1)*_WORLD_DIMENSION + y + 1;
-			neigbourTemp[7] = this->WorldParts[in].getTemp();
+			neigbourTemp[7] = this->world_parts[in].getTemp();
 		}
 		else {
 			neigbourTemp[7] = temp;
@@ -598,11 +598,11 @@ void World::getNeigbourTempXY(double temp, double neigbourTemp[], int x, int y, 
 	}
 	if (!top_border_violated) {//top
 		in = (x)*_WORLD_DIMENSION + y - 1;
-		neigbourTemp[2] = this->WorldParts[in].getTemp();
+		neigbourTemp[2] = this->world_parts[in].getTemp();
 
 		if (!left_border_violated) {//top-left
 			in = (x - 1)*_WORLD_DIMENSION + y -1;
-			neigbourTemp[3] = this->WorldParts[in].getTemp();
+			neigbourTemp[3] = this->world_parts[in].getTemp();
 		}
 		else {
 			neigbourTemp[3] = temp;
@@ -610,7 +610,7 @@ void World::getNeigbourTempXY(double temp, double neigbourTemp[], int x, int y, 
 
 		if (!right_border_violated) {//top-right
 			in = (x + 1)*_WORLD_DIMENSION + y - 1;
-			neigbourTemp[1] = this->WorldParts[in].getTemp();
+			neigbourTemp[1] = this->world_parts[in].getTemp();
 		}
 		else {
 			neigbourTemp[1] = temp;
@@ -635,47 +635,47 @@ double World::getNeigbourMeanTempXY(double temp, int x, int y) {
 	int in;
 	if (!left_border_violated) {//left
 		in = (x - 1)*_WORLD_DIMENSION + y;
-		meantTemp += this->WorldParts[in].getTemp();
+		meantTemp += this->world_parts[in].getTemp();
 		count++;
 	}
 
 	if (!right_border_violated) {//right
 		in = (x + 1)*_WORLD_DIMENSION + y;
-		meantTemp += this->WorldParts[in].getTemp();
+		meantTemp += this->world_parts[in].getTemp();
 		count++;
 	}
 	if (!bottom_border_violated) {//bottom
 		in = (x)*_WORLD_DIMENSION + y + 1;
-		meantTemp += this->WorldParts[in].getTemp();
+		meantTemp += this->world_parts[in].getTemp();
 		count++;
 
 		if (!left_border_violated) {//bottom-left
 			in = (x - 1)*_WORLD_DIMENSION + y + 1;
-			meantTemp += this->WorldParts[in].getTemp();
+			meantTemp += this->world_parts[in].getTemp();
 			count++;
 		}
 
 		if (!right_border_violated) {//bottom-right
 			in = (x + 1)*_WORLD_DIMENSION + y + 1;
-			meantTemp += this->WorldParts[in].getTemp();
+			meantTemp += this->world_parts[in].getTemp();
 			count++;
 		}
 	}
 
 	if (!top_border_violated) {//top
 		in = (x)*_WORLD_DIMENSION + y - 1;
-		meantTemp += this->WorldParts[in].getTemp();
+		meantTemp += this->world_parts[in].getTemp();
 		count++;
 
 		if (!left_border_violated) {//top-left
 			in = (x - 1)*_WORLD_DIMENSION + y - 1;
-			meantTemp += this->WorldParts[in].getTemp();
+			meantTemp += this->world_parts[in].getTemp();
 			count++;
 		}
 
 		if (!right_border_violated) {//top-right
 			in = (x + 1)*_WORLD_DIMENSION + y - 1;
-			meantTemp += this->WorldParts[in].getTemp();
+			meantTemp += this->world_parts[in].getTemp();
 			count++;
 		}
 	}

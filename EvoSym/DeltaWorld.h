@@ -165,12 +165,12 @@ public:
 		//ground
 
 		GroundProperties* ground_properties = this->_RG_->getRegion(this->regionID)->getGroundProperties(); //object exists somewhere else, dont delete!
-		this->ground.amountLayers = (unsigned int)(ground_properties->groundDepth / ground_properties->groundLayerThickness); //calculate how many layers we will have
+		this->ground.amountLayers = (unsigned int)(ground_properties->ground_depth / ground_properties->ground_layer_thickness); //calculate how many layers we will have
 		this->ground.layerTemp.reserve(this->ground.amountLayers); //memory must be allocated
 
 		//calculate the temperature of the last layer, assuming liniarity between min and max latitude
-		double a = (ground_properties->groundLastLayerTemp[1] - ground_properties->groundLastLayerTemp[0]) / (this->_G_->_BREITENGRAD.getSpan());
-		double b = ground_properties->groundLastLayerTemp[0] - a*this->_G_->_BREITENGRAD.min;
+		double a = (ground_properties->ground_last_layer_temp[1] - ground_properties->ground_last_layer_temp[0]) / (this->_G_->_BREITENGRAD.getSpan());
+		double b = ground_properties->ground_last_layer_temp[0] - a*this->_G_->_BREITENGRAD.min;
 		this->ground.lastLayerTemp = a*this->latitude + b;
 
 		//initiate all layers with the temp of the last layer
