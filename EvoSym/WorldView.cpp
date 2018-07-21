@@ -13,10 +13,10 @@ void WorldView::Update(World& W, bool forceUpdate) {
 			if (event.type == sf::Event::Closed) {
 				this->window.close();
 			}else if (event.type == sf::Event::GainedFocus) {
-				this->hasFocus = true;
+				this->has_focus = true;
 			}
 			else if (event.type == sf::Event::LostFocus) {
-				this->hasFocus = false;
+				this->has_focus = false;
 			}
 			else if (event.type == sf::Event::Resized)
 			{
@@ -25,29 +25,29 @@ void WorldView::Update(World& W, bool forceUpdate) {
 				//this->one_div_ratio = 1.0f / this->ratio;
 			}
 		}
-		if (this->hasFocus) {
+		if (this->has_focus) {
 
 			//Menüe hover
 			bool hover_over_menue_appearance = false;
 			bool hover_over_menue_Simulation = false;
 			if (this->menu_visible) {
-				hover_over_menue_appearance = this->MenueWorldAppearance.hover(MousePos_menue);
-				hover_over_menue_Simulation = this->MenueSimulation.hover(MousePos_menue);
+				hover_over_menue_appearance = this->menue_world_appearance.hover(MousePos_menue);
+				hover_over_menue_Simulation = this->menue_simulation.hover(MousePos_menue);
 			}
-			this->ButtonShowMenue.hover(MousePos_menue);
+			this->button_show_menue.hover(MousePos_menue);
 
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {//verschieben
-				int deltaX = MousePos.x - this->LastMousePos.x;
-				int deltaY = MousePos.y - this->LastMousePos.y;
+				int deltaX = MousePos.x - this->last_moude_position.x;
+				int deltaY = MousePos.y - this->last_moude_position.y;
 				this->left_upper_corner_of_view.x += (int)((float)deltaX*graphic_to_windowsize_ratio.x*this->zoom);
 				this->left_upper_corner_of_view.y += (int)((float)deltaY*graphic_to_windowsize_ratio.y*this->zoom);
-				this->majorChange = true;
+				this->major_change = true;
 			}
 			else if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {//anklicken
 				//appearance Menue
 				if (this->menu_visible) {
 					if (hover_over_menue_appearance) {
-						int buttonNr = this->MenueWorldAppearance.click(MousePos_menue);//change world appearance
+						int buttonNr = this->menue_world_appearance.click(MousePos_menue);//change world appearance
 						if (buttonNr > -1) {
 							if (buttonNr > 0) {
 								this->SetDeltaWorldColor(buttonNr);
@@ -56,20 +56,20 @@ void WorldView::Update(World& W, bool forceUpdate) {
 						mouse_over_menue = true;
 					}
 					else if (hover_over_menue_Simulation) {
-						int buttonNr = this->MenueSimulation.click(MousePos_menue);//simulation Menü
+						int buttonNr = this->menue_simulation.click(MousePos_menue);//simulation Menü
 						if (buttonNr > -1) {
 							if (buttonNr > 0) {
 								this->menueSimulationAction(buttonNr, W);
-								this->majorChange = true;
+								this->major_change = true;
 							}
 						}
 						mouse_over_menue = true;
 					}					
 				}
 				//showHideMenue
-				if (this->ButtonShowMenue.click(MousePos_menue)) {
+				if (this->button_show_menue.click(MousePos_menue)) {
 					this->menu_visible = !this->menu_visible;
-					this->majorChange = true;
+					this->major_change = true;
 					mouse_over_menue = true;
 				}
 
@@ -136,7 +136,7 @@ void WorldView::Update(World& W, bool forceUpdate) {
 			}
 		}
 
-		this->TextTime.setString(W.GetTimeReadable(true, true, true, true, true));
+		this->text_time.setString(W.GetTimeReadable(true, true, true, true, true));
 
 
 		this->tilemap_view.reset(sf::FloatRect((float)-this->left_upper_corner_of_view.x, (float)-this->left_upper_corner_of_view.y, zoom * (float)_WORLD_DIMENSION * (float)_TILE_RESULUTION * this->one_div_ratio, zoom * _WORLD_DIMENSION * _TILE_RESULUTION));
@@ -151,10 +151,10 @@ void WorldView::Update(World& W, bool forceUpdate) {
 			W.world_parts[this->focussed_delta_world].setShowInfo(true);
 		}
 		//int count = 0;
-		if (this->majorChange) {
+		if (this->major_change) {
 			//redraw the full map (slow)
-			this->map.loadAll(W, this->DeltaWorldColoring);
-			this->majorChange = false;
+			this->map.loadAll(W, this->delta_world_coloring);
+			this->major_change = false;
 			//count = _Amount_Delta_Worlds;
 		}
 		else {
@@ -171,8 +171,8 @@ void WorldView::Update(World& W, bool forceUpdate) {
 				for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {
 					//if (drawFromX < xi && xi < drawToX && drawFromY < yi && yi < drawToY) {//draw only visible Tiles //TODO doesnt work
 						int i = xi*_WORLD_DIMENSION + yi;
-						if (W.world_parts[i].hadChangeInAppearance(this->DeltaWorldColoring)) {
-							this->map.updateOne(xi, yi, &W.world_parts[i], this->DeltaWorldColoring);	
+						if (W.world_parts[i].hadChangeInAppearance(this->delta_world_coloring)) {
+							this->map.updateOne(xi, yi, &W.world_parts[i], this->delta_world_coloring);	
 						}
 					//}
 				}
@@ -190,15 +190,15 @@ void WorldView::Update(World& W, bool forceUpdate) {
 
 		//Menue
 		if (this->menu_visible) {
-			this->MenueWorldAppearance.display(this->window);
-			this->MenueSimulation.display(this->window);
+			this->menue_world_appearance.display(this->window);
+			this->menue_simulation.display(this->window);
 		}
 
-		window.draw(this->Bottom);
-		window.draw(this->ButtonShowMenue.shape);
-		window.draw(this->ButtonShowMenue.text);
-		window.draw(this->TextTime);
-		window.draw(this->TextVersion);
+		window.draw(this->bottom);
+		window.draw(this->button_show_menue.shape);
+		window.draw(this->button_show_menue.text);
+		window.draw(this->text_time);
+		window.draw(this->text_version);
 
 		//Infobox
 		if (this->focussed_delta_world > -1) {
@@ -209,9 +209,9 @@ void WorldView::Update(World& W, bool forceUpdate) {
 		}
 
 		this->window.display();
-		this->colorChanged = false;
+		this->color_changed = false;
 
 				
-		this->LastMousePos = MousePos;
+		this->last_moude_position = MousePos;
 	}
 };

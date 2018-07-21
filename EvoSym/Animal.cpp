@@ -2,33 +2,33 @@
 
 
 void Animal::init(){
-	this->deltaT_Update = _HOUR_IN_S;
+	this->delta_t_update = _HOUR_IN_S;
 	//this->deltaT_Update = _Minute_in_s;
-	this->AnimalCharacteristics.evolution.points = 0;
-	this->AnimalCharacteristics.isCondition.isAlive = true;
-	this->AnimalCharacteristics.isCondition.ofense = 0;
-	this->AnimalCharacteristics.isCondition.defense = 0;
+	this->animal_characteristics.evolution.points = 0;
+	this->animal_characteristics.is_condition.is_alive = true;
+	this->animal_characteristics.is_condition.ofense = 0;
+	this->animal_characteristics.is_condition.defense = 0;
 }
 void Animal::randinit() {
 	this->init();
 
-	this->AnimalCharacteristics.isCondition.size = uniform_double_dist(0.0, 40.0);		//0-40m
+	this->animal_characteristics.is_condition.size = uniform_double_dist(0.0, 40.0);		//0-40m
 
-	this->AnimalCharacteristics.isCondition.hearing = uniform_double_dist(1.0, 100.0);	//min dB recognizable
-	this->AnimalCharacteristics.isCondition.vision = uniform_double_dist(this->AnimalCharacteristics.isCondition.size*1000.0, this->AnimalCharacteristics.isCondition.size*100000.0);		//m max distance
+	this->animal_characteristics.is_condition.hearing = uniform_double_dist(1.0, 100.0);	//min dB recognizable
+	this->animal_characteristics.is_condition.vision = uniform_double_dist(this->animal_characteristics.is_condition.size*1000.0, this->animal_characteristics.is_condition.size*100000.0);		//m max distance
 
-	this->AnimalCharacteristics.isCondition.energy_max = uniform_double_dist(this->AnimalCharacteristics.isCondition.size*0.01, this->AnimalCharacteristics.isCondition.size * 100);	//J
-	this->AnimalCharacteristics.isCondition.water_max = uniform_double_dist(this->AnimalCharacteristics.isCondition.size*0.01, this->AnimalCharacteristics.isCondition.size * 1.0);	//L
+	this->animal_characteristics.is_condition.energy_max = uniform_double_dist(this->animal_characteristics.is_condition.size*0.01, this->animal_characteristics.is_condition.size * 100);	//J
+	this->animal_characteristics.is_condition.water_max = uniform_double_dist(this->animal_characteristics.is_condition.size*0.01, this->animal_characteristics.is_condition.size * 1.0);	//L
 
-	this->AnimalCharacteristics.isCondition.energy_is = this->AnimalCharacteristics.isCondition.energy_max*0.5;	//J
-	this->AnimalCharacteristics.isCondition.water_is = this->AnimalCharacteristics.isCondition.water_max*0.5;	//L
+	this->animal_characteristics.is_condition.energy_is = this->animal_characteristics.is_condition.energy_max*0.5;	//J
+	this->animal_characteristics.is_condition.water_is = this->animal_characteristics.is_condition.water_max*0.5;	//L
 
-	double sizeEnergyWaterFactor = (this->AnimalCharacteristics.isCondition.energy_max + 10 * this->AnimalCharacteristics.isCondition.water_max) * this->AnimalCharacteristics.isCondition.size;
+	double sizeEnergyWaterFactor = (this->animal_characteristics.is_condition.energy_max + 10 * this->animal_characteristics.is_condition.water_max) * this->animal_characteristics.is_condition.size;
 
-	this->AnimalCharacteristics.isCondition.weight = uniform_double_dist(sizeEnergyWaterFactor*0.01, sizeEnergyWaterFactor*100.0);		//Kg
-	this->AnimalCharacteristics.isCondition.strength = uniform_double_dist(this->AnimalCharacteristics.isCondition.weight*0.1, this->AnimalCharacteristics.isCondition.weight*10.0);	//kg bewegt werden kann
+	this->animal_characteristics.is_condition.weight = uniform_double_dist(sizeEnergyWaterFactor*0.01, sizeEnergyWaterFactor*100.0);		//Kg
+	this->animal_characteristics.is_condition.strength = uniform_double_dist(this->animal_characteristics.is_condition.weight*0.1, this->animal_characteristics.is_condition.weight*10.0);	//kg bewegt werden kann
 
-	this->AnimalCharacteristics.Gene.color.makeRandom();
+	this->animal_characteristics.gene.color.makeRandom();
 
 	this->growth();
 }
@@ -53,13 +53,13 @@ void Animal::isCloned(const Animal &mother) {
 }
 //TODO
 void Animal::die() {
-	//this->AnimalCharacteristics.Gene.scent = Code(_scent_decay);//todo maybe slowly shift the scent into "decay scent"->do this within this->decay()
-	this->AnimalCharacteristics.isCondition.isAlive = false;
-	this->deltaT_Update = _HOUR_IN_S;// a dead animal dont need to be updated every deltaTime
+	//this->animal_characteristics.gene.scent = Code(_scent_decay);//todo maybe slowly shift the scent into "decay scent"->do this within this->decay()
+	this->animal_characteristics.is_condition.is_alive = false;
+	this->delta_t_update = _HOUR_IN_S;// a dead animal dont need to be updated every deltaTime
 }
 //TODO
 void Animal::growth() {
-	//isAlive
+	//is_alive
 
 	//update bodycharacteristics
 	//size
@@ -79,17 +79,17 @@ void Animal::growth() {
 	//update ofense, defense
 
 	//update factors
-	this->AnimalCharacteristics.isCondition.weightStrengthFactor = _energy_consumption_size_factor*std::pow(this->AnimalCharacteristics.isCondition.size, _energy_consumption_weight_exponent) \
+	this->animal_characteristics.is_condition.weight_strength_factor = _energy_consumption_size_factor*std::pow(this->animal_characteristics.is_condition.size, _energy_consumption_weight_exponent) \
 		+ \
-		_energy_consumption_weight_factor*std::pow(this->AnimalCharacteristics.isCondition.weight, _energy_consumption_weight_exponent);
+		_energy_consumption_weight_factor*std::pow(this->animal_characteristics.is_condition.weight, _energy_consumption_weight_exponent);
 
 }
 //TODO
 void Animal::decay(double decayfactor) {//decayfactor depends on region
-	this->AnimalCharacteristics.isCondition.energy_is *= decayfactor;
+	this->animal_characteristics.is_condition.energy_is *= decayfactor;
 	//den scent of the animal slowly into the scent of death 
 	/*for (int i = _MAX_CODE_DEPTH-1; i > -1; i--) {
-	if (this->AnimalCharacteristics.Gene.scent.part[i] != _scent_decay) {
+	if (this->animal_characteristics.gene.scent.part[i] != _scent_decay) {
 	for (int b = 15; b < 1; b--) {
 	<< b
 	}

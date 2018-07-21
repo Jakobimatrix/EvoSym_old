@@ -1,35 +1,35 @@
 #include "Menue.h"
 
-sf::Color Menue::MenueColor			= sf::Color(40	, 40	, 40);
-sf::Color Menue::ButtonColor		= sf::Color(150	, 150	, 150);
-sf::Color Menue::ButtonHoverColor	= sf::Color(200	, 200	, 200);
-sf::Color Menue::TextColor			= sf::Color(5	, 5		, 5);
+sf::Color Menue::menue_color			= sf::Color(40	, 40	, 40);
+sf::Color Menue::button_color		= sf::Color(150	, 150	, 150);
+sf::Color Menue::button_hover_color	= sf::Color(200	, 200	, 200);
+sf::Color Menue::text_color			= sf::Color(5	, 5		, 5);
 
 void Menue::defineMenueShape() {
 	int n = 1;
 	if (!this->colapsed) {
-		n = this->Buttons.size();
+		n = this->buttons.size();
 	}
-	this->MenueShape.setSize(sf::Vector2f(this->MenueShape.getSize().x + 2.0f*this->buttonMargin ,(float)(n*this->textsize*2) + this->buttonMargin*2.0f*(float)n));
+	this->menue_shape.setSize(sf::Vector2f(this->menue_shape.getSize().x + 2.0f*this->button_margin ,(float)(n*this->textsize*2) + this->button_margin*2.0f*(float)n));
 }
 void Menue::addButton(std::string& text) {
-	int n = this->Buttons.size();
-	sf::RectangleShape ButtonRect = sf::RectangleShape(sf::Vector2f(this->MenueShape.getSize().x - 2.0f * this->buttonMargin, (float)(this->textsize * 2)));
-	ButtonRect.setPosition(sf::Vector2f(this->MenueShape.getPosition().x + this->buttonMargin, this->MenueShape.getPosition().y + (float)(n*this->textsize * 2) + this->buttonMargin*(float)n));
-	Button B = Button(ButtonRect,this->ButtonColor);
-	B.setText(text, this->textsize, this->TextColor);
-	this->Buttons.push_back(B);
+	int n = this->buttons.size();
+	sf::RectangleShape ButtonRect = sf::RectangleShape(sf::Vector2f(this->menue_shape.getSize().x - 2.0f * this->button_margin, (float)(this->textsize * 2)));
+	ButtonRect.setPosition(sf::Vector2f(this->menue_shape.getPosition().x + this->button_margin, this->menue_shape.getPosition().y + (float)(n*this->textsize * 2) + this->button_margin*(float)n));
+	Button B = Button(ButtonRect,this->button_color);
+	B.setText(text, this->textsize, this->text_color);
+	this->buttons.push_back(B);
 	this->defineMenueShape();
 }
 
 void Menue::display(sf::RenderWindow& w) {
-	w.draw(this->MenueShape);
+	w.draw(this->menue_shape);
 	if (this->colapsed) {
-		w.draw(this->Buttons.begin()->shape);
-		w.draw(this->Buttons.begin()->text);
+		w.draw(this->buttons.begin()->shape);
+		w.draw(this->buttons.begin()->text);
 	}
 	else {
-		for (std::vector<Button>::iterator it = this->Buttons.begin(); it != this->Buttons.end(); it++) {
+		for (std::vector<Button>::iterator it = this->buttons.begin(); it != this->buttons.end(); it++) {
 			w.draw(it->shape);
 			w.draw(it->text);
 		}
@@ -38,14 +38,14 @@ void Menue::display(sf::RenderWindow& w) {
 int Menue::click(sf::Vector2i& mousePosition) {
 	int i = 0;
 	if (this->colapsed) {
-		if (this->Buttons.begin()->click(mousePosition, this->ButtonHoverColor)) {
+		if (this->buttons.begin()->click(mousePosition, this->button_hover_color)) {
 			this->colapsed = false;
 			this->defineMenueShape();
 			return 0;
 		}
 	}
 	else {
-		for (std::vector<Button>::iterator it = this->Buttons.begin(); it != this->Buttons.end(); it++) {
+		for (std::vector<Button>::iterator it = this->buttons.begin(); it != this->buttons.end(); it++) {
 			if (it->click(mousePosition)) {
 				if (i == 0) {
 					this->colapsed = true;
@@ -61,8 +61,8 @@ int Menue::click(sf::Vector2i& mousePosition) {
 
 bool Menue::hover(sf::Vector2i& mousePosition) {
 	bool hover = false;
-	for (std::vector<Button>::iterator it = this->Buttons.begin(); it != this->Buttons.end(); it++) {
-		if (it->hover(mousePosition, this->ButtonHoverColor)) {
+	for (std::vector<Button>::iterator it = this->buttons.begin(); it != this->buttons.end(); it++) {
+		if (it->hover(mousePosition, this->button_hover_color)) {
 			hover = true;
 		}
 	}
