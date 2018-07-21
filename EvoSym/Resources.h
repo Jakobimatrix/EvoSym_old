@@ -1,3 +1,10 @@
+/**
+* @file Resources.h
+* @brief: Resources (plants, water and dead animals) for each DealtaWorld are managed here.
+* @date 10.07.2018
+* @author Jakob Wandel
+* @version 1.0
+**/
 #ifndef _RESOURCES_
 #define _RESOURCES_
 #include <vector>
@@ -19,105 +26,116 @@ private:
 	GlobalSingleton* _G_;
 
 public:
+	/**
+	* @function Resources()()
+	* @brief: Default constructor, prepares class for usage.
+	**/
 	Resources(){
 		this->_G_ = &this->_G_->getInstance();
 		this->reset();
 	}
+
+	/**
+	* @function void reset()
+	* @brief: resets the class to its initial state
+
+	**/
 	void reset() {
 		this->plants = 0.0;
 		this->freshwater = 0.0;
 	}
 
+	/**
+	* @function setMax_freshwater(double max_freshwater)
+	* @brief: setter function; Sets the maximum amount of water this resources can hold/generate.
+	* @param[in] double max_freshwater: maximum of water which can be generted, in l/m^2.
+	**/
 	void setMax_freshwater(double max_freshwater) {
 		this->max_freshwater = max_freshwater;
 	}
+
+	/**
+	* @function setRegeneration_freshwater(Season<double>& Regeneration_freshwater)
+	* @brief: setter function; Sets the regeneration rate for fresh water for this resource.
+	* @param[in] Season<double>& Regeneration_freshwater: For each Season one regeneration rate.
+	**/
 	void setRegeneration_freshwater(Season<double>& Regeneration_freshwater) {
 		this->Regeneration_freshwater_1_divided_Tau = Regeneration_freshwater;
 	}
-	void RegenerateFreshWater(double deltaT, int regionID) {
-		if (this->max_freshwater <= 0.0) {
-			this->freshwater = 0.0;
-			return;
-		}
 
-		//calc Tau from Season
-		double Tau = 0;
-		for (int s = 0; s < _AMOUNT_SEASONS; s++) {
-			if (this->_G_->SeasonMultiplier[s] > 0.0) {
-				Tau += this->_G_->SeasonMultiplier[s] * this->Regeneration_freshwater_1_divided_Tau.getValue(s);
-			}
-		}
-		Tau = 1.0 / Tau;
-		if (isinf(Tau)) {//Keine Änderung
-			return;
-		}
+	/**
+	* @function RegenerateFreshWater(double deltaT)
+	* @brief: Calculates the new is value of freshwater this resource holds after deltaT has passed.
+	* @param[in] double deltaT: Time in seconds passed between this and last function call.
+	**/
+	void RegenerateFreshWater(double deltaT);
 
-		double t = inverse_cosResurceGeneration(this->max_freshwater, Tau, this->freshwater); 
-
-		this->freshwater = cosResurceGeneration(this->max_freshwater, Tau, t + deltaT);
-	}
-
+	/**
+	* @function setMax_plants(double max_plants) 
+	* @brief: setter function; Set the max. amount of plants this resource gan hold/generate.
+	* @param[in] double max_plants: Max amount of plants this resource can hold in Kg/m^2
+	**/
 	void setMax_plants(double max_plants) {
 		this->max_plants = max_plants;
 	}
+
+	/**
+	* @function setRegeneration_plants(Season<double>& Regeneration_plants)
+	* @brief: setter function; Sets the regeneration rate for plants for this resource.
+	* @param[in] Season<double>& Regeneration_plants: For each Season one regeneration rate.
+	**/
 	void setRegeneration_plants(Season<double>& Regeneration_plants) {
 		this->Regeneration_plants_1_divided_Tau = Regeneration_plants;
 	}
-	void RegeneratePlants(double deltaT, int regionID, double temperature) {
-		if (this->max_plants <= 0.0) {
-			this->plants = 0.0;
-			return;
-		}
 
-		//calc Tau from Season und temp
-		double Tau_temp = 0.0;
-		double Tau_region_season = 0.0;
-		for (int s = 0; s < _AMOUNT_SEASONS; s++) {
-			if (this->_G_->SeasonMultiplier[s] > 0.0) {
-				Tau_region_season = Tau_region_season + (this->_G_->SeasonMultiplier[s] * this->Regeneration_plants_1_divided_Tau.getValue(s));
-				//todo better:? spaart für jede Kachel this->Regeneration_plants_1_divided_Tau
-				//Tau = Tau + (TempSeasonIfluence[s] * Region::getRegionBasedPlantGrowth(regionID).getValue(s));
-			}
-		}
-		Tau_temp = one_divid_Tau_depend_Temp(temperature, Region::getOptimalTempForGrowth(regionID));
-		
-		double Tau = Region::desideTauDependancy(Tau_temp, Tau_region_season, regionID);
-		
-		//bis hier ist Tau eigendlich 1/Tau
-		Tau = 1.0 / Tau;
+	/**
+	* @function RegeneratePlants(double deltaT, int regionID, double temperature)
+	* @brief: Calculates the new is value of plants this resource holds after deltaT has passed,
+	* depending on the temperature and the region.
+	* @param[in] double deltaT: Time in seconds passed between this and last function call.
+	* @param[in] int regionID: The Id of the region this resource is in.
+	* @param[in] double temperature: Current temperature in celsius.
+	**/
+	void RegeneratePlants(double deltaT, int regionID, double temperature);
 
-		if (isinf(Tau)) {//Keine Änderung
-			return;
-		}	
-		double t = inverse_cosResurceGeneration(this->max_plants, Tau, this->plants);
-
-		this->plants = cosResurceGeneration(this->max_plants, Tau, t + deltaT);
-	}
-
+	/**
+	* @function getMaxPlants()
+	* @brief: getter function; returns the value of max_plants in Kg/m^2 this region can hold.
+	* @retval double: value of max_plants in Kg/m^2 this region can hold.
+	**/
 	double getMaxPlants() {
 		return this->max_plants;
 	}
+
+	/**
+	* @function getIsPlants()
+	* @brief: getter function; returns the current value of plants in Kg/m^2 this resource holds.
+	* @retval double: value of plants in Kg/m^2 this region holds.
+	**/
 	double getIsPlants() {
 		return this->plants;
 	}
+
+	/**
+	* @function getMaxFrehwater()
+	* @brief: getter function; returns the value of max_freshwater in l/m^2 this region can hold.
+	* @retval double: value of max_freshwater in Kg/m^2 this region can hold
+	**/
 	double getMaxFrehwater() {
 		return this->max_freshwater;
 	}
+
+	/**
+	* @function getIsFrehwater()
+	* @brief: getter function; returns the current value of watr in l/m^2 this resource holds.
+	* @retval double: value of water in l/m^2 this region holds.
+	**/
 	double getIsFrehwater() {
 		return this->freshwater;
 	}
-	Season<double> getPlantRegenFactor() {
-		return this->Regeneration_plants_1_divided_Tau;
-	}
-	Season<double> getFreshWaterRegenFactor() {
-		return this->Regeneration_freshwater_1_divided_Tau;
-	}
+
 
 	//todo void getSchittoverReferenz(Season<double>& referenz);
-
-
-
-
 	//todo deadAnimals
 
 };

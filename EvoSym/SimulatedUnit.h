@@ -1,6 +1,6 @@
 /**
 * @file SimulatedUnit.h
-* @brief All things which change over the time within the simulationprogram and thus have to be simulated are a child class of this class.
+* @brief: All things which change over the time within the simulationprogram and thus have to be simulated are a child class of this class.
 * To simplify everything and allow multi tasking: All Units within the simulation time delta t are independent of eache other.
 * @date 10.04.2017
 * @author Jakob Wandel
@@ -23,7 +23,7 @@ public:
 
 	/**
 	* @function SimulatedUnit()
-	* @brief default constructor
+	* @brief: default constructor
 	**/
 	SimulatedUnit() {
 		this->deltaT_Update = 1.0;
@@ -34,7 +34,7 @@ public:
 
 	/**
 	* @function void simulate(double tnow)
-	* @brief To run one simulation step from a child class run this function.
+	* @brief: To run one simulation step from a child class run this function.
 	* @param[in] tnow: The time difference since the simulation started.
 	**/
 	void simulate(double tnow) {
@@ -46,14 +46,14 @@ public:
 
 	/**
 	* @function getPosition()()
-	* @brief Return the reference of the position of the simulated Unit.
+	* @brief: Return the reference of the position of the simulated Unit.
 	* @retval Point2d&:	return the reference of the position
 	**/
 	Point2d& getPosition() { return this->position; }
 
 	/**
 	* @function getAge_s(double tnow = -1)
-	* @brief calculates the age of the simulated unit.
+	* @brief: calculates the age of the simulated unit.
 	* @param[in] tnow: The time difference since the simulation started.
 	* @retval double: age of simulated unit
 	**/
@@ -68,7 +68,7 @@ public:
 
 	/**
 	* @function wasUpdated()
-	* @brief Checks, if this simulated unit was updated since the last time asked. E.g. for redrawing purpose.
+	* @brief: Checks, if this simulated unit was updated since the last time asked. E.g. for redrawing purpose.
 	* @retval bool: True if the unit was updated.
 	**/
 	bool wasUpdated() {
@@ -83,7 +83,7 @@ protected:
 
 	/**
 	* @function runSimulationStep(double tnow)
-	* @brief Since different simulated units need to be updated in different time intervalls this function checks wheather this unit needs a update or not.
+	* @brief: Since different simulated units need to be updated in different time intervalls this function checks wheather this unit needs a update or not.
 	* @param[in] tnow: The time difference since the simulation started.
 	* @retval bool: Returns true, if this unit needs to be updated.
 	**/
@@ -101,7 +101,7 @@ protected:
 
 	/**
 	* @function virtual update ()
-	* @brief Every child class which inherits from this class needs this update function, which will be called when
+	* @brief: Every child class which inherits from this class needs this update function, which will be called when
 	*		 this simulated unit needs to be updated.
 	* @param[in] The time difference since the simulation started.
 	**/

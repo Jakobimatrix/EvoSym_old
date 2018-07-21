@@ -6,11 +6,28 @@
 * @version 1.0
 **/
 #include "World.h"
-void World::setTemperateZone() {
-	this->Polar			= TemperateZone(0);
-	this->Moderate		= TemperateZone(1);
-	this->Subtropical	= TemperateZone(2);
-	this->Tropical		= TemperateZone(3);
+
+void World::reset() {
+	this->time = 0;
+	this->Animals.clear();
+	if (!this->init) {
+		for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
+			this->WorldParts.emplace_back(DeltaWorld());
+			this->at2xy_LOOKUPTABLE.emplace_back(xyMap());//init
+		}
+		for (unsigned int x = 0; x < _WORLD_DIMENSION; x++) {
+			for (unsigned int y = 0; y < _WORLD_DIMENSION; y++) {
+				this->at2xy_LOOKUPTABLE[x*_WORLD_DIMENSION + y].x = x;
+				this->at2xy_LOOKUPTABLE[x*_WORLD_DIMENSION + y].y = y;
+			}
+		}
+	}
+	else {
+		for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
+			this->WorldParts[i].reset();
+		}
+	}
+	this->init = this->createWorld();
 }
 
 bool World::createWorld() {
@@ -51,7 +68,7 @@ bool World::createWorld() {
 			//2.TemperateZone;
 			//done in constructor of delta world using latitude
 			
-			this->WorldParts.at(i).setPositionAndLatitude(DeltaPosition, latitude);
+			this->WorldParts.at(i).initSetPositionAndLatitude(DeltaPosition, latitude);
 		}
 	}
 	
@@ -115,62 +132,71 @@ void World::createSetHeightRand() {
 	std::vector<double> perlNoiseSmootFaktor;
 	perlNoiseSmootFaktor.reserve(_AMOUNT_DELTA_WORLDS);
 
-	SimplexNoise1234 Noise = SimplexNoise1234(true);
+	SimplexNoise1234 Noise = SimplexNoise1234(false);//TODO true
 	//Verteilung der Krümmung
-	xOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
-	yOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear	
+	//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear. dont go in negativ offset.
+	xOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);
+	yOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);
 
+	double rand_perlian_distortion_factor = uniform_double_dist(0, _CURVATURE_CHANGE_RATE_PERLIAN_NOISE);
 	for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {
 		for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {
 			x = xi - _DIMENSION_HALF;
 			y = yi - _DIMENSION_HALF;
 			int i = (xi)*_WORLD_DIMENSION + yi;
-			perlNoiseSmootFaktor.emplace_back(double(Noise.noise(x*_CURVATURE_CHANGE_RATE_PERLIAN_NOISE + xOffset, y*_CURVATURE_CHANGE_RATE_PERLIAN_NOISE + yOffset)));//-1...1
-			perlNoiseSmootFaktor.at(i) = (perlNoiseSmootFaktor.at(i) + 0.1) / 2.0;//0...1
-			perlNoiseSmootFaktor.at(i) = perlNoiseSmootFaktor.at(i) * (_MIN_CURVATURE_PERLIAN_NOISE + _MAX_CURVATURE_PERLIAN_NOISE);//0..._max - _min
-			perlNoiseSmootFaktor.at(i) = perlNoiseSmootFaktor.at(i) + _MIN_CURVATURE_PERLIAN_NOISE;//_max ... _min
+
+			perlNoiseSmootFaktor.emplace_back(double(Noise.noise(x*rand_perlian_distortion_factor + xOffset, y*rand_perlian_distortion_factor + yOffset)));//-1...1
+			perlNoiseSmootFaktor.at(i) = (perlNoiseSmootFaktor.at(i) + 1) / 2.0;//0...1
+			double a = _MAX_CURVATURE_PERLIAN_NOISE - _MIN_CURVATURE_PERLIAN_NOISE;
+			perlNoiseSmootFaktor.at(i) = a*perlNoiseSmootFaktor.at(i) + _MIN_CURVATURE_PERLIAN_NOISE;//min...max
 		}
 	}
 	//in perlNoiseSmootFaktor[i] steht jetzt, wie schnell sich die Krümmung ändern darf in i
 
 
 	//Verzerrung
-	xOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
-	yOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
+	//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear. dont go in negativ offset.
+	xOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);
+	yOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);
+
 
 	for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {
 		for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {
 			x = xi - _DIMENSION_HALF;
 			y = yi - _DIMENSION_HALF;
 			int i = (xi)*_WORLD_DIMENSION + yi;
-			perlNoiseSmootFaktor.at(i) = Noise.noise(x*perlNoiseSmootFaktor.at(i) + xOffset, y*perlNoiseSmootFaktor.at(i) + yOffset);
-			perlNoiseSmootFaktor.at(i) = (perlNoiseSmootFaktor.at(i) + 0.1) / 2.0;//0...1
-			perlNoiseSmootFaktor.at(i) = perlNoiseSmootFaktor.at(i) * (_MIN_DISTORTION_PERLIAN_NOISE + _MAX_DISTORTION_PERLIAN_NOISE);
-			perlNoiseSmootFaktor.at(i) = perlNoiseSmootFaktor.at(i) + _MIN_DISTORTION_PERLIAN_NOISE;
+
+			perlNoiseSmootFaktor.at(i) = Noise.noise(x*perlNoiseSmootFaktor.at(i) + xOffset, y*perlNoiseSmootFaktor.at(i) + yOffset);//return [-1,1]
+			perlNoiseSmootFaktor.at(i) = (perlNoiseSmootFaktor.at(i) + 1) / 2.0;//0...1
+			double a = _MAX_DISTORTION_PERLIAN_NOISE - _MIN_DISTORTION_PERLIAN_NOISE;
+			perlNoiseSmootFaktor.at(i) = a*perlNoiseSmootFaktor.at(i) + _MIN_DISTORTION_PERLIAN_NOISE;//min...max
 		}
 	}
 	//in perlNoiseSmootFaktor[i] steht jetzt, wie schnell sich die Steigung ändern darf in i
 
-	//Zoom
-	xOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
-	yOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
+
+	//zoom
+	//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear. dont go in negativ offset.
+	xOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);
+	yOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);
 
 	for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {
 		for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {
 			x = xi - _DIMENSION_HALF;
 			y = yi - _DIMENSION_HALF;
 			int i = (xi)*_WORLD_DIMENSION + yi;
-			perlNoiseSmootFaktor.at(i) = Noise.noise(x*perlNoiseSmootFaktor.at(i) + xOffset, y*perlNoiseSmootFaktor.at(i) + yOffset);
-			perlNoiseSmootFaktor.at(i) = (perlNoiseSmootFaktor.at(i) + 0.1) / 2.0;//0...1
-			perlNoiseSmootFaktor.at(i) = perlNoiseSmootFaktor.at(i) * (_MIN_ZOOM_PERLIAN_NOISE + _MAX_ZOOM_PERLIAN_NOISE);
-			perlNoiseSmootFaktor.at(i) = perlNoiseSmootFaktor.at(i) + _MIN_ZOOM_PERLIAN_NOISE;
+			perlNoiseSmootFaktor.at(i) = Noise.noise(x*perlNoiseSmootFaktor.at(i) + xOffset, y*perlNoiseSmootFaktor.at(i) + yOffset);//return [-1,1]
+			perlNoiseSmootFaktor.at(i) = (perlNoiseSmootFaktor.at(i) + 1) / 2.0;//0...1
+			double a = _MAX_ZOOM_PERLIAN_NOISE - _MIN_ZOOM_PERLIAN_NOISE;
+			perlNoiseSmootFaktor.at(i) = a*perlNoiseSmootFaktor.at(i) + _MIN_ZOOM_PERLIAN_NOISE;//min...max
 		}
 	}
-	//in perlNoiseSmootFaktor[i] steht jetzt, wie schnell sich die Höhe ändern darf in i
+	//in perlNoiseSmootFaktor[i] steht jetzt, der zoomfaktor: between _MIN_ZOOM_PERLIAN_NOISE and _MAX_ZOOM_PERLIAN_NOISE
 
-	//Höhe
-	xOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
-	yOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear
+	//height
+	//since perlian noice is only pseudo random, this is the only posibility to have a bit of real randomness appear. dont go in negativ offset.
+	xOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);
+	yOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);
 
 	for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {
 		for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {

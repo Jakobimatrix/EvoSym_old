@@ -1,6 +1,6 @@
 /**
-* @file
-* @brief
+* @file World.h
+* @brief This Class creates a x*x wide 2D World with plants and birds and rocks and things.
 * @date 10.04.2017
 * @author Jakob Wandel
 * @version 1.0
@@ -38,7 +38,7 @@ public:
 	//ary[i*sizeY + j]
 	std::vector<DeltaWorld> WorldParts;
 	std::vector<Animal> Animals;
-	std::vector<xyMap> at2xy_LOOKUPTABLE;
+	std::vector<xyMap> at2xy_LOOKUPTABLE; //to find teh x y coordnate if just iterating through the WorldParts Vector.
 private:
 
 	GlobalSingleton* _G_;
@@ -47,14 +47,18 @@ private:
 
 	bool init;
 	bool loadFromImage;
-	sf::Image WorldHeightMap;	
+	sf::Image WorldHeightMap;
 
-	TemperateZone Polar;
-	TemperateZone Moderate;
-	TemperateZone Subtropical;
-	TemperateZone Tropical;
+	double offset_x = 0;
+	double offset_y = 0;
 
 public:
+
+	/**
+	* @function World(std::string imgSRC = "")
+	* @brief: Constructor. Sets up a new World depending on the GLOBAL Variables.
+	* @param[in] std::string imgSRC: A path to a black white image as a relief map. If empty then the world is created with a perlian pseudo randoom pattern.
+	**/
 	World(std::string imgSRC = "")
 	{
 		this->WorldParts.reserve(_AMOUNT_DELTA_WORLDS);
@@ -70,49 +74,109 @@ public:
 		this->init = false;
 		this->reset();
 	}
+
+	/**
+	* @function ~World()
+	* @brief: Destructor, deletes the vectors.
+	**/
 	~World()
 	{
 		std::vector<DeltaWorld>().swap(WorldParts);
 		std::vector<xyMap>().swap(at2xy_LOOKUPTABLE);
 	}
+
+	/**
+	* @function Update()
+	* @brief: Simulates everything for the next time step. Timestap duration depends on the smallest timestap announced to the GlobalSigleton.
+	**/
 	void World::Update();
+
+	/**
+	* @function GetTimeReadable(bool y = true, bool d = true, bool h = false, bool m = false, bool s = false);
+	* @brief: Writes a String of the simulated time, depending on the input.
+	* @param[in] bool y: Set true if years shall be displayed
+	* @param[in] bool d: Set true if days shall be isplayed
+	* @param[in] bool h: Set true if hours shall be displayed
+	* @param[in] bool m: Set true if minutes shall be displayed
+	* @param[in] bool s: Set true if seconds shall be displayed
+	* @retval std::string: a String of the simulated time.
+	**/
 	std::string GetTimeReadable(bool y = true, bool d = true, bool h = false, bool m = false, bool s = false);
-	void reset() {
-		this->time = 0;
-		this->Animals.clear();
-		if (!this->init) {
-			for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-				this->WorldParts.emplace_back(DeltaWorld());
-				this->at2xy_LOOKUPTABLE.emplace_back(xyMap());//init
-			}
-			for (unsigned int x = 0; x < _WORLD_DIMENSION; x++) {
-				for (unsigned int y = 0; y < _WORLD_DIMENSION; y++) {
-					this->at2xy_LOOKUPTABLE[x*_WORLD_DIMENSION + y].x = x;
-					this->at2xy_LOOKUPTABLE[x*_WORLD_DIMENSION + y].y = y;
-				}
-			}
-		}
-		else {
-			for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-				this->WorldParts[i].reset();
-			}
-		}
-		this->init = this->createWorld();
-	}
+
+	/**
+	* @function reset()
+	* @brief: Resets every deltaWorld within the world. If no Picture path for a relief map was set, the new world will be a new randoom one.
+	**/
+	void reset();
+
+	/**
+	* @function getIsReady();
+	* @brief: If everything within the world was successfully initiated, this is true.
+	* @retval bool: True, if the world is ready for simulaton.
+	**/
 	bool getIsReady();
 private:
-	void World::setTemperateZone();
-	bool World::createWorld();	
 
+	/**
+	* @function bool createWorld()
+	* @brief: Creates a new world by setting all the delta Worlds.
+	* @retval bool: True if everything was successfull.
+	**/
+	bool createWorld();	
+
+	/**
+	* @function createSetHeightPredefined()
+	* @brief: Set all Delta Worlds height according to the given relief map. Randoom Regions according to setted height and latitude will be set.
+	**/
 	void createSetHeightPredefined();
+
+	/**
+	* @function createSetHeightRand()
+	* @brief: Set all Delta Worlds height using perlian noise. Randoom Regions according to setted height and latitude will be set.
+	**/
 	void createSetHeightRand();
 
+	/**
+	* @function getNeigbourRegionIdXY(int neigbourRegionId[], int x, int y, const int num_neigbours = 8);
+	* @brief: Returns the region ids of all 8 Neigbours of a given Delta World by its x y position in an virtual 2d vector.
+	* @param[in] int x: x position of the Region.
+	* @param[in] int y: y position of the Region.
+	* @param[out] int neigbourRegionId[]: The 8 neigbours region ids. If x y was at the border of the world, the not existing neigbours region ids will be -1.
+	**/
 	void getNeigbourRegionIdXY(int neigbourRegionId[], int x, int y, const int num_neigbours = 8);
+
+	/**
+	* @function getNeigbourRegionIdAT(int neigbourRegionId[], int at, const int num_neigbours = 8);
+	* @brief: Returns the region ids ofall 8 Neigbours of a given Delta World by its position within the vector of this->DeltaWorld.
+	* @param[in] at: Position in vector.
+	* @param[out] int neigbourRegionId[]: The 8 neigbours region ids. If x y was at the border of the world, the not existing neigbours region ids will be -1.
+	**/
 	void getNeigbourRegionIdAT(int neigbourRegionId[], int at, const int num_neigbours = 8);
 
+	/**
+	* @function getNeigbourTempXY(double temp, double neigbourTemp[], int x, int y, const int num_neigbours = 8);
+	* @brief: Returns temperature of all 8 Neigbours of a given Delta World by its x y position in an virtual 2d vector.
+	* @param[in] int x: x position of the Region.
+	* @param[in] int y: y position of the Region.
+	* @param[out] int neigbourTemp[]: The 8 neigbours temperature. If x y was at the border of the world, the not existing neigbours temperature will be the mean temperature of the existing neigbours.
+	**/
 	void getNeigbourTempXY(double temp, double neigbourTemp[], int x, int y, const int num_neigbours = 8);
+
+	/**
+	* @function getNeigbourMeanTempXY(double temp, int x, int y);
+	* @brief: Returns mean temperature of all 8 Neigbours of a given Delta World by its x y position in an virtual 2d vector.
+	* @param[in] int x: x position of the Region.
+	* @param[in] int y: y position of the Region.
+	* @retval double: The mean temperature
+	**/
 	double getNeigbourMeanTempXY(double temp, int x, int y);
 
+	/**
+	* @function int getNumNeigboursSameRegion(int at, int regionId);
+	* @brief: Returns the number of same Regions considering the neigbours of a given Delta World by its position within the vector of this->DeltaWorld
+	* @param[in] at: Position in vector.
+	* @retval int: num of same regions
+	**/
 	int getNumNeigboursSameRegion(int at, int regionId);
 };
 

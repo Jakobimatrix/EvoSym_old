@@ -8,11 +8,13 @@
 class TileMap : public sf::Drawable, public sf::Transformable
 {
 private:
-	GlobalDrawSingleton* _G_;
+	GlobalDrawSingleton* _G_DRAW_;
+	GlobalSingleton* _G_;
 public:
 
 	TileMap() {
 		m_tileset.loadFromFile(_SRC_TILE_IMAGE);
+		this->_G_DRAW_ = &this->_G_DRAW_->getInstance();
 		this->_G_ = &this->_G_->getInstance();
 		// resize the vertex array to fit the level size
 		m_vertices.setPrimitiveType(sf::Quads);
@@ -106,9 +108,9 @@ public:
 			}
 			else if (representation == 3) {
 				double temp = DW->getTemp();
-				double R = temp*this->_G_->GradientRot + this->_G_->RotOffset;
+				double R = temp*this->_G_DRAW_->GradientRot + this->_G_DRAW_->RotOffset;
 				double G = 0.0;
-				double B = temp*this->_G_->GradientBlau + this->_G_->BlauOffset;
+				double B = temp*this->_G_DRAW_->GradientBlau + this->_G_DRAW_->BlauOffset;
 
 				if (temp > -2 && temp < 2) {
 					G = 255.0;
@@ -124,7 +126,7 @@ public:
 				quad[3].color = quad[0].color;
 			}
 			else if (representation == 4) {
-				switch (DW->getSeason())
+				switch (this->_G_->dominantSeason)
 				{
 				case 0:
 					quad[0].color = sf::Color(102, 255, 51);//spring
@@ -179,7 +181,7 @@ public:
 			{
 				double plant = DW->getIsPlant();
 				double R = 0.0;
-				double G = plant*this->_G_->resource_green_gradient + this->_G_->resource_green_offset;
+				double G = plant*this->_G_DRAW_->resource_green_gradient + this->_G_DRAW_->resource_green_offset;
 				double B = 0.0;
 
 

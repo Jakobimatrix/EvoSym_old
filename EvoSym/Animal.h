@@ -1,6 +1,6 @@
 /**
 * @file Animal.h
-* @brief This inherits from SimulatedUnit.
+* @brief: This inherits from SimulatedUnit.
 * @date 10.11.2017
 * @author Jakob Wandel
 * @version 1.0

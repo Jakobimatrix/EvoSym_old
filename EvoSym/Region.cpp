@@ -1,10 +1,6 @@
 #include "Region.h"
 #include <cmath>
 
-//resourcenzuwachs ist angegeben in wie viel Tagen sich der Bestand verdoppelt haben soll
-//2=x^t == e^(ln(x)*t)
-//x = 2^(1/t) -> in t * delta_SimulationsZeit verdoppelt sich die resource 
-// also pro updateeinheit: resourceNeu = resourceAlt * x^deltaT_Update
 
 void Region::setTo(int i) {
 	this->regionId = i;

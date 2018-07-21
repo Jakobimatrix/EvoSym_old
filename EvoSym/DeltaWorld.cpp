@@ -75,7 +75,7 @@ void DeltaWorld::setRandRegion(double height, int regionNeigbour[], const int nu
 		TotalChanse += PossibleRegion_probability[ir];
 	}
 	if (TotalChanse == 0) {//falls etwas schief gelaufen ist und für jede Region P(Region_i) = 0 gilt, alle auf possible region zurück
-		std::cout << "Warning: One Region had to be random:" << std::endl;
+		//std::cout << "Warning: One Region had to be random; jede Region P(Region_i) = 0:" << std::endl;
 		//std::cout << report << std::endl;
 		if (count != 0) {
 			for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
@@ -101,11 +101,11 @@ void DeltaWorld::setRandRegion(double height, int regionNeigbour[], const int nu
 				if (this->InfluencedByTempZone[0] > 0.5) {
 					polar = true;
 				}
-				this->setRegion_and_height(this->_RG_->getDefaultRegionID(height,polar),height);
+				this->InitSetRegionAndHeight(this->_RG_->getDefaultRegionID(height,polar),height);
 				return;
 			}
 			else {
-				std::cout << "Warning: One Region had to be random:" << std::endl;
+				//std::cout << "Warning: One Region had to be random; no valide neigbours:" << std::endl;
 			}
 		}
 	}
@@ -115,7 +115,7 @@ void DeltaWorld::setRandRegion(double height, int regionNeigbour[], const int nu
 	for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
 		TotalChanse += PossibleRegion_probability[ir];
 		if (TotalChanse > RandRegion) {
-			this->setRegion_and_height(ir, height);
+			this->InitSetRegionAndHeight(ir, height);
 			return;
 		}
 	}
@@ -238,7 +238,7 @@ void DeltaWorld::update(double tnow) {
 void DeltaWorld::calcResources(double dt) {
 
 	this->resources.RegeneratePlants(dt,this->regionID,this->temperature);
-	this->resources.RegenerateFreshWater(dt, this->regionID);
+	this->resources.RegenerateFreshWater(dt);
 }
 
 std::string DeltaWorld::getInfoString() {
@@ -279,4 +279,82 @@ std::string DeltaWorld::getInfoString() {
 
 
 	return info;
+}
+
+bool DeltaWorld::hadChangeInAppearance(int representation) {
+	if (this->getAge_s() < 2 * this->_G_->_DeltaTime) {
+		return true;
+	}
+	else if (this->change_in_appearance) {
+		return true;
+		this->change_in_appearance = false;
+	}
+	if (this->wasUpdated()) {
+		//1=region/2=height/3=temp/4=season/5=tempZone
+		switch (representation)
+		{
+		case 1:
+			return this->hasPassedFreezingPoint();
+			break;
+		case 3:
+			return this->hadRecentChangeInTemp();
+			break;
+		case 4:
+			return this->hadChangeInSeason();
+			break;
+		default:
+			return false;
+		}
+	}
+	return false;
+}
+
+void DeltaWorld::reset() {
+	this->initilized = false;
+	this->temperature = 0.0;
+	this->t_lastUpdate = -1.0;
+	this->t0 = 0.0;
+	this->iceThickness = 0.0;
+	this->isFrozen = false;
+	this->resources.reset();
+}
+
+bool DeltaWorld::hasPassedFreezingPoint() {
+
+	if (this->isFrozen != this->RecentFreezing) {
+		this->RecentFreezing = this->isFrozen;
+		return true;
+	}
+	return false;
+}
+
+bool DeltaWorld::hadRecentChangeInTemp() {
+	if (std::abs(this->RecentDeltaTemperature) > _VISUALIZED_TEMPERATURE_DIFFERENCE) {
+		this->RecentDeltaTemperature = 0.0;
+		return true;
+	}
+	return false;
+}
+
+bool DeltaWorld::hadChangeInSeason() {
+	if (this->_G_->dominantSeason != this->RecentSeason) {
+		this->RecentSeason = this->_G_->dominantSeason;
+		return true;
+	}
+	return false;
+}
+
+std::string DeltaWorld::getSeasonText() {
+	switch (this->_G_->dominantSeason) {
+	case 0:
+		return "spring";
+	case 1:
+		return "summer";
+	case 2:
+		return "autumn";
+	case 3:
+		return "winter";
+	default:
+		return "ERROR";
+	}
 }

@@ -23,7 +23,7 @@ constexpr int _AMOUNT_TEMPERATE_ZONES = 4; //[int] The amount of defined tempera
 constexpr int _AMOUNT_SEASONS = 4; //[int] the amount of defined seasons.
 
 constexpr double _LAND_TO_OCEAN_RATIO = 1.3; //[ratio] This ratio determines how much land compared to ocean there shall be.
-constexpr int _DIMENSION_HALF = 150; //[DeltaWorld] The radius in tiles the world should consist of. Program Crashes for more than 150.
+constexpr int _DIMENSION_HALF = 100; //[DeltaWorld] The radius in tiles the world should consist of. Program Crashes for more than 300.
 constexpr int _WORLD_DIMENSION = _DIMENSION_HALF * 2; //[DeltaWorld] The diameter in tiles the world consist of.
 constexpr int _AMOUNT_DELTA_WORLDS = _WORLD_DIMENSION * _WORLD_DIMENSION; //[DeltaWorld] The amount of all tiles creating this world.
 constexpr double _WORLD_DIAMETER = 40000000.0; // [m] The Diameter of the created world in meters. This sets the size of the world in relation to the animals.
@@ -44,24 +44,23 @@ constexpr int _WORLD_DIAMETER_IN_PIXEL = _WORLD_DIMENSION*_TILE_RESULUTION; //[p
 
 /*Perlian noise is like the pattern of a military uniform. This pattern is only pseudorandom but i can choose randoomly with
 the offset O (_MIN_OFFSET_PERLIAN_NOISE < O < _MAX_OFFSET_PERLIAN_NOISE) where to start on a large predifined pattern map.*/
-constexpr int _MIN_OFFSET_PERLIAN_NOISE = -1000000;//[int] Empirical value, should not be less than -1000000.
-constexpr int _MAX_OFFSET_PERLIAN_NOISE =  1000000;//[int] Empirical value, should not be more than  1000000.
+constexpr int _MAX_OFFSET_PERLIAN_NOISE = 1000000;			//[int] Empirical value, should not be more than  1000000.
+constexpr int _MIN_OFFSET_PERLIAN_NOISE = _WORLD_DIMENSION;	//[int] Dont go into the negatives of the perlian noise.
 
 //divided by _DIMENSION_HALF to assure the same pattern independent from the amount of tiles 
 /*One way to make perlian noise more randoom is to zoom randoomly into the predefined pattern map.*/
-constexpr double _MIN_ZOOM_PERLIAN_NOISE = 1.1 / _DIMENSION_HALF;//Min zoomfactor 1.1->less Islands.
+constexpr double _MIN_ZOOM_PERLIAN_NOISE = 0.6 / _DIMENSION_HALF;//Min zoomfactor 1.1->less Islands.
 constexpr double _MAX_ZOOM_PERLIAN_NOISE = 3.0 / _DIMENSION_HALF;//Max zoomfactor 3.0->many Islands. 
 
 /*With these factors we can distort the pattern of the perlian noise with a second perlian noise pattern.*/
-constexpr double _MIN_DISTORTION_PERLIAN_NOISE = 0.005 / _DIMENSION_HALF;//Min distorting factor for the perlian noise map. 0.005->weak distortion.
-constexpr double _MAX_DISTORTION_PERLIAN_NOISE = 0.03 / _DIMENSION_HALF;//Max distorting factor for the perlian noise map. 0.03->strong distortion.
+constexpr double _MIN_DISTORTION_PERLIAN_NOISE = 0.0;					//Min distorting factor for the perlian noise map. 0.0-> no distortion
+constexpr double _MAX_DISTORTION_PERLIAN_NOISE = 3.0 / _DIMENSION_HALF;	//Max distorting factor for the perlian noise map. 3->strong distortion.
 
 /*With these factors we can distort the second perlian noise pattern with a third pattern. This will cause
 localy strong changes in the resulting pattern.*/
-constexpr double _CURVATURE_CHANGE_RATE_PERLIAN_NOISE = 0.01 / _DIMENSION_HALF; //Constant changerate for the pattern. 0.01;
-constexpr double _MIN_CURVATURE_PERLIAN_NOISE = 10.0 / _DIMENSION_HALF; //Min. factor 10.0 -> weak peaks / sudden changes in height. 
-constexpr double _MAX_CURVATURE_PERLIAN_NOISE = 20.0 / _DIMENSION_HALF;//Max. factor 200.0 -> strong peaks / sudden changes in height.
-
+constexpr double _CURVATURE_CHANGE_RATE_PERLIAN_NOISE = 0.5 / _DIMENSION_HALF; //Constant changerate for the pattern.
+constexpr double _MIN_CURVATURE_PERLIAN_NOISE = 0.0;					//Min. factor 0 -> no peaks / sudden changes in height. 
+constexpr double _MAX_CURVATURE_PERLIAN_NOISE = 0.28 / _DIMENSION_HALF;	//Max. factor 200.0 -> strong peaks / sudden changes in height.
 
 
 //Simulation Time units
@@ -116,7 +115,7 @@ constexpr double _energy_consumption_weight_exponent = 5.2;
 
 /**
 * @function cosResurceGeneration f(double max, double Tau, double t)
-* @brief Resourc regeneration: between f(t = 0) = 0, and f(t = +-Tau) = +-max
+* @brief: Resourc regeneration: between f(t = 0) = 0, and f(t = +-Tau) = +-max
 * @param[in] max: Max capacity of the resource
 * @param[in] Tau: After Tau seconds the resource is full. Tau != INF
 * @param[in] t: Passed time.
@@ -142,7 +141,7 @@ inline double cosResurceGeneration(double max, double Tau, double t) {
 }
 /**
 * @function inverse_cosResurceGeneration f(double max, double Tau, double resources)
-* @brief Calculates how many time passed given the amount of resources currently avaiable: between f(resources = 0) = 0, and f(resources = max) = Tau
+* @brief: Calculates how many time passed given the amount of resources currently avaiable: between f(resources = 0) = 0, and f(resources = max) = Tau
 * @param[in] max: Max capacity of the resource.
 * @param[in] Tau: After Tau seconds the resource is full. Tau != INF
 * @param[in] resources: Amount of resources at this point of time.
@@ -160,7 +159,7 @@ inline double inverse_cosResurceGeneration(double max, double Tau,  double resou
 }
 /**
 * @function one_divid_Tau_depend_Temp(double temp, double bestGrowthTemp)
-* @brief Calculates the inverse of the regeneration rate Tau considering temperature at which plants grow best.
+* @brief: Calculates the inverse of the regeneration rate Tau considering temperature at which plants grow best.
 * @param[in] temp: is-temperature.
 * @param[in] bestGrowth: Optimal temperature for plant growth.
 * @retval double: Inverse of Tau.
@@ -203,6 +202,7 @@ public:
 	double NextYearTempOffset[4];
 
 	double SeasonMultiplier[4];//-1 bis 1; //in welcher Season wir uns gerade befinden the positive numbers always add to 1 == 100%
+	int dominantSeason;
 
 	int THREADS;
 	unsigned int logicalCores;
@@ -325,7 +325,16 @@ public:
 		this->SeasonMultiplier[1] = vzCos * this->SeasonMultiplier[1] * this->SeasonMultiplier[1];
 		this->SeasonMultiplier[2] = -this->SeasonMultiplier[0];
 		this->SeasonMultiplier[3] = -this->SeasonMultiplier[1];
+
+		double max = 0;
+		for (int i = 0; i < _AMOUNT_SEASONS; i++) {
+			if (this->SeasonMultiplier[i] > max) {
+				max = this->SeasonMultiplier[i];
+				dominantSeason = i;
+			}
+		}
 	}
+
 };
 
 

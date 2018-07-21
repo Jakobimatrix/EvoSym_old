@@ -185,6 +185,7 @@
     <ClCompile Include="DeltaWorld.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Region.cpp" />
+    <ClCompile Include="Resources.cpp" />
     <ClCompile Include="Skills.cpp" />
     <ClCompile Include="World.cpp" />
     <ClCompile Include="WorldView.cpp" />

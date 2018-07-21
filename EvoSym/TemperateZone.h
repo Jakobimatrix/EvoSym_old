@@ -74,7 +74,7 @@ public:
 
 	/**
 	* @function getTempZoneInfluence(double latitude)
-	* @brief returns how much this Temperature zone influences things on the given latitude.
+	* @brief: returns how much this Temperature zone influences things on the given latitude.
 	* @param[in] latitude: Latitude for which the influence schould be given back
 	* @retval double: [0,1] 1: latitude is within the temperate zone, 0<retval<1: latitude not within the temperate zone but still has some influence, 0: no influence
 	**/
@@ -124,7 +124,7 @@ public:
 
 	/**
 	* @function getAllTempZoneInfluence(double(&influence)[4], double latitude)
-	* @brief returns how much all Temperature zones influence things on the given latitude.
+	* @brief: returns how much all Temperature zones influence things on the given latitude.
 	* @param[in] latitude: Latitude for which the influence schould be given back
 	* @param[out] influence: normed values for all 4 zones
 	**/

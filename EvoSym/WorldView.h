@@ -1,3 +1,10 @@
+/**
+* @file WorldView.h
+* @brief: This class Manages the Window which displays the world.
+* @date 10.07.2017
+* @author Jakob Wandel
+* @version 1.0
+**/
 #ifndef _WORLDVIEW_
 #define _WORLDVIEW_
 #include <SFML/Graphics.hpp>
@@ -15,8 +22,8 @@
 class WorldView
 {
 public:
-	sf::RenderWindow window;
-	sf::View tilemap_view;
+	sf::RenderWindow window; //the sfml::renderWindow
+	sf::View tilemap_view;	 
 	TileMap map;
 
 	sf::Text info_text;
@@ -70,7 +77,7 @@ public:
 		this->_G_ = &this->_G_->getInstance();
 
 		//this->window.create(sf::VideoMode(width, height, desktop.bitsPerPixel), "EvoSym", sf::Style::Default);
-		this->window.create(sf::VideoMode(width, height, desktop.bitsPerPixel), "EvoSym", sf::Style::Default);
+		this->window.create(sf::VideoMode(width, height, desktop.bitsPerPixel), "EvoSym", sf::Style::Fullscreen);
 
 
 		this->window.setVerticalSyncEnabled(true); // refresh rate synchronized with the vertical frequency of the monitor

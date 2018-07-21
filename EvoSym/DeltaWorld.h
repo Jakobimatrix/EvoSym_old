@@ -1,6 +1,6 @@
 /**
 * @file DeltaWorld.h
-* @brief This inherits from SimulatedUnit. It is the smallest unit of the World.
+* @brief: This inherits from SimulatedUnit. It is the smallest unit of the World.
 * @date 10.04.2017
 * @author Jakob Wandel
 * @version 1.0
@@ -34,13 +34,13 @@ typedef struct Ground {
 class DeltaWorld : public SimulatedUnit
 {
 private:
-	//neigbours
-	double meanTempNeigbour;
+	
+	double meanTempNeigbour; //saves the last mean temperature of the neigbours
 
-	bool initilized;
+	bool initilized; 
 
 	double InfluencedByTempZone[4];//the entrys always adds to 1 == 100%
-	double latitude;
+	double latitude;//between 0 and 90
 
 	int regionID;//todo region pointer instead
 
@@ -48,7 +48,7 @@ private:
 	double temperature; //[°C] 
 
 	bool isFrozen;
-	double iceThickness;
+	double iceThickness; //[m]
 
 	Ground ground;
 
@@ -56,8 +56,8 @@ private:
 	Resources resources;
 
 	//drawing
-	bool change_in_appearance;
-	bool RecentFreezing;
+	bool change_in_appearance; //if true, this delta world must be redrawn
+	bool RecentFreezing; 
 	double RecentDeltaTemperature;
 	int RecentSeason;
 	bool show_info;
@@ -69,11 +69,8 @@ private:
 public:
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function DeltaWorld()
+	* @brief: Default constructor
 	**/
 	DeltaWorld(){
 		this->_G_ = &this->_G_->getInstance();
@@ -90,21 +87,25 @@ public:
 	}
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function DeltaWorld(Point2d& position, double latitude)
+	* @brief: Constructor, sets position and latitude within the world.
+	* @param[in] Point2d& position: The Position in meter within the world.
+	* @param[in] double latitude:	The latitude within this world.
 	**/
 	DeltaWorld(Point2d& position, double latitude)
 	{
-		this->setPositionAndLatitude(position, latitude);
+		this->initSetPositionAndLatitude(position, latitude);
 		this->show_info = false;
 		this->change_in_appearance = true;
 	}
 
-	//latitude in grad
-	void setPositionAndLatitude(const Point2d& position, double latitude) {
+	/**
+	* @function initSetPositionAndLatitude(const Point2d& position, double latitude)
+	* @brief: Part of the initialization: Sets the Position and the latitude and all things which depends on thouse parameters.
+	* @param[in] Point2d& position: The Position in meter within the world.
+	* @param[in] double latitude:	The latitude within this world.
+	**/
+	void initSetPositionAndLatitude(const Point2d& position, double latitude) {
 		this->iceThickness = 0.0;
 		this->isFrozen = false;
 		this->_G_ = &this->_G_->getInstance();
@@ -125,7 +126,7 @@ public:
 		TemperateZone::getAllTempZoneInfluence(this->InfluencedByTempZone, latitude);
 
 		this->RecentDeltaTemperature = this->temperature;
-		this->RecentSeason = this->getSeason();
+		this->RecentSeason = this->_G_->dominantSeason;
 		this->RecentFreezing = this->isFrozen;
 
 		this->show_info = false;
@@ -133,17 +134,16 @@ public:
 	}
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function InitSetRegionAndHeight(int regionID, double h)
+	* @brief: Part of the initialization: Sets the Region and the height.
+	* @param[in] int regionID: The Id of the region this delta world shall have.
+	* @param[out] double height: The height of this delta world in meter.
 	**/
-	void setRegion_and_height(int regionID, double h) {
+	void InitSetRegionAndHeight(int regionID, double height) {
 		this->iceThickness = 0.0;
 		this->isFrozen = false;
 		this->regionID = regionID;
-		this->height = h;
+		this->height = height;
 		this->TempDropDueHeight = 0;
 		if (this->height > _BEGIN_HEIGHT_TEMP_DROP) {
 			this->TempDropDueHeight = this->height * _TEMPERATURE_DROP_PER_METER;
@@ -185,41 +185,32 @@ public:
 
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function getUnitName()
+	* @brief: returns the position of the delta world as its name within a string.
+	* @retval std::string: position of the delta world
 	**/
-	std::string DeltaWorld::getUnitName() { return std::to_string(this->position.x) + "X " + std::to_string(this->position.x) + "Y"; }
+	std::string getUnitName() { return std::to_string(this->position.x) + "X " + std::to_string(this->position.x) + "Y"; }
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function Resources* ShowResources() 
+	* @brief: returns a pointer of this delta world resources.
+	* @retval Resources*: This delta world resources.
 	**/
-	Resources* DeltaWorld::ShowResources() { return &this->resources; }
+	Resources* ShowResources() { return &this->resources; }
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function bool isInitialized()
+	* @brief: Returns the state of initialization.
+	* @retval bool:  True if initilazed.
 	**/
 	bool isInitialized() {
-		if (this == nullptr) {
-			return false;
-		}
 		return this->initilized;
 	}
 
 	/**
 	* @function void getAllTempInfluence(double(&TempZonenfluence)[4])
-	* @brief Writes in the given Array the Influences of the temperature.
-	* @param[out] TempZonenfluence: Attay with the Temp. influences
+	* @brief: Writes in the given Array the Influences of the temperature.
+	* @param[out] TempZonenfluence: Array with the Temp. influences
 	* @retval void:
 	**/
 	void getAllTempInfluence(double(&TempZonenfluence)[4]) {
@@ -230,11 +221,10 @@ public:
 	}
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function double getTempZoneInfluence(int TempZoneId)
+	* @brief: Calculates how much the given temperature zone has influence on this delta world.
+	* @param[in] int TempZoneId: 0: polar, 1: mediteran, 2: subtropica, 3: tropical
+	* @retval double: A value between 0 and 1, depending how much the given temperature zone influences this region.
 	**/
 	double getTempZoneInfluence(int TempZoneId) {
 		if (TempZoneId > -1 && TempZoneId < _AMOUNT_TEMPERATE_ZONES) {
@@ -244,33 +234,27 @@ public:
 	}
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function double getTemp()
+	* @brief: Returns the current temperature in celsius.
+	* @retval double: The current temperature.
 	**/
 	double getTemp() {
 		return this->temperature;
 	}
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function double getHeight()
+	* @brief: Returns the height in meter.
+	* @retval double: The height in meter.
 	**/
 	double getHeight() {
 		return this->height;
 	}
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function int getRegionId()
+	* @brief: Returns the Id of the Region of this delta world.
+	* @retval int: The id of this region.
 	**/
 	int getRegionId() {
 		return this->regionID;
@@ -278,29 +262,24 @@ public:
 
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function getSeason()
+	* @brief: calculate the curent dominat season.
+	* @retval int: The dominant season id.
 	**/
 	int getSeason() {
-		int season = 0;
-		double max = 0;
-		for (int i = 0; i < _AMOUNT_SEASONS; i++) {
-			if (this->_G_->SeasonMultiplier[i] > max) {
-				max = this->_G_->SeasonMultiplier[i];
-				season = i;
-			}
-		}
-		return season;
+		return this->_G_->dominantSeason;
 	}
 
+	/**
+	* @function getSeason()
+	* @brief: calculate the curent dominat season.
+	* @retval int: The dominant season id.
+	**/
 	void setNeigboursTemperature(double meanTemp);
 
 	/**
 	* @function changeRegionToFitNeigbours(int regionNeigbour[], const int num_neigbours = 8)
-	* @brief changes the current region to fit the neigbours reagion.
+	* @brief: changes the current region to fit the neigbours reagion.
 	* @param[in] regionNeigbour[]: Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
 	**/
 	void changeRegionToFitNeigbours(int regionNeigbour[], const int num_neigbours = 8);
@@ -315,182 +294,119 @@ public:
 	void setRandRegion(double height, int regionNeigbour[], const int num_neigbours = 8, int notThisRegion = -1);
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function bool hadChangeInAppearance()
+	* @brief: Returns true, if the region mast be redrawn.
+	* @retval bool: Returns true, if the region mast be redrawn.
 	**/
-	bool hadChangeInAppearance(int representation) {
-		if (this->getAge_s() < 2 * this->_G_->_DeltaTime) {
-			return true;
-		}
-		else if (this->change_in_appearance) {
-			return true;
-			this->change_in_appearance = false;
-		}
-		if(this->wasUpdated()){
-			//1=region/2=height/3=temp/4=season/5=tempZone
-			switch (representation)
-			{
-			case 1:
-				return this->hasPassedFreezingPoint();
-				break;
-			case 3:
-				return this->hadA_RecentChangeInTemp();
-				break;
-			case 4:
-				return this->hadChangeInSeason();
-				break;
-			default:
-				return false;
-			}
-		}
-		return false;
-	}
+	bool hadChangeInAppearance(int representation);
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function bool hasPassedFreezingPoint()
+	* @brief: Calculates if there was a change in the condition of the ground.
+	* @retval bool: Returns true if there was a change of the ground condition.
 	**/
-	bool hasPassedFreezingPoint() {
-
-		if (this->isFrozen != this->RecentFreezing) {
-			this->RecentFreezing = this->isFrozen;
-			return true;
-		}
-		return false;
-	}
+	bool hasPassedFreezingPoint();
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function bool hadRecentChangeInTemp f()
+	* @brief: Returns true, if the temperature has changed more than a value, so that the region has to be redrawn.
+	* @retval bool: True, if the temperature change is noticable.
 	**/
-	bool hadA_RecentChangeInTemp() {
-		if (std::abs(this->RecentDeltaTemperature) > _VISUALIZED_TEMPERATURE_DIFFERENCE) {
-			this->RecentDeltaTemperature = 0.0;
-			return true;
-		}
-		return false;
-	}
+	bool hadRecentChangeInTemp();
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function bool hadChangeInSeason()
+	* @brief: Returns true, if the Season changed.
+	* @retval int: True, if the Season changed.
 	**/
-	bool hadChangeInSeason() {
-		if (this->getSeason() != this->RecentSeason) {
-			this->RecentSeason = this->getSeason();
-			return true;
-		}
-		return false;
-	}
+	bool hadChangeInSeason();
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function bool GroundFrozen()
+	* @brief: Getter: Returns if this pice of Land is frozen.
+	* @retval bool: True if the Ground temperature in below freezing point.
 	**/
 	bool GroundFrozen() {
 		return this->isFrozen;
 	}
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function reset()
+	* @brief: resets temperature and resources as well as the age.
 	**/
-	void reset() {
-		this->initilized = false;
-		this->temperature = 0.0;
-		this->t_lastUpdate = -1.0;
-		this->t0 = 0.0;
-		this->iceThickness = 0.0;
-		this->isFrozen = false;
-		this->resources.reset();
-	}
+	void reset();
 
+	/**
+	* @function bool showInfo()
+	* @brief: Getter: Returns if information of this delta world should be shown.
+	* @retval bool: True if this delta worlds inf should be shown.
+	**/
 	bool showInfo() {
 		return this->show_info;
 	}
+
+	/**
+	* @function setShowInfo(bool b)
+	* @brief: Setter: Sets if information of this delta world should be shown.
+	* @param[in] bool b: Boolean if information of this delta world should be shown.
+	**/
 	void setShowInfo(bool b) {
 		this->show_info = b;
 		this->change_in_appearance = true;
 	}
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function std::string getInfoString()
+	* @brief: Returns a String with information about this delta World.
+	* @retval std::string: Information about this delta World.
 	**/
 	std::string getInfoString();
 
-	std::string getSeasonText() {
-		int season = 0;
-		double max = 0;
-		for (int i = 0; i < _AMOUNT_SEASONS; i++) {
-			if (this->_G_->SeasonMultiplier[i] > max) {
-				max = this->_G_->SeasonMultiplier[i];
-				season = i;
-			}
-		}
-		switch (season) {
-		case 0:
-			return "spring";
-		case 1:
-			return "summer";
-		case 2:
-			return "autumn";
-		case 3:
-			return "winter";
-		default:
-			return "ERROR";
-		}
-	}
+	/**
+	* @function std::string getSeasonText()
+	* @brief: Returns a string with the current season
+	* @retval std::string: A string with the current season
+	**/
+	std::string getSeasonText();
 
+	/**
+	* @function getIsPlants()
+	* @brief: getter function; returns the current value of plants in Kg/m^2 this region holds.
+	* @retval double: value of plants in Kg/m^2 this region holds.
+	**/
 	double getIsPlant() {
 		return this->resources.getIsPlants();
 	}
 
 private:
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function update(double tnow)
+	* @brief: Inherited update function which is called by SimulatedUnit.simulate(tnow).
+	* Simulates everything within the lat timestep.
 	**/
 	void update(double tnow);
 
 	/**
-	* @function int f()
-	* @brief
-	* @param[in] name:
-	* @param[out] name:
-	* @retval int:
+	* @function calcTemp(double dt)
+	* @brief: Calculates the new temperature when dt time has passed.
 	**/
 	void calcTemp(double dt);
+
+	/**
+	* @function calcResources(double dt)
+	* @brief: Calculates the resources when dt time has passed.
+	**/
 	void calcResources(double dt);
+
+	/**
+	* @function calcIceThicknes(double dt)
+	* @brief: Calculates the Ice thicknes of the ground when dt time has passed.
+	**/
 	void calcIceThicknes(double dt);
 
 	/**
 	* @functionvoid update(double dt, double airTemp)
-	* @brief Calculates the temperature for each layer in dependancy of the air temperature.
+	* @brief: Calculates the temperature for each layer in dependancy of the air temperature.
 	* @param[in] dt: The time passed since the last update. This should not exceed 5 Days.
 	* @param[in] airTemp: The curret temperature of the ait above the ground.
 	**/

@@ -172,7 +172,7 @@ inline void normalizeColor(T &color) {
 }
 /**
 * @ double PT1_T_Discrete(double dt, double pt1_T_continous) 
-* @brief Calculates the discrete value for the T constant of a pt1 behaviour.
+* @brief: Calculates the discrete value for the T constant of a pt1 behaviour.
 * @param[in] dt: The time passed since the last update. This should not exceed 5 Days.
 * @param[in] pt1_T_continous: The pt1_t constant for a continous system.
 **/

@@ -1,6 +1,6 @@
 /**
 * @file mein.cpp
-* @brief Main File for the Evolution Symulator. 
+* @brief: Main File for the Evolution Symulator. 
 * 
 1. Tag:
 Am Anfang schuf ich die ganze Welt: World* MyWorld = new World(). Aber dort war alles dunkel und leer. 

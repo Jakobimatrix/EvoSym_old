@@ -51,9 +51,9 @@ void WorldView::Update(World& W, bool forceUpdate) {
 						if (buttonNr > -1) {
 							if (buttonNr > 0) {
 								this->SetDeltaWorldColor(buttonNr);
-							}
-							mouse_over_menue = true;
+							}						
 						}
+						mouse_over_menue = true;
 					}
 					else if (hover_over_menue_Simulation) {
 						int buttonNr = this->MenueSimulation.click(MousePos_menue);//simulation Menü
@@ -62,8 +62,8 @@ void WorldView::Update(World& W, bool forceUpdate) {
 								this->menueSimulationAction(buttonNr, W);
 								this->majorChange = true;
 							}
-							mouse_over_menue = true;
 						}
+						mouse_over_menue = true;
 					}					
 				}
 				//showHideMenue

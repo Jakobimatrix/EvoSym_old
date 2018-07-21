@@ -136,6 +136,9 @@
     <ClCompile Include="WorldView.cpp">
       <Filter>Header Files\window</Filter>
     </ClCompile>
+    <ClCompile Include="Resources.cpp">
+      <Filter>Header Files\simulation</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
