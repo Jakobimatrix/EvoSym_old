@@ -622,6 +622,7 @@ void Region::setToMountain() {
 }
 void Region::setToDefault() {
 	this->setToMeadow();
+	this->region_id = -1;
 }
 
 Season<Propability>* Region::getAllSeasonDependantTempVariation(int tempZohne) {

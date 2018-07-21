@@ -8,7 +8,7 @@ void DeltaWorld::setNeigboursTemperature(double meanTemp){
 
 void DeltaWorld::changeRegionToFitNeigbours(int regionNeigbour[], const int num_neigbours) {
 
-	this->setRandRegion(this->height, regionNeigbour, num_neigbours, this->regionID);
+	this->setRandRegion(this->height, regionNeigbour, num_neigbours, this->region->getRegionId());
 
 }
 
@@ -101,7 +101,7 @@ void DeltaWorld::setRandRegion(double height, int regionNeigbour[], const int nu
 				if (this->temperature_zone_influence[0] > 0.5) {
 					polar = true;
 				}
-				this->InitSetRegionAndHeight(this->_RG_->getDefaultRegionID(height,polar),height);
+				this->InitSetRegionAndHeight(this->_RG_->getDefaultRegion(height,polar),height);
 				return;
 			}
 			else {
@@ -115,7 +115,7 @@ void DeltaWorld::setRandRegion(double height, int regionNeigbour[], const int nu
 	for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
 		TotalChanse += PossibleRegion_probability[ir];
 		if (TotalChanse > RandRegion) {
-			this->InitSetRegionAndHeight(ir, height);
+			this->InitSetRegionAndHeight(this->_RG_->getRegion(ir), height);
 			return;
 		}
 	}
@@ -152,7 +152,7 @@ void DeltaWorld::calcTemp(double dt) {
 									//mean temp.in TempZone in Season		//influence of TempZone 
 				T_TempZone_offset_Seasondependant += this->_G_->CurrentYearTempOffset[s] * this->temperature_zone_influence[TempZone];
 
-				T_Region_mean_2 += this->_RG_->getRegion(this->regionID)->getSeasonDependantTempVariation(s, TempZone) * this->temperature_zone_influence[TempZone];
+				T_Region_mean_2 += this->region->getSeasonDependantTempVariation(s, TempZone) * this->temperature_zone_influence[TempZone];
 				}
 			}
 
@@ -184,9 +184,8 @@ void DeltaWorld::calcTemp(double dt) {
 }
 void DeltaWorld::calcIceThicknes(double dt) {
 
-	Region *R = this->_RG_->getRegion(this->regionID);
 	double freezingTemp = _WATER_FREEZING_TEMPERATURE[0];
-	if (this->regionID == 0) {//ocean
+	if (this->region->getRegionId() == 0) {//ocean
 		freezingTemp = _WATER_FREEZING_TEMPERATURE[1];
 	}
 	if (this->ground.layer_temperature[0] < 0) {
@@ -194,8 +193,8 @@ void DeltaWorld::calcIceThicknes(double dt) {
 		for (unsigned int FrozenLayer = 1; FrozenLayer < this->ground.amount_layers; FrozenLayer++) {
 			if (this->ground.layer_temperature[FrozenLayer] > freezingTemp) { //this layer is not frozen anymore
 				//linear interpolation between this layer and the last
-				double a = (this->ground.layer_temperature[FrozenLayer] - this->ground.layer_temperature[FrozenLayer-1]) / R->getGroundProperties()->ground_layer_thickness;
-				double b = this->ground.layer_temperature[FrozenLayer] - a*R->getGroundProperties()->ground_layer_thickness*(FrozenLayer+1);
+				double a = (this->ground.layer_temperature[FrozenLayer] - this->ground.layer_temperature[FrozenLayer-1]) / this->region->getGroundProperties()->ground_layer_thickness;
+				double b = this->ground.layer_temperature[FrozenLayer] - a*this->region->getGroundProperties()->ground_layer_thickness*(FrozenLayer+1);
 				this->ice_thickness = -b / a;
 				break;
 			}
@@ -210,17 +209,17 @@ void DeltaWorld::calcIceThicknes(double dt) {
 void DeltaWorld::calcGroundTemp(double dt, double airTemp)
 {
 	int last_layer = this->ground.amount_layers - 1;
-	double pt_T = PT1_T_Discrete(dt, this->_RG_->getRegion(this->regionID)->getGroundProperties()->ground_pt1_t); //get the discret t constant of a dynamic pt1 behaviour
+	double pt_T = PT1_T_Discrete(dt, this->region->getGroundProperties()->ground_pt1_t); //get the discret t constant of a dynamic pt1 behaviour
 
 	for (unsigned int i = 0; i < this->ground.amount_layers; i++) {
 		if (i == 0) { //erster Layer
-			this->ground.layer_temperature[i] = pt_T * (this->_RG_->getRegion(this->regionID)->getGroundProperties()->ground_above_layer_factor*airTemp + this->_RG_->getRegion(this->regionID)->getGroundProperties()->ground_below_layer_factor*this->ground.layer_temperature[i + 1] - this->ground.layer_temperature[i]) + this->ground.layer_temperature[i];
+			this->ground.layer_temperature[i] = pt_T * (this->region->getGroundProperties()->ground_above_layer_factor*airTemp + this->region->getGroundProperties()->ground_below_layer_factor*this->ground.layer_temperature[i + 1] - this->ground.layer_temperature[i]) + this->ground.layer_temperature[i];
 		}
 		else if (i != last_layer) {
-			this->ground.layer_temperature[i] = pt_T * (this->_RG_->getRegion(this->regionID)->getGroundProperties()->ground_above_layer_factor*this->ground.layer_temperature[i - 1] + this->_RG_->getRegion(this->regionID)->getGroundProperties()->ground_below_layer_factor*this->ground.layer_temperature[i + 1] - this->ground.layer_temperature[i]) + this->ground.layer_temperature[i];
+			this->ground.layer_temperature[i] = pt_T * (this->region->getGroundProperties()->ground_above_layer_factor*this->ground.layer_temperature[i - 1] + this->region->getGroundProperties()->ground_below_layer_factor*this->ground.layer_temperature[i + 1] - this->ground.layer_temperature[i]) + this->ground.layer_temperature[i];
 		}
 		else { //letzterLayer
-			this->ground.layer_temperature[i] = pt_T * (this->_RG_->getRegion(this->regionID)->getGroundProperties()->ground_above_layer_factor*this->ground.layer_temperature[i - 1] + this->_RG_->getRegion(this->regionID)->getGroundProperties()->ground_below_layer_factor*this->ground.last_layer_temperature - this->ground.layer_temperature[i]) + this->ground.layer_temperature[i];
+			this->ground.layer_temperature[i] = pt_T * (this->region->getGroundProperties()->ground_above_layer_factor*this->ground.layer_temperature[i - 1] + this->region->getGroundProperties()->ground_below_layer_factor*this->ground.last_layer_temperature - this->ground.layer_temperature[i]) + this->ground.layer_temperature[i];
 		}
 	}
 }
@@ -236,7 +235,7 @@ void DeltaWorld::update(double tnow) {
 }
 void DeltaWorld::calcResources(double dt) {
 
-	this->resources.RegeneratePlants(dt,this->regionID,this->temperature);
+	this->resources.RegeneratePlants(dt,this->region->getRegionId(),this->temperature);
 	this->resources.RegenerateFreshWater(dt);
 }
 
@@ -244,12 +243,12 @@ std::string DeltaWorld::getInfoString() {
 	std::string info = this->getUnitName() + "\n\n";
 	//geology
 	info += "Geology:\n";
-	info += "Region: \t" + Region::getRegionName(this->regionID) + "\n";
+	info += "Region: \t" + Region::getRegionName(this->region->getRegionId()) + "\n";
 	info += "Height: \t" + std::to_string(this->height) + " m\n";
 	info += "Temperature: \t" + std::to_string(this->temperature) + " °C\n";
 	info += "Mean neigbour Temperature: \t" + std::to_string(this->mean_neigbour_temperature) + " °C\n";
 	for (unsigned int i = 0; i < this->ground.amount_layers; i++) {
-		info += "Temperatur Ground Layer " + std::to_string((i+1)*this->_RG_->getRegion(this->regionID)->getGroundProperties()->ground_layer_thickness) + "cm: \t" + std::to_string(this->ground.layer_temperature[i]) + " °C\n";
+		info += "Temperatur Ground Layer " + std::to_string((i+1)*this->region->getGroundProperties()->ground_layer_thickness) + "cm: \t" + std::to_string(this->ground.layer_temperature[i]) + " °C\n";
 	}
 	info += "Temperatur Ground constLayer: \t" + std::to_string(this->ground.last_layer_temperature) + " °C\n";
 	info += "Season: \t" + this->getSeasonText() + "\n";

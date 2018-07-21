@@ -6,16 +6,22 @@ class RegionGlobals {
 
 private:
 	Region Regions[_AMOUNT_REGIONS];
+	Region uninitilized;
 	RegionGlobals() {
 		for (int i = 0; i < _AMOUNT_REGIONS; i++) {
 			this->Regions[i].setTo(i);
-		}		
+		}	
+		uninitilized.setToDefault();
 	}
 	// Stop the compiler generating methods of copy the object
 	RegionGlobals(RegionGlobals const& copy);            // Not Implemented
 	RegionGlobals& operator=(RegionGlobals const& copy); // Not Implemented
 
 public:
+	Region* getUninitilized() {
+		return &this->uninitilized;
+	}
+
 	Region* getRegion(int i) {
 		if (i < _AMOUNT_REGIONS) {
 			return &this->Regions[i];
@@ -28,7 +34,7 @@ public:
 	}
 	Region* getDefaultRegion(double height = 1.0, bool polar = false) {
 		if (height > 0) {
-			if (polar) {
+			if (!polar) {
 				return &this->Regions[2];//Default meaddow
 			}
 			else {

@@ -30,6 +30,7 @@ struct xyMap {
 	unsigned int x;
 	unsigned int y;
 };
+
 class World
 {
 public:

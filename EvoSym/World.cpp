@@ -1,10 +1,3 @@
-/**
-* @file
-* @brief
-* @date 10.04.2017
-* @author Jakob Wandel
-* @version 1.0
-**/
 #include "World.h"
 
 void World::reset() {

@@ -42,7 +42,7 @@ private:
 	double temperature_zone_influence[4];//the entrys always adds to 1 == 100%
 	double latitude;//between 0 and 90
 
-	int regionID;//todo region pointer instead
+	Region* region; //pointer to the region in the GlobalSigleton
 
 	double height;
 	double temperature; //[°C] 
@@ -75,7 +75,7 @@ public:
 	DeltaWorld(){
 		this->_G_ = &this->_G_->getInstance();
 		this->_RG_ = &this->_RG_->getInstance();
-		this->regionID = -1;
+		this->region = _RG_->getUninitilized();
 		this->initilized = false;
 		this->ice_thickness = 0.0;
 		this->is_frozen = false;
@@ -94,6 +94,7 @@ public:
 	**/
 	DeltaWorld(Point2d& position, double latitude)
 	{
+		this->region = _RG_->getUninitilized();
 		this->initSetPositionAndLatitude(position, latitude);
 		this->show_info = false;
 		this->change_in_appearance = true;
@@ -110,6 +111,7 @@ public:
 		this->is_frozen = false;
 		this->_G_ = &this->_G_->getInstance();
 		this->_RG_ = &this->_RG_->getInstance();
+		this->region = _RG_->getUninitilized();
 		//numerical errors with latitude
 		if (latitude > this->_G_->_BREITENGRAD.max) latitude = this->_G_->_BREITENGRAD.max;
 
@@ -120,7 +122,6 @@ public:
 		this->latitude = latitude;
 		this->position = position;
 
-		this->regionID = -1;
 		this->initilized = false;
 
 		TemperateZone::getAllTempZoneInfluence(this->temperature_zone_influence, latitude);
@@ -139,10 +140,10 @@ public:
 	* @param[in] int regionID: The Id of the region this delta world shall have.
 	* @param[out] double height: The height of this delta world in meter.
 	**/
-	void InitSetRegionAndHeight(int regionID, double height) {
+	void InitSetRegionAndHeight(Region* region, double height) {
 		this->ice_thickness = 0.0;
 		this->is_frozen = false;
-		this->regionID = regionID;
+		this->region = region;
 		this->height = height;
 		this->temperature_drop_due_height = 0;
 		if (this->height > _BEGIN_HEIGHT_TEMP_DROP) {
@@ -154,17 +155,17 @@ public:
 
 		//resources
 		
-		this->resources.setMax_freshwater(this->_RG_->getRegion(this->regionID)->getMaxFreshWater());
-		this->resources.setMax_plants(this->_RG_->getRegion(this->regionID)->getMaxPlants());
-		this->resources.setRegeneration_freshwater(*this->_RG_->getRegion(this->regionID)->getTauFreshWater());
-		this->resources.setRegeneration_plants(*this->_RG_->getRegion(this->regionID)->getTauPlants());
+		this->resources.setMax_freshwater(this->region->getMaxFreshWater());
+		this->resources.setMax_plants(this->region->getMaxPlants());
+		this->resources.setRegeneration_freshwater(*this->region->getTauFreshWater());
+		this->resources.setRegeneration_plants(*this->region->getTauPlants());
 		this->resources.reset();
 
 		this->change_in_appearance = true;
 
 		//ground
 
-		GroundProperties* ground_properties = this->_RG_->getRegion(this->regionID)->getGroundProperties(); //object exists somewhere else, dont delete!
+		GroundProperties* ground_properties = this->region->getGroundProperties(); //object exists somewhere else, dont delete!
 		this->ground.amount_layers = (unsigned int)(ground_properties->ground_depth / ground_properties->ground_layer_thickness); //calculate how many layers we will have
 		this->ground.layer_temperature.reserve(this->ground.amount_layers); //memory must be allocated
 
@@ -257,7 +258,7 @@ public:
 	* @retval int: The id of this region.
 	**/
 	int getRegionId() {
-		return this->regionID;
+		return this->region->getRegionId();
 	}
 
 
