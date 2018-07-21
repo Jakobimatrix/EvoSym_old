@@ -34,29 +34,29 @@ public:
 	float ratio;
 	float one_div_ratio;
 	float tliemap_height_ratio;
-	sf::Vector2i LastMousePos;
+	sf::Vector2i last_moude_position;
 	float delta_wheel_tick;
 
-	bool hasFocus;
-	bool majorChange;
+	bool has_focus;
+	bool major_change;
 
 
-	sf::RectangleShape Bottom;
-	sf::Text TextVersion;
-	sf::Text TextTime;
+	sf::RectangleShape bottom;
+	sf::Text text_version;
+	sf::Text text_time;
 
-	int DeltaWorldColoring;
-	bool colorChanged;
+	int delta_world_coloring;
+	bool color_changed;
 	int focussed_delta_world;
 
 	GlobalDrawSingleton* _G_;
 
-	int MenueWidth;
+	int menue_width;
 	sf::View menue_view;
 	bool menu_visible;
-	Button ButtonShowMenue;
-	Menue MenueWorldAppearance;
-	Menue MenueSimulation;
+	Button button_show_menue;
+	Menue menue_world_appearance;
+	Menue menue_simulation;
 	int charactersize;
 
 
@@ -71,7 +71,7 @@ public:
 
 		this->focussed_delta_world = -1;
 		this->menu_visible = true;
-		this->majorChange = true;
+		this->major_change = true;
 		
 
 		this->_G_ = &this->_G_->getInstance();
@@ -86,7 +86,7 @@ public:
 		this->zoom = 1.0;
 		this->left_upper_corner_of_view = sf::Vector2i(0,0);
 		this->tilemap_view.reset(sf::FloatRect(0,0, (float)height, (float)height));//left,top/width/height
-		this->tliemap_height_ratio = (sf::VideoMode::getDesktopMode().height - this->Bottom.getSize().y) / sf::VideoMode::getDesktopMode().height;
+		this->tliemap_height_ratio = (sf::VideoMode::getDesktopMode().height - this->bottom.getSize().y) / sf::VideoMode::getDesktopMode().height;
 		this->tilemap_view.setViewport(sf::FloatRect(0.f, 0.f, 1.0f, this->tliemap_height_ratio));
 		this->menue_view.reset(sf::FloatRect(0.0f, 0.0f, (float)width, (float)height));//left,top/width/height
 		this->menue_view.setViewport(sf::FloatRect(0.f, 0.f, 1.0f, 1.0f));
@@ -94,49 +94,49 @@ public:
 		//Menue
 		this->charactersize = 10;
 		float menueWidth = 150.0f;
-		this->MenueWorldAppearance = Menue(menueWidth,0.0f,0.0f,std::string("Aussehen"));
-		this->MenueWorldAppearance.addButton(std::string("Region"));
-		this->MenueWorldAppearance.addButton(std::string("Höhe"));
-		this->MenueWorldAppearance.addButton(std::string("Temperatur"));		
-		this->MenueWorldAppearance.addButton(std::string("Jahreszeiten"));
-		this->MenueWorldAppearance.addButton(std::string("Klimazone"));
-		this->MenueWorldAppearance.addButton(std::string("Ressourcen Pflanzen"));
+		this->menue_world_appearance = Menue(menueWidth,0.0f,0.0f,std::string("Aussehen"));
+		this->menue_world_appearance.addButton(std::string("Region"));
+		this->menue_world_appearance.addButton(std::string("Höhe"));
+		this->menue_world_appearance.addButton(std::string("Temperatur"));		
+		this->menue_world_appearance.addButton(std::string("Jahreszeiten"));
+		this->menue_world_appearance.addButton(std::string("Klimazone"));
+		this->menue_world_appearance.addButton(std::string("Ressourcen Pflanzen"));
 
-		this->MenueSimulation = Menue(menueWidth, menueWidth, 0.0f, std::string("Simulation"));
-		this->MenueSimulation.addButton(std::string("new World"));
-		this->MenueSimulation.addButton(std::string("exit"));
+		this->menue_simulation = Menue(menueWidth, menueWidth, 0.0f, std::string("Simulation"));
+		this->menue_simulation.addButton(std::string("new World"));
+		this->menue_simulation.addButton(std::string("exit"));
 
 		//set default WorldAppearance
-		this->hasFocus = true;
-		this->DeltaWorldColoring = 1;//1=region/2=height/3=temp/4=season/5=tempZone/6=resources
+		this->has_focus = true;
+		this->delta_world_coloring = 1;//1=region/2=height/3=temp/4=season/5=tempZone/6=resources
 
 
 		//Bottom
 		float Bottomheight = 20.f;
 
-		this->Bottom.setFillColor(sf::Color(0, 0, 0));
+		this->bottom.setFillColor(sf::Color(0, 0, 0));
 		
-		this->Bottom.setPosition(sf::Vector2f(0.0f, (float)height - Bottomheight));
-		this->Bottom.setSize(sf::Vector2f((float)width, Bottomheight));
+		this->bottom.setPosition(sf::Vector2f(0.0f, (float)height - Bottomheight));
+		this->bottom.setSize(sf::Vector2f((float)width, Bottomheight));
 
-		this->ButtonShowMenue.shape.setSize(sf::Vector2f(Bottomheight * 3, Bottomheight));
-		this->ButtonShowMenue.shape.setPosition(sf::Vector2f((float)width*0.5f -Bottomheight * 3.0f *0.5f, (float)(height - Bottomheight)));
-		this->ButtonShowMenue.setText(std::string("Menue"), this->charactersize);
+		this->button_show_menue.shape.setSize(sf::Vector2f(Bottomheight * 3, Bottomheight));
+		this->button_show_menue.shape.setPosition(sf::Vector2f((float)width*0.5f -Bottomheight * 3.0f *0.5f, (float)(height - Bottomheight)));
+		this->button_show_menue.setText(std::string("Menue"), this->charactersize);
 
 
-		this->TextVersion.setString("version 1.3 - Jakob Wandel");
-		this->TextVersion.setFillColor(sf::Color(255, 255, 255));
-		this->TextVersion.setFont(this->_G_->arial);
-		this->TextVersion.setCharacterSize(this->charactersize);
-		this->TextVersion.setOrigin(this->TextVersion.getGlobalBounds().width, this->TextVersion.getGlobalBounds().height);
-		this->TextVersion.setPosition(sf::Vector2f((float)width,(float)height - this->TextVersion.getGlobalBounds().height));
+		this->text_version.setString("version 1.3 - Jakob Wandel");
+		this->text_version.setFillColor(sf::Color(255, 255, 255));
+		this->text_version.setFont(this->_G_->arial);
+		this->text_version.setCharacterSize(this->charactersize);
+		this->text_version.setOrigin(this->text_version.getGlobalBounds().width, this->text_version.getGlobalBounds().height);
+		this->text_version.setPosition(sf::Vector2f((float)width,(float)height - this->text_version.getGlobalBounds().height));
 
-		this->TextTime.setString("0:00:000:0");
-		this->TextTime.setFillColor(sf::Color(255, 255, 255));
-		this->TextTime.setFont(this->_G_->arial);
-		this->TextTime.setCharacterSize(this->charactersize);
-		this->TextTime.setOrigin(0, this->TextTime.getGlobalBounds().height);
-		this->TextTime.setPosition(sf::Vector2f(0, height - this->TextVersion.getGlobalBounds().height));
+		this->text_time.setString("0:00:000:0");
+		this->text_time.setFillColor(sf::Color(255, 255, 255));
+		this->text_time.setFont(this->_G_->arial);
+		this->text_time.setCharacterSize(this->charactersize);
+		this->text_time.setOrigin(0, this->text_time.getGlobalBounds().height);
+		this->text_time.setPosition(sf::Vector2f(0, height - this->text_version.getGlobalBounds().height));
 
 		//infobox
 		this->info_box.setFillColor(sf::Color(0, 0, 0));
@@ -157,10 +157,10 @@ public:
 
 	//menue actions
 	void SetDeltaWorldColor(int i) {
-		if (i != this->DeltaWorldColoring) {
+		if (i != this->delta_world_coloring) {
 			if (-1 < i) {
-				this->DeltaWorldColoring = i;
-				this->majorChange = true;
+				this->delta_world_coloring = i;
+				this->major_change = true;
 			}
 
 		}

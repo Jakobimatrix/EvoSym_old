@@ -17,14 +17,14 @@
 
 class Menue
 {
-	std::vector<Button> Buttons;
-	sf::RectangleShape MenueShape;
+	std::vector<Button> buttons;
+	sf::RectangleShape menue_shape;
 	int textsize;
-	float buttonMargin;
-	static sf::Color MenueColor; 
-	static sf::Color ButtonColor;
-	static sf::Color ButtonHoverColor;
-	static sf::Color TextColor;
+	float button_margin;
+	static sf::Color menue_color; 
+	static sf::Color button_color;
+	static sf::Color button_hover_color;
+	static sf::Color text_color;
 	bool colapsed;
 
 
@@ -38,9 +38,9 @@ public:
 	* @brief: Default constructor. Sets a default color but no position or shape.
 	**/
 	Menue() {
-		this->MenueShape.setSize(sf::Vector2f(0.0f, 0.0f));
-		this->buttonMargin = 0.0f;
-		this->MenueShape.setFillColor(this->MenueColor);
+		this->menue_shape.setSize(sf::Vector2f(0.0f, 0.0f));
+		this->button_margin = 0.0f;
+		this->menue_shape.setFillColor(this->menue_color);
 		this->colapsed = true;
 	}
 
@@ -57,10 +57,10 @@ public:
 	**/
 	Menue(float width, float posX, float posY, std::string& menueName, int textsize = 10, float buttonMargin = 0.0f) {
 		this->textsize = textsize;
-		this->MenueShape.setSize(sf::Vector2f(width, 0.0f));
-		this->MenueShape.setPosition(sf::Vector2f(posX, posY));
-		this->MenueShape.setFillColor(this->MenueColor);
-		this->buttonMargin = buttonMargin;
+		this->menue_shape.setSize(sf::Vector2f(width, 0.0f));
+		this->menue_shape.setPosition(sf::Vector2f(posX, posY));
+		this->menue_shape.setFillColor(this->menue_color);
+		this->button_margin = buttonMargin;
 		this->colapsed = true;
 		this->addButton(menueName);
 		this->defineMenueShape();

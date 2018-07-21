@@ -11,12 +11,12 @@ class TemperateZone
 private:
 	GlobalSingleton* _G_;
 	MinMax			latitude;					//Grenzen in denen dieses Klima vorkommt.
-	double			OverlapNextTemperateZone;	//Wie viele Breitengrade diese Klimazone in die Nachbarklimazohnen hineinragt.
+	double			overlap_next_temperate_zone;	//Wie viele Breitengrade diese Klimazone in die Nachbarklimazohnen hineinragt.
 	double			_negative_1_divided_OverlapNextTemperateZone;//for performance reasons
-	Season<double>	MeanTemp;					//mittlere Temperatur Frühling, Sommer, Herbst, Winter.
-	Propability		VariationInTemp;			//Abweichung von MeanTemp.
-	int				TempZoneID;				//int, welche Zone
-	std::string TempZoneName; 
+	Season<double>	mean_temperature;					//mittlere Temperatur Frühling, Sommer, Herbst, Winter.
+	Propability		variation_in_temperature;			//Abweichung von MeanTemp.
+	int				temperature_zone_id;				//int, welche Zone
+	std::string		temperature_zone_name; 
 
 public:
 	TemperateZone() {
@@ -35,7 +35,7 @@ public:
 		else {
 			this->setToTropical();
 		}
-		this->_negative_1_divided_OverlapNextTemperateZone = -1 / OverlapNextTemperateZone;
+		this->_negative_1_divided_OverlapNextTemperateZone = -1 / overlap_next_temperate_zone;
 	}
 
 
@@ -52,24 +52,24 @@ public:
 		else {
 			this->setToTropical();
 		}
-		this->_negative_1_divided_OverlapNextTemperateZone = -1 / OverlapNextTemperateZone;
+		this->_negative_1_divided_OverlapNextTemperateZone = -1 / overlap_next_temperate_zone;
 	}
 
 	std::string getZoneName() {
-		return this->TempZoneName;
+		return this->temperature_zone_name;
 	}
 	int getZoneInt() {
-		return this->TempZoneID;
+		return this->temperature_zone_id;
 	}
 	Season<double>* getSeasonDependentTemp() {
-		return &this->MeanTemp;
+		return &this->mean_temperature;
 	}
 
 	Propability* getProbability() {
-		return &this->VariationInTemp;
+		return &this->variation_in_temperature;
 	}
 	double getNewYearTempVariation() {
-		return this->VariationInTemp.getRand();
+		return this->variation_in_temperature.getRand();
 	}
 
 	/**
@@ -89,7 +89,7 @@ public:
 		else {
 			difference = this->latitude.min - latitude;
 		}
-		if (difference > this->OverlapNextTemperateZone) {
+		if (difference > this->overlap_next_temperate_zone) {
 			return 0.0;
 		}
 		else {
@@ -98,10 +98,10 @@ public:
 	}
 
 	void setNextNeigbour(double latitude) {
-		if (this->TempZoneID == 0) {
+		if (this->temperature_zone_id == 0) {
 			this->setToModerate();
 		}
-		else if (this->TempZoneID == 1) {
+		else if (this->temperature_zone_id == 1) {
 			if (latitude - this->_G_->_POLAR_latitude.max < this->_G_->_SUBTROPE_latitude.min - latitude) {
 				this->setToPolar();
 			}
@@ -109,7 +109,7 @@ public:
 				this->setToSubtropical();
 			}
 		}
-		else if (this->TempZoneID == 2) {
+		else if (this->temperature_zone_id == 2) {
 			if (latitude - this->_G_->_MODERATE_latitude.max < this->_G_->_TROPICAL_latitude.min - latitude) {
 				this->setToModerate();
 			}
@@ -151,39 +151,39 @@ private:
 	void setToPolar() {
 		this->_G_ = &this->_G_->getInstance();
 		this->latitude = this->_G_->_POLAR_latitude;
-		this->OverlapNextTemperateZone = 10.0;
+		this->overlap_next_temperate_zone = 10.0;
 		//this->MeanTemp = Season<double>(-18.0, -10.0, -15.0, -20.0);//https://de.wikipedia.org/wiki/Datei:Klimadiagramm-Wostok-Antarktis_(Russland)-metrisch-deutsch.png
-		this->MeanTemp = Season<double>(-40.0, -20.0, -40.0, -55.0);//https://de.wikipedia.org/wiki/Datei:Klimadiagramm-Wostok-Antarktis_(Russland)-metrisch-deutsch.png
-		this->VariationInTemp = Propability(0.0, 2.8);//N(0,5)
-		this->TempZoneName = "polar";
-		this->TempZoneID = 0;
+		this->mean_temperature = Season<double>(-40.0, -20.0, -40.0, -55.0);//https://de.wikipedia.org/wiki/Datei:Klimadiagramm-Wostok-Antarktis_(Russland)-metrisch-deutsch.png
+		this->variation_in_temperature = Propability(0.0, 2.8);//N(0,5)
+		this->temperature_zone_name = "polar";
+		this->temperature_zone_id = 0;
 	}
 	void setToModerate() {
 		this->_G_ = &this->_G_->getInstance();
 		this->latitude = this->_G_->_MODERATE_latitude;
-		this->OverlapNextTemperateZone = 4.0;
-		this->MeanTemp = Season<double>(7.0, 25.0, 13.0, -6.0);
-		this->VariationInTemp = Propability(0.0, 5.0);
-		this->TempZoneName = "moderate";
-		this->TempZoneID = 1;
+		this->overlap_next_temperate_zone = 4.0;
+		this->mean_temperature = Season<double>(7.0, 25.0, 13.0, -6.0);
+		this->variation_in_temperature = Propability(0.0, 5.0);
+		this->temperature_zone_name = "moderate";
+		this->temperature_zone_id = 1;
 	}
 	void setToSubtropical() {
 		this->_G_ = &this->_G_->getInstance();
 		this->latitude = this->_G_->_SUBTROPE_latitude;
-		this->OverlapNextTemperateZone = 10.0;
-		this->MeanTemp = Season<double>(20.0, 30.0, 20.0, 15.0);//sydney https://de.climate-data.org/location/24/
-		this->VariationInTemp = Propability(0.0, 2.1);
-		this->TempZoneName = "subtropical";
-		this->TempZoneID = 2;
+		this->overlap_next_temperate_zone = 10.0;
+		this->mean_temperature = Season<double>(20.0, 30.0, 20.0, 15.0);//sydney https://de.climate-data.org/location/24/
+		this->variation_in_temperature = Propability(0.0, 2.1);
+		this->temperature_zone_name = "subtropical";
+		this->temperature_zone_id = 2;
 	}
 	void setToTropical() {
 		this->_G_ = &this->_G_->getInstance();
 		this->latitude = this->_G_->_TROPICAL_latitude;
-		this->OverlapNextTemperateZone = 5.0;
-		this->MeanTemp = Season<double>(30.0, 30.0, 30.0, 30.0);
-		this->VariationInTemp = Propability(0, 1.3);
-		this->TempZoneName = "tropical";
-		this->TempZoneID = 3;
+		this->overlap_next_temperate_zone = 5.0;
+		this->mean_temperature = Season<double>(30.0, 30.0, 30.0, 30.0);
+		this->variation_in_temperature = Propability(0, 1.3);
+		this->temperature_zone_name = "tropical";
+		this->temperature_zone_id = 3;
 	}
 };
 

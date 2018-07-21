@@ -14,10 +14,10 @@
 class SimulatedUnit{
 protected:
 	double t0;				//[s] Start time since this unit was created.
-	double t_lastUpdate;	//[s] Time when this unit was last updated.
-	double deltaT_Update;	//[s] After this intervall this unit needs an update.
+	double t_last_update;	//[s] Time when this unit was last updated.
+	double delta_t_update;	//[s] After this intervall this unit needs an update.
 	Point2d position;		//[m,m] 2 D position of this unit.
-	bool hasUpdated;		//for visualization->if true the unit needs a visual update
+	bool has_updated;		//for visualization->if true the unit needs a visual update
 
 public:
 
@@ -26,9 +26,9 @@ public:
 	* @brief: default constructor
 	**/
 	SimulatedUnit() {
-		this->deltaT_Update = 1.0;
-		this->t_lastUpdate = 0.0;
-		this->hasUpdated = true;
+		this->delta_t_update = 1.0;
+		this->t_last_update = 0.0;
+		this->has_updated = true;
 	}
 	~SimulatedUnit() {}
 
@@ -40,7 +40,7 @@ public:
 	void simulate(double tnow) {
 		if (this->runSimulationStep(tnow)) {
 			this->update(tnow);
-			this->t_lastUpdate = tnow;
+			this->t_last_update = tnow;
 		}
 	}
 
@@ -59,7 +59,7 @@ public:
 	**/
 	double getAge_s(double tnow = -1) {
 		if (tnow < 0) {//if tnow is not avaiable
-			return this->t_lastUpdate - this->t0;
+			return this->t_last_update - this->t0;
 		}
 		else {
 			return tnow - this->t0;
@@ -72,8 +72,8 @@ public:
 	* @retval bool: True if the unit was updated.
 	**/
 	bool wasUpdated() {
-		if (this->hasUpdated) {
-			this->hasUpdated = false;
+		if (this->has_updated) {
+			this->has_updated = false;
 			return true;
 		}
 		return false;
@@ -88,13 +88,13 @@ protected:
 	* @retval bool: Returns true, if this unit needs to be updated.
 	**/
 	bool runSimulationStep(double tnow) {
-		if (deltaT_Update > tnow - t_lastUpdate)
+		if (delta_t_update > tnow - t_last_update)
 		{
 			return false;
 		}
 		else 
 		{
-			this->hasUpdated = true;
+			this->has_updated = true;
 			return true;
 		}
 	}

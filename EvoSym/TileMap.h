@@ -13,12 +13,12 @@ private:
 public:
 
 	TileMap() {
-		m_tileset.loadFromFile(_SRC_TILE_IMAGE);
+		tileset.loadFromFile(_SRC_TILE_IMAGE);
 		this->_G_DRAW_ = &this->_G_DRAW_->getInstance();
 		this->_G_ = &this->_G_->getInstance();
 		// resize the vertex array to fit the level size
-		m_vertices.setPrimitiveType(sf::Quads);
-		m_vertices.resize(_WORLD_DIMENSION * _WORLD_DIMENSION * 4);
+		vertices.setPrimitiveType(sf::Quads);
+		vertices.resize(_WORLD_DIMENSION * _WORLD_DIMENSION * 4);
 	}
 
 	bool loadAll(World &W, int representation)
@@ -41,7 +41,7 @@ public:
 		// populate the vertex array, with one quad per tile
 
 		// get a pointer to the current tile's quad
-		sf::Vertex* quad = &m_vertices[(x + y * _WORLD_DIMENSION) * 4]; 
+		sf::Vertex* quad = &vertices[(x + y * _WORLD_DIMENSION) * 4]; 
 
 		// define its 4 corners
 		quad[0].position = sf::Vector2f((float)(x * _TILE_RESULUTION), y * (float)(_TILE_RESULUTION));
@@ -57,8 +57,8 @@ public:
 			}
 
 			// find its position in the tileset texture
-			int tu = tileNumber % (m_tileset.getSize().x / _TILE_RESULUTION);
-			int tv = tileNumber / (m_tileset.getSize().x / _TILE_RESULUTION);
+			int tu = tileNumber % (tileset.getSize().x / _TILE_RESULUTION);
+			int tv = tileNumber / (tileset.getSize().x / _TILE_RESULUTION);
 
 			// define its 4 texture coordinates
 
@@ -78,8 +78,8 @@ public:
 		else {
 			int tileNumber = 23;
 			// find its position in the tileset texture
-			int tu = tileNumber % (m_tileset.getSize().x / _TILE_RESULUTION);
-			int tv = tileNumber / (m_tileset.getSize().x / _TILE_RESULUTION);
+			int tu = tileNumber % (tileset.getSize().x / _TILE_RESULUTION);
+			int tv = tileNumber / (tileset.getSize().x / _TILE_RESULUTION);
 
 			// define its 4 texture coordinates
 
@@ -108,9 +108,9 @@ public:
 			}
 			else if (representation == 3) {
 				double temp = DW->getTemp();
-				double R = temp*this->_G_DRAW_->GradientRot + this->_G_DRAW_->RotOffset;
+				double R = temp*this->_G_DRAW_->graient_rot + this->_G_DRAW_->rot_offset;
 				double G = 0.0;
-				double B = temp*this->_G_DRAW_->GradientBlau + this->_G_DRAW_->BlauOffset;
+				double B = temp*this->_G_DRAW_->gradient_blau + this->_G_DRAW_->blau_offset;
 
 				if (temp > -2 && temp < 2) {
 					G = 255.0;
@@ -205,13 +205,13 @@ private:
 		states.transform *= getTransform();
 
 		// apply the tileset texture
-		states.texture = &m_tileset;
+		states.texture = &tileset;
 
 		// draw the vertex array
-		target.draw(m_vertices, states);
+		target.draw(vertices, states);
 	}
 
-	sf::VertexArray m_vertices;
-	sf::Texture m_tileset;
+	sf::VertexArray vertices;
+	sf::Texture tileset;
 };
 #endif

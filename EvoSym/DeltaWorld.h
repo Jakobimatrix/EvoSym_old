@@ -23,11 +23,11 @@
 
 
 typedef struct Ground {
-	std::vector<double> layerTemp; //array with the temperatures for all layers
-	unsigned int amountLayers; //number of layers
-	double lastLayerTemp; //temperature of the last layer
+	std::vector<double> layer_temperature; //array with the temperatures for all layers
+	unsigned int amount_layers; //number of layers
+	double last_layer_temperature; //temperature of the last layer
 	~Ground(){
-		std::vector<double>().swap(layerTemp);//That will create an empty vector with no memory allocated and swap it with layerTemp, effectively deallocating the memory.
+		std::vector<double>().swap(layer_temperature);//That will create an empty vector with no memory allocated and swap it with layerTemp, effectively deallocating the memory.
 	}
 }Ground;
 
@@ -35,11 +35,11 @@ class DeltaWorld : public SimulatedUnit
 {
 private:
 	
-	double meanTempNeigbour; //saves the last mean temperature of the neigbours
+	double mean_neigbour_temperature; //saves the last mean temperature of the neigbours
 
 	bool initilized; 
 
-	double InfluencedByTempZone[4];//the entrys always adds to 1 == 100%
+	double temperature_zone_influence[4];//the entrys always adds to 1 == 100%
 	double latitude;//between 0 and 90
 
 	int regionID;//todo region pointer instead
@@ -47,19 +47,19 @@ private:
 	double height;
 	double temperature; //[°C] 
 
-	bool isFrozen;
-	double iceThickness; //[m]
+	bool is_frozen;
+	double ice_thickness; //[m]
 
 	Ground ground;
 
-	double TempDropDueHeight;
+	double temperature_drop_due_height;
 	Resources resources;
 
 	//drawing
 	bool change_in_appearance; //if true, this delta world must be redrawn
-	bool RecentFreezing; 
-	double RecentDeltaTemperature;
-	int RecentSeason;
+	bool recent_freezing; 
+	double recent_delta_temperature;
+	int recent_season;
 	bool show_info;
 	//DrawDeltaWorld shape;
 
@@ -77,12 +77,12 @@ public:
 		this->_RG_ = &this->_RG_->getInstance();
 		this->regionID = -1;
 		this->initilized = false;
-		this->iceThickness = 0.0;
-		this->isFrozen = false;
+		this->ice_thickness = 0.0;
+		this->is_frozen = false;
 		this->show_info = false;
 		this->change_in_appearance = true;
 		for (int i = 0; i < _AMOUNT_TEMPERATE_ZONES; i++) {
-			this->InfluencedByTempZone[i] = 0;
+			this->temperature_zone_influence[i] = 0;
 		}
 	}
 
@@ -106,28 +106,28 @@ public:
 	* @param[in] double latitude:	The latitude within this world.
 	**/
 	void initSetPositionAndLatitude(const Point2d& position, double latitude) {
-		this->iceThickness = 0.0;
-		this->isFrozen = false;
+		this->ice_thickness = 0.0;
+		this->is_frozen = false;
 		this->_G_ = &this->_G_->getInstance();
 		this->_RG_ = &this->_RG_->getInstance();
 		//numerical errors with latitude
 		if (latitude > this->_G_->_BREITENGRAD.max) latitude = this->_G_->_BREITENGRAD.max;
 
 		//parameter
-		this->deltaT_Update = 1.0*_DAY_IN_S;//ein Tag
-		this->_G_->announceDeltaTime(this->deltaT_Update);
-		this->t_lastUpdate = 0.0;
+		this->delta_t_update = 1.0*_DAY_IN_S;//ein Tag
+		this->_G_->announceDeltaTime(this->delta_t_update);
+		this->t_last_update = 0.0;
 		this->latitude = latitude;
 		this->position = position;
 
 		this->regionID = -1;
 		this->initilized = false;
 
-		TemperateZone::getAllTempZoneInfluence(this->InfluencedByTempZone, latitude);
+		TemperateZone::getAllTempZoneInfluence(this->temperature_zone_influence, latitude);
 
-		this->RecentDeltaTemperature = this->temperature;
-		this->RecentSeason = this->_G_->dominantSeason;
-		this->RecentFreezing = this->isFrozen;
+		this->recent_delta_temperature = this->temperature;
+		this->recent_season = this->_G_->dominantSeason;
+		this->recent_freezing = this->is_frozen;
 
 		this->show_info = false;
 		this->change_in_appearance = true;
@@ -140,16 +140,16 @@ public:
 	* @param[out] double height: The height of this delta world in meter.
 	**/
 	void InitSetRegionAndHeight(int regionID, double height) {
-		this->iceThickness = 0.0;
-		this->isFrozen = false;
+		this->ice_thickness = 0.0;
+		this->is_frozen = false;
 		this->regionID = regionID;
 		this->height = height;
-		this->TempDropDueHeight = 0;
+		this->temperature_drop_due_height = 0;
 		if (this->height > _BEGIN_HEIGHT_TEMP_DROP) {
-			this->TempDropDueHeight = this->height * _TEMPERATURE_DROP_PER_METER;
+			this->temperature_drop_due_height = this->height * _TEMPERATURE_DROP_PER_METER;
 		}
 		this->temperature = 0.0;
-		this->meanTempNeigbour = 0.0; 
+		this->mean_neigbour_temperature = 0.0; 
 
 
 		//resources
@@ -165,17 +165,17 @@ public:
 		//ground
 
 		GroundProperties* ground_properties = this->_RG_->getRegion(this->regionID)->getGroundProperties(); //object exists somewhere else, dont delete!
-		this->ground.amountLayers = (unsigned int)(ground_properties->ground_depth / ground_properties->ground_layer_thickness); //calculate how many layers we will have
-		this->ground.layerTemp.reserve(this->ground.amountLayers); //memory must be allocated
+		this->ground.amount_layers = (unsigned int)(ground_properties->ground_depth / ground_properties->ground_layer_thickness); //calculate how many layers we will have
+		this->ground.layer_temperature.reserve(this->ground.amount_layers); //memory must be allocated
 
 		//calculate the temperature of the last layer, assuming liniarity between min and max latitude
 		double a = (ground_properties->ground_last_layer_temp[1] - ground_properties->ground_last_layer_temp[0]) / (this->_G_->_BREITENGRAD.getSpan());
 		double b = ground_properties->ground_last_layer_temp[0] - a*this->_G_->_BREITENGRAD.min;
-		this->ground.lastLayerTemp = a*this->latitude + b;
+		this->ground.last_layer_temperature = a*this->latitude + b;
 
 		//initiate all layers with the temp of the last layer
-		for (unsigned int i = 0; i < this->ground.amountLayers; i++) {
-			this->ground.layerTemp.emplace_back(this->ground.lastLayerTemp);
+		for (unsigned int i = 0; i < this->ground.amount_layers; i++) {
+			this->ground.layer_temperature.emplace_back(this->ground.last_layer_temperature);
 		}
 		this->initilized = true;		
 	}
@@ -214,10 +214,10 @@ public:
 	* @retval void:
 	**/
 	void getAllTempInfluence(double(&TempZonenfluence)[4]) {
-		TempZonenfluence[0] = this->InfluencedByTempZone[0];
-		TempZonenfluence[1] = this->InfluencedByTempZone[1];
-		TempZonenfluence[2] = this->InfluencedByTempZone[2];
-		TempZonenfluence[3] = this->InfluencedByTempZone[3];
+		TempZonenfluence[0] = this->temperature_zone_influence[0];
+		TempZonenfluence[1] = this->temperature_zone_influence[1];
+		TempZonenfluence[2] = this->temperature_zone_influence[2];
+		TempZonenfluence[3] = this->temperature_zone_influence[3];
 	}
 
 	/**
@@ -228,7 +228,7 @@ public:
 	**/
 	double getTempZoneInfluence(int TempZoneId) {
 		if (TempZoneId > -1 && TempZoneId < _AMOUNT_TEMPERATE_ZONES) {
-			return this->InfluencedByTempZone[TempZoneId];
+			return this->temperature_zone_influence[TempZoneId];
 		}
 		return 0.0;		
 	}
@@ -327,7 +327,7 @@ public:
 	* @retval bool: True if the Ground temperature in below freezing point.
 	**/
 	bool GroundFrozen() {
-		return this->isFrozen;
+		return this->is_frozen;
 	}
 
 	/**
