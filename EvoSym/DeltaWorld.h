@@ -29,6 +29,22 @@ typedef struct Ground {
 	~Ground(){
 		std::vector<double>().swap(layer_temperature);//That will create an empty vector with no memory allocated and swap it with layerTemp, effectively deallocating the memory.
 	}
+
+	void init(GroundProperties* ground_properties, GlobalSingleton* _G_, double latitude) {
+		std::vector<double>().swap(layer_temperature);//empty memory
+		amount_layers = (unsigned int)(ground_properties->ground_depth / ground_properties->ground_layer_thickness); //calculate how many layers we will have
+		layer_temperature.reserve(amount_layers); //memory must be allocated
+
+																			//calculate the temperature of the last layer, assuming liniarity between min and max latitude
+		double a = (ground_properties->ground_last_layer_temp[1] - ground_properties->ground_last_layer_temp[0]) / (_G_->_BREITENGRAD.getSpan());
+		double b = ground_properties->ground_last_layer_temp[0] - a*_G_->_BREITENGRAD.min;
+		last_layer_temperature = a*latitude + b;
+
+		//initiate all layers with the temp of the last layer
+		for (unsigned int i = 0; i < amount_layers; i++) {
+			layer_temperature.emplace_back(last_layer_temperature);
+		}
+	}
 }Ground;
 
 class DeltaWorld : public SimulatedUnit
@@ -164,20 +180,7 @@ public:
 		this->change_in_appearance = true;
 
 		//ground
-
-		GroundProperties* ground_properties = this->region->getGroundProperties(); //object exists somewhere else, dont delete!
-		this->ground.amount_layers = (unsigned int)(ground_properties->ground_depth / ground_properties->ground_layer_thickness); //calculate how many layers we will have
-		this->ground.layer_temperature.reserve(this->ground.amount_layers); //memory must be allocated
-
-		//calculate the temperature of the last layer, assuming liniarity between min and max latitude
-		double a = (ground_properties->ground_last_layer_temp[1] - ground_properties->ground_last_layer_temp[0]) / (this->_G_->_BREITENGRAD.getSpan());
-		double b = ground_properties->ground_last_layer_temp[0] - a*this->_G_->_BREITENGRAD.min;
-		this->ground.last_layer_temperature = a*this->latitude + b;
-
-		//initiate all layers with the temp of the last layer
-		for (unsigned int i = 0; i < this->ground.amount_layers; i++) {
-			this->ground.layer_temperature.emplace_back(this->ground.last_layer_temperature);
-		}
+		ground.init(this->region->getGroundProperties(), _G_, latitude);
 		this->initilized = true;		
 	}
 	~DeltaWorld(){	

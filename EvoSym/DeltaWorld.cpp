@@ -17,10 +17,9 @@ void DeltaWorld::setRandRegion(double height, int regionNeigbour[], const int nu
 	//gehe alle Nachbarn durch, errechne für jeden Nachbarn die Wahrscheinlichkeit für this DeltaWorld Region
 	//Durch Höhe und Breitengrad wird die Auswahl begrenzt
 
-	//TODO make a vector
 	double PossibleRegion[_AMOUNT_REGIONS];//hier wird gespeichert, welche Regionen möglich sind
 	double PossibleRegion_probability[_AMOUNT_REGIONS];//hier wird gespeichert, mit welcher warscheinlichkeit, welche Region diese DeltaWorld wird.
-	//std::string report = "";
+	//std::string report = this->getUnitName();
 	for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
 		PossibleRegion[ir] = 0.0;
 		PossibleRegion_probability[ir] = 0.0;
@@ -29,7 +28,7 @@ void DeltaWorld::setRandRegion(double height, int regionNeigbour[], const int nu
 			//report += "Region Nr. " + std::to_string(ir) + " can occur in this height: " + std::to_string(height);
 			for (int it = 0; it < _AMOUNT_TEMPERATE_ZONES; it++) {//wie wharscheinlich kommt die Region in der Tempertur Zohne vor?
 				if (!IsNaN(this->getTempZoneInfluence(it))) {
-					PossibleRegion[ir] += this->getTempZoneInfluence(it) * TrueFalseTo10(this->_RG_->getRegion(ir)->occoursInTempZone(it));				
+					PossibleRegion[ir] += this->getTempZoneInfluence(it) * this->_RG_->getRegion(ir)->occoursInTempZone(it);				
 				}
 			}
 			if (PossibleRegion[ir] > 0) {
@@ -63,9 +62,9 @@ void DeltaWorld::setRandRegion(double height, int regionNeigbour[], const int nu
 			for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
 				PossibleRegion_probability[ir] = PossibleRegion[ir] * (double)(this->_RG_->getRegion(regionNeigbour[i])->getRegionChanseFaktor(ir));
 				//P(Region_i) = P(Region_i|Klimazohne) * P(Region_i|NachbarRegion)
-				//if (PossibleRegion_probability[ir] == 0) {
-				//	report += "Region Nr. " + std::to_string(ir) + " has been ruled out it can not appear next to region "+std::to_string(regionNeigbour[in])+".\n";
-				//}
+				if (PossibleRegion_probability[ir] == 0) {
+					//report += "Region Nr. " + std::to_string(ir) + " has been ruled out it can not appear next to region "+std::to_string(regionNeigbour[i])+".\n";
+				}
 			}			
 		}
 	}
@@ -75,7 +74,7 @@ void DeltaWorld::setRandRegion(double height, int regionNeigbour[], const int nu
 		TotalChanse += PossibleRegion_probability[ir];
 	}
 	if (TotalChanse == 0) {//falls etwas schief gelaufen ist und für jede Region P(Region_i) = 0 gilt, alle auf possible region zurück
-		//std::cout << "Warning: One Region had to be random; jede Region P(Region_i) = 0:" << std::endl;
+		std::cout << "Warning: One Region had to be random; jede Region P(Region_i) = 0:" << std::endl;
 		//std::cout << report << std::endl;
 		if (count != 0) {
 			for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
@@ -89,7 +88,7 @@ void DeltaWorld::setRandRegion(double height, int regionNeigbour[], const int nu
 		}
 		else {
 			count = 0;
-			for (int i = 0; i < num_neigbours; i++) {//every valide neigbour with region x doubles the chanse that this ´region, will be the neigbours region
+			for (int i = 0; i < num_neigbours; i++) {//every valide neigbour with region x doubles the chanse that this region, will be the neigbours region
 				if (!(regionNeigbour[i] < 0)) {
 					PossibleRegion_probability[regionNeigbour[i]] += 1;
 					count++;
@@ -97,6 +96,7 @@ void DeltaWorld::setRandRegion(double height, int regionNeigbour[], const int nu
 			}
 			if (count == 0) {
 				std::cout << "Warning: One Region had to be default:" << std::endl;
+				//std::cout << report << std::endl;
 				bool polar = false;
 				if (this->temperature_zone_influence[0] > 0.5) {
 					polar = true;
@@ -105,7 +105,8 @@ void DeltaWorld::setRandRegion(double height, int regionNeigbour[], const int nu
 				return;
 			}
 			else {
-				//std::cout << "Warning: One Region had to be random; no valide neigbours:" << std::endl;
+				std::cout << "Warning: One Region had to be random; no valide neigbours:" << std::endl;
+				//std::cout << report << std::endl;
 			}
 		}
 	}
@@ -299,13 +300,14 @@ bool DeltaWorld::hadChangeInAppearance(int representation) {
 }
 
 void DeltaWorld::reset() {
-	this->initilized = false;
-	this->temperature = 0.0;
-	this->t_last_update = -1.0;
-	this->t0 = 0.0;
-	this->ice_thickness = 0.0;
-	this->is_frozen = false;
-	this->resources.reset();
+	initilized = false;
+	temperature = 0.0;
+	t_last_update = -1.0;
+	t0 = 0.0;
+	ice_thickness = 0.0;
+	is_frozen = false;
+	resources.reset();
+	ground.init(this->region->getGroundProperties(), _G_, latitude);
 }
 
 bool DeltaWorld::hasPassedFreezingPoint() {

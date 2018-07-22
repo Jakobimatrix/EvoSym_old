@@ -21,7 +21,7 @@ private:
 	
 	Season<Propability> variation_in_temperature[4]; //regionalabhängiges Temperaturrauschen für polar,mediteran,subtrop,trop
 	MinMax height;
-	bool occurrence_in_temperature_zone[4];	//mit welcher wahrschenlichkeit diese Region in einer der 4 Klimazonen vorkommt
+	double occurrence_in_temperature_zone[4];	//mit welcher wahrschenlichkeit diese Region in einer der 4 Klimazonen vorkommt
 		
 	Skills skill_to_cross[3];	//alle Skills, die ein Tier haben muss, um durch diese Region laufen/fliegen/schwimmen zu können
 	Skills skill_to_reach_resources[3]; //alle Skills, die notwendig sind um die resourcen erreichen zu können
@@ -58,7 +58,7 @@ public:
 	void setToMountain();
 	void setToDefault();
 
-	bool occoursInTempZone(int i)
+	double occoursInTempZone(int i)
 	{
 		if (i > _AMOUNT_TEMPERATE_ZONES) return 0;
 		return this->occurrence_in_temperature_zone[i];

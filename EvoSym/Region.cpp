@@ -53,10 +53,10 @@ void Region::setToOcean() {
 	this->variation_in_temperature[3] = Season<Propability>(Propability(0, 2.0), Propability(-2, 4.0), Propability(-2, 2.0), Propability(0, 2.0));
 	
 	this->height = MinMax(_MIN_TERRANE_HEIGHT,10.0);
-	this->occurrence_in_temperature_zone[0] = true;
-	this->occurrence_in_temperature_zone[1] = true;
-	this->occurrence_in_temperature_zone[2] = true;
-	this->occurrence_in_temperature_zone[3] = true;
+	this->occurrence_in_temperature_zone[0] = 1.0;
+	this->occurrence_in_temperature_zone[1] = 1.0;
+	this->occurrence_in_temperature_zone[2] = 1.0;
+	this->occurrence_in_temperature_zone[3] = 1.0;
 
 	this->max_fresh_water = 0.0;
 	this->max_plants = 0.25;
@@ -105,10 +105,10 @@ void Region::setToLake() {
 	this->variation_in_temperature[3] = Season<Propability>(Propability(-0.5, 2.0), Propability(0.0, 2.0), Propability(0.75, 2.0), Propability(3, 2.0));
 
 	this->height = MinMax(10,5000.0);
-	this->occurrence_in_temperature_zone[0] = false;
-	this->occurrence_in_temperature_zone[1] = true;
-	this->occurrence_in_temperature_zone[2] = true;
-	this->occurrence_in_temperature_zone[3] = true;
+	this->occurrence_in_temperature_zone[0] = 0.01;
+	this->occurrence_in_temperature_zone[1] = 1.0;
+	this->occurrence_in_temperature_zone[2] = 1.0;
+	this->occurrence_in_temperature_zone[3] = 1.0;
 	
 	this->max_fresh_water = 5000.0;
 	this->max_plants = 0.25;
@@ -156,10 +156,10 @@ void Region::setToMeadow() {
 	this->variation_in_temperature[3] = Season<Propability>(Propability(3.0, 2.0), Propability(4.0, 0.0), Propability(1.0, 4.0), Propability(0, 2.0));
 
 	this->height = MinMax(-100,2500.0);
-	this->occurrence_in_temperature_zone[0] = false;
-	this->occurrence_in_temperature_zone[1] = true;
-	this->occurrence_in_temperature_zone[2] = true;
-	this->occurrence_in_temperature_zone[3] = false;
+	this->occurrence_in_temperature_zone[0] = 0.01;
+	this->occurrence_in_temperature_zone[1] = 1.0;
+	this->occurrence_in_temperature_zone[2] = 1.0;
+	this->occurrence_in_temperature_zone[3] = 0.3;
 
 	this->max_fresh_water = 0.05;
 	this->max_plants = 1.0;
@@ -209,10 +209,10 @@ void Region::setToForest() {
 	this->variation_in_temperature[3] = Season<Propability>(Propability(5.0, 2.0), Propability(+5.0, 1.0), Propability(+5.0, 1.0), Propability(+5.0, 2.0));
 
 	this->height = MinMax(-100,2200.0);
-	this->occurrence_in_temperature_zone[0] = false;
-	this->occurrence_in_temperature_zone[1] = true;
-	this->occurrence_in_temperature_zone[2] = true;
-	this->occurrence_in_temperature_zone[3] = false;
+	this->occurrence_in_temperature_zone[0] = 0.01;
+	this->occurrence_in_temperature_zone[1] = 1.0;
+	this->occurrence_in_temperature_zone[2] = 1.0;
+	this->occurrence_in_temperature_zone[3] = 0.01;
 
 	this->max_fresh_water = 0.05;
 	this->max_plants = 4.0;
@@ -261,10 +261,10 @@ void Region::setToSteppe() {
 	this->variation_in_temperature[3] = Season<Propability>(Propability(5.0, 2.0), Propability(12.0, 5.0), Propability(7.0, 2.0), Propability(4.0, 1.0));
 
 	this->height = MinMax(-100,800.0);
-	this->occurrence_in_temperature_zone[0] = false;
-	this->occurrence_in_temperature_zone[1] = false;
-	this->occurrence_in_temperature_zone[2] = true;
-	this->occurrence_in_temperature_zone[3] = true;
+	this->occurrence_in_temperature_zone[0] = 0.001;
+	this->occurrence_in_temperature_zone[1] = 0.01;
+	this->occurrence_in_temperature_zone[2] = 0.8;
+	this->occurrence_in_temperature_zone[3] = 1.0;
 
 	this->max_fresh_water = 5.0;
 	this->max_plants = 4.0;
@@ -314,10 +314,10 @@ void Region::setToDesert() {
 	this->variation_in_temperature[3] = Season<Propability>(Propability(10.0, 4.0), Propability(18.0, 4.0), Propability(14.0, 4.0), Propability(10.0, 4.0));
 
 	this->height = MinMax(-100,1000.0);
-	this->occurrence_in_temperature_zone[0] = false;
-	this->occurrence_in_temperature_zone[1] = false;
-	this->occurrence_in_temperature_zone[2] = false;
-	this->occurrence_in_temperature_zone[3] = true;
+	this->occurrence_in_temperature_zone[0] = 0.0;
+	this->occurrence_in_temperature_zone[1] = 0.0;
+	this->occurrence_in_temperature_zone[2] = 0.1;
+	this->occurrence_in_temperature_zone[3] = 1.0;
 
 	this->max_fresh_water = 0.001;
 	this->max_plants = 0.01;
@@ -342,7 +342,7 @@ void Region::setToDesert() {
 	this->possible_neighbour_chanse_factor[4] = 400;		//steppe
 	this->possible_neighbour_chanse_factor[5] = 800;	//desert
 	this->possible_neighbour_chanse_factor[6] = 0;		//moor
-	this->possible_neighbour_chanse_factor[7] = 10;		//tropical forest
+	this->possible_neighbour_chanse_factor[7] = 0;		//tropical forest
 	this->possible_neighbour_chanse_factor[8] = 0;		//ice desert
 	this->possible_neighbour_chanse_factor[9] = 0;// 5;		//highlands
 	this->possible_neighbour_chanse_factor[10] = 150;		//mountain
@@ -366,10 +366,10 @@ void Region::setToMoor() {
 	this->variation_in_temperature[3] = Season<Propability>(Propability(+2.0, 2.0), Propability(+2.0, 0.5), Propability(2.0, 1.5), Propability(0, 1.5));
 
 	this->height = MinMax(-100,2000.0);
-	this->occurrence_in_temperature_zone[0] = false;
-	this->occurrence_in_temperature_zone[1] = true;
-	this->occurrence_in_temperature_zone[2] = true;
-	this->occurrence_in_temperature_zone[3] = false;
+	this->occurrence_in_temperature_zone[0] = 0.01;
+	this->occurrence_in_temperature_zone[1] = 1.0;
+	this->occurrence_in_temperature_zone[2] = 1.0;
+	this->occurrence_in_temperature_zone[3] = 0.1;
 
 	this->max_fresh_water = 1.0;
 	this->max_plants = 2.0;
@@ -419,10 +419,10 @@ void Region::setToTropicalForest() {
 	this->variation_in_temperature[3] = Season<Propability>(Propability(5.0, 2.0), Propability(+5.0, 1.0), Propability(+5.0, 1.0), Propability(+5.0, 2.0));
 
 	this->height = MinMax(-100,2500.0);
-	this->occurrence_in_temperature_zone[0] = false;
-	this->occurrence_in_temperature_zone[1] = false;
-	this->occurrence_in_temperature_zone[2] = false;
-	this->occurrence_in_temperature_zone[3] = true;
+	this->occurrence_in_temperature_zone[0] = 0.0;
+	this->occurrence_in_temperature_zone[1] = 0.0;
+	this->occurrence_in_temperature_zone[2] = 0.2;
+	this->occurrence_in_temperature_zone[3] = 1.0;
 
 	this->max_fresh_water = 0.25;
 	this->max_plants = 8.0;
@@ -446,7 +446,7 @@ void Region::setToTropicalForest() {
 	this->possible_neighbour_chanse_factor[2] = 50;		//meadow
 	this->possible_neighbour_chanse_factor[3] = 10;		//forest
 	this->possible_neighbour_chanse_factor[4] = 50;		//steppe
-	this->possible_neighbour_chanse_factor[5] = 10;		//desert
+	this->possible_neighbour_chanse_factor[5] = 0;		//desert
 	this->possible_neighbour_chanse_factor[6] = 50;		//moor
 	this->possible_neighbour_chanse_factor[7] = 900;	//tropical forest
 	this->possible_neighbour_chanse_factor[8] = 0;		//ice desert
@@ -468,14 +468,14 @@ void Region::setToIceDesert() {
 	this->region_id = 8;
 	this->variation_in_temperature[0] = Season<Propability>(Propability(-6.0, 2.0), Propability(-2.0, 2.0), Propability(-6.0, 2.0), Propability(-11.0, 2.0));
 	this->variation_in_temperature[1] = Season<Propability>(Propability(-6.0, 2.0), Propability(-2.0, 2.0), Propability(-6.0, 2.0), Propability(-11.0, 2.0));
-	this->variation_in_temperature[2] = Season<Propability>(Propability(-6.0, 2.0), Propability(-2.0, 2.0), Propability(-6.0, 2.0), Propability(-11.0, 2.0));
+	this->variation_in_temperature[2] = Season<Propability>(Propability(2.0, 2.0), Propability(0, 2.0), Propability(2, 2.0), Propability(4, 2.0));
 	this->variation_in_temperature[3] = Season<Propability>(Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0, 0.0));
 
 	this->height = MinMax(-100, _MAX_TERRANE_HEIGHT);
-	this->occurrence_in_temperature_zone[0] = true;
-	this->occurrence_in_temperature_zone[1] = false;
-	this->occurrence_in_temperature_zone[2] = false;
-	this->occurrence_in_temperature_zone[3] = false;
+	this->occurrence_in_temperature_zone[0] = 1.0;
+	this->occurrence_in_temperature_zone[1] = 0.01;
+	this->occurrence_in_temperature_zone[2] = 0.0;
+	this->occurrence_in_temperature_zone[3] = 0.0;
 	
 	this->max_fresh_water = 0.05;
 	this->max_plants = 0.005;
@@ -524,10 +524,10 @@ void Region::setToHeighland() {
 	this->variation_in_temperature[3] = Season<Propability>(Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0, 0.0));
 
 	this->height = MinMax(800,2000.0);
-	this->occurrence_in_temperature_zone[0] = false;
-	this->occurrence_in_temperature_zone[1] = false;
-	this->occurrence_in_temperature_zone[2] = false;
-	this->occurrence_in_temperature_zone[3] = false;
+	this->occurrence_in_temperature_zone[0] = 0.0;
+	this->occurrence_in_temperature_zone[1] = 0.0;
+	this->occurrence_in_temperature_zone[2] = 0.0;
+	this->occurrence_in_temperature_zone[3] = 0.0;
 	
 	this->max_fresh_water = 0.1;
 	this->max_plants = 1.0;
@@ -572,14 +572,14 @@ void Region::setToMountain() {
 	this->region_id = 10;
 	this->variation_in_temperature[0] = Season<Propability>(Propability(-10,4.0), Propability(-8, 4.0), Propability(-9.0, 4.0), Propability(-11, 4.0));
 	this->variation_in_temperature[1] = Season<Propability>(Propability(-5, 10.0), Propability(-2, 10.0), Propability(-3.0, 10.0), Propability(-7, 10.0));
-	this->variation_in_temperature[2] = Season<Propability>(Propability(-3, 4.0), Propability(-1, 4.0), Propability(-2.0, 4.0), Propability(-6, 4.0));
+	this->variation_in_temperature[2] = Season<Propability>(Propability(-3, 4.0), Propability(-1, 4.0), Propability(-2.0, 4.0), Propability(-4.5, 4.0));
 	this->variation_in_temperature[3] = Season<Propability>(Propability(0.0, 2.0), Propability(0.0, 2.0), Propability(0.0, 2.0), Propability(0, 2.0));
 
 	this->height = MinMax(800.0, _MAX_TERRANE_HEIGHT);
-	this->occurrence_in_temperature_zone[0] = true;
-	this->occurrence_in_temperature_zone[1] = true;
-	this->occurrence_in_temperature_zone[2] = true;
-	this->occurrence_in_temperature_zone[3] = true;
+	this->occurrence_in_temperature_zone[0] = 1.0;
+	this->occurrence_in_temperature_zone[1] = 1.0;
+	this->occurrence_in_temperature_zone[2] = 1.0;
+	this->occurrence_in_temperature_zone[3] = 1.0;
 
 	this->max_fresh_water = 0.1;
 	this->max_plants = 0.4;
