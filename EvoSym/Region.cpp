@@ -34,9 +34,6 @@ void Region::setTo(int i) {
 		this->setToIceDesert();
 		break;
 	case 9:
-		this->setToHeighland();
-		break;
-	case 10:
 		this->setToMountain();
 		break;
 	default:
@@ -74,17 +71,16 @@ void Region::setToOcean() {
 	resource_distribution_via_skill[1] = 0.99;
 	resource_distribution_via_skill[2] = 0.0;
 
-	this->possible_neighbour_chanse_factor[0] = 1000;		//ocean
-	this->possible_neighbour_chanse_factor[1] = 0;		//lake
-	this->possible_neighbour_chanse_factor[2] = 70;		//meadow
-	this->possible_neighbour_chanse_factor[3] = 50;		//forest
-	this->possible_neighbour_chanse_factor[4] = 50;		//steppe
-	this->possible_neighbour_chanse_factor[5] = 50;		//desert
-	this->possible_neighbour_chanse_factor[6] = 50;		//moor
-	this->possible_neighbour_chanse_factor[7] = 50;		//tropical forest
-	this->possible_neighbour_chanse_factor[8] = 100;		//ice desert
-	this->possible_neighbour_chanse_factor[9] = 0;		//highlands
-	this->possible_neighbour_chanse_factor[10] = 200;	//mountain
+	this->possible_neighbour_chanse_factor[0] = 0.2;	//ocean
+	this->possible_neighbour_chanse_factor[1] = 0.0;	//lake
+	this->possible_neighbour_chanse_factor[2] = 0.1;	//meadow
+	this->possible_neighbour_chanse_factor[3] = 0.1;	//forest
+	this->possible_neighbour_chanse_factor[4] = 0.1;	//steppe
+	this->possible_neighbour_chanse_factor[5] = 0.1;	//desert
+	this->possible_neighbour_chanse_factor[6] = 0.1;	//moor
+	this->possible_neighbour_chanse_factor[7] = 0.1;	//tropical forest
+	this->possible_neighbour_chanse_factor[8] = 0.1;	//ice desert
+	this->possible_neighbour_chanse_factor[9] = 0.1;	//mountain
 
 	this->min_neighbour_with_same_region = 2;
 
@@ -104,7 +100,7 @@ void Region::setToLake() {
 	this->variation_in_temperature[2] = Season<Propability>(Propability(-1.5, 2.0), Propability(-0.75, 2.0), Propability(0.75, 2.0), Propability(1.8, 2.0));
 	this->variation_in_temperature[3] = Season<Propability>(Propability(-0.5, 2.0), Propability(0.0, 2.0), Propability(0.75, 2.0), Propability(3, 2.0));
 
-	this->height = MinMax(10,5000.0);
+	this->height = MinMax(-200,5000.0);
 	this->occurrence_in_temperature_zone[0] = 0.01;
 	this->occurrence_in_temperature_zone[1] = 1.0;
 	this->occurrence_in_temperature_zone[2] = 1.0;
@@ -126,17 +122,16 @@ void Region::setToLake() {
 	resource_distribution_via_skill[1] = 0.95;
 	resource_distribution_via_skill[2] = 0.0;
 
-	this->possible_neighbour_chanse_factor[0] = 0;		//ocean
-	this->possible_neighbour_chanse_factor[1] = 1;		//lake
-	this->possible_neighbour_chanse_factor[2] = 100;		//meadow
-	this->possible_neighbour_chanse_factor[3] = 100;		//forest
-	this->possible_neighbour_chanse_factor[4] = 50;		//steppe
-	this->possible_neighbour_chanse_factor[5] = 0;		//desert
-	this->possible_neighbour_chanse_factor[6] = 50;		//moor
-	this->possible_neighbour_chanse_factor[7] = 20;		//tropical forest
-	this->possible_neighbour_chanse_factor[8] = 10;		//ice desert
-	this->possible_neighbour_chanse_factor[9] = 0;		//highlands
-	this->possible_neighbour_chanse_factor[10] = 140;		//mountain
+	this->possible_neighbour_chanse_factor[0] = 0.0;	//ocean
+	this->possible_neighbour_chanse_factor[1] = 0.01;	//lake
+	this->possible_neighbour_chanse_factor[2] = 0.21;	//meadow
+	this->possible_neighbour_chanse_factor[3] = 0.18;	//forest
+	this->possible_neighbour_chanse_factor[4] = 0.1;	//steppe
+	this->possible_neighbour_chanse_factor[5] = 0.1;	//desert
+	this->possible_neighbour_chanse_factor[6] = 0.1;	//moor
+	this->possible_neighbour_chanse_factor[7] = 0.1;	//tropical forest
+	this->possible_neighbour_chanse_factor[8] = 0.1;	//ice desert
+	this->possible_neighbour_chanse_factor[9] = 0.1;	//mountain
 
 	this->min_neighbour_with_same_region = 0;
 
@@ -155,7 +150,7 @@ void Region::setToMeadow() {
 	this->variation_in_temperature[2] = Season<Propability>(Propability(2.0, 4.0), Propability(3.0, 1.0), Propability(0.0, 5.0), Propability(-1, 3.0));
 	this->variation_in_temperature[3] = Season<Propability>(Propability(3.0, 2.0), Propability(4.0, 0.0), Propability(1.0, 4.0), Propability(0, 2.0));
 
-	this->height = MinMax(-100,2500.0);
+	this->height = MinMax(-50,2500.0);
 	this->occurrence_in_temperature_zone[0] = 0.01;
 	this->occurrence_in_temperature_zone[1] = 1.0;
 	this->occurrence_in_temperature_zone[2] = 1.0;
@@ -178,17 +173,16 @@ void Region::setToMeadow() {
 	resource_distribution_via_skill[2] = 0.0;
 
 
-	this->possible_neighbour_chanse_factor[0] = 10;	//ocean
-	this->possible_neighbour_chanse_factor[1] = 3;		//lake
-	this->possible_neighbour_chanse_factor[2] = 600;		//meadow
-	this->possible_neighbour_chanse_factor[3] = 400;		//forest
-	this->possible_neighbour_chanse_factor[4] = 100;		//steppe
-	this->possible_neighbour_chanse_factor[5] = 10;		//desert
-	this->possible_neighbour_chanse_factor[6] = 75;		//moor
-	this->possible_neighbour_chanse_factor[7] = 100;		//tropical forest
-	this->possible_neighbour_chanse_factor[8] = 10;		//ice desert
-	this->possible_neighbour_chanse_factor[9] = 0;//6;		//highlands
-	this->possible_neighbour_chanse_factor[10] = 150;		//mountain
+	this->possible_neighbour_chanse_factor[0] = 0.1;	//ocean
+	this->possible_neighbour_chanse_factor[1] = 0.05;	//lake
+	this->possible_neighbour_chanse_factor[2] = 0.15;	//meadow
+	this->possible_neighbour_chanse_factor[3] = 0.1;	//forest
+	this->possible_neighbour_chanse_factor[4] = 0.1;	//steppe
+	this->possible_neighbour_chanse_factor[5] = 0.1;	//desert
+	this->possible_neighbour_chanse_factor[6] = 0.1;	//moor
+	this->possible_neighbour_chanse_factor[7] = 0.1;	//tropical forest
+	this->possible_neighbour_chanse_factor[8] = 0.1;	//ice desert
+	this->possible_neighbour_chanse_factor[9] = 0.1;	//mountain
 
 	this->min_neighbour_with_same_region = 3;
 
@@ -208,7 +202,7 @@ void Region::setToForest() {
 	this->variation_in_temperature[2] = Season<Propability>(Propability(0.0, 2.0), Propability(0.0, 1.0), Propability(0.0, 1.0), Propability(0.0, 2.0));
 	this->variation_in_temperature[3] = Season<Propability>(Propability(5.0, 2.0), Propability(+5.0, 1.0), Propability(+5.0, 1.0), Propability(+5.0, 2.0));
 
-	this->height = MinMax(-100,2200.0);
+	this->height = MinMax(-50,2200.0);
 	this->occurrence_in_temperature_zone[0] = 0.01;
 	this->occurrence_in_temperature_zone[1] = 1.0;
 	this->occurrence_in_temperature_zone[2] = 1.0;
@@ -230,17 +224,16 @@ void Region::setToForest() {
 	resource_distribution_via_skill[1] = 0.3;
 	resource_distribution_via_skill[2] = 0.2;
 
-	this->possible_neighbour_chanse_factor[0] = 50;		//ocean
-	this->possible_neighbour_chanse_factor[1] = 3;		//lake
-	this->possible_neighbour_chanse_factor[2] = 300;		//meadow
-	this->possible_neighbour_chanse_factor[3] = 700;	//forest
-	this->possible_neighbour_chanse_factor[4] = 50;		//steppe
-	this->possible_neighbour_chanse_factor[5] = 10;		//desert
-	this->possible_neighbour_chanse_factor[6] = 100;		//moor
-	this->possible_neighbour_chanse_factor[7] = 10;		//tropical forest
-	this->possible_neighbour_chanse_factor[8] = 10;		//ice desert
-	this->possible_neighbour_chanse_factor[9] = 0;//3;		//highlands
-	this->possible_neighbour_chanse_factor[10] = 200;		//mountain
+	this->possible_neighbour_chanse_factor[0] = 0.1;	//ocean
+	this->possible_neighbour_chanse_factor[1] = 0.03;	//lake
+	this->possible_neighbour_chanse_factor[2] = 0.1;	//meadow
+	this->possible_neighbour_chanse_factor[3] = 0.17;	//forest
+	this->possible_neighbour_chanse_factor[4] = 0.1;	//steppe
+	this->possible_neighbour_chanse_factor[5] = 0.1;	//desert
+	this->possible_neighbour_chanse_factor[6] = 0.1;	//moor
+	this->possible_neighbour_chanse_factor[7] = 0.1;	//tropical forest
+	this->possible_neighbour_chanse_factor[8] = 0.1;	//ice desert
+	this->possible_neighbour_chanse_factor[9] = 0.1;	//mountain
 
 	this->min_neighbour_with_same_region = 3;
 
@@ -260,7 +253,7 @@ void Region::setToSteppe() {
 	this->variation_in_temperature[2] = Season<Propability>(Propability(4.0, 2.0), Propability(10.0, 5.0), Propability(6.0, 2.0), Propability(3.0, 1.0));
 	this->variation_in_temperature[3] = Season<Propability>(Propability(5.0, 2.0), Propability(12.0, 5.0), Propability(7.0, 2.0), Propability(4.0, 1.0));
 
-	this->height = MinMax(-100,800.0);
+	this->height = MinMax(-50,800.0);
 	this->occurrence_in_temperature_zone[0] = 0.001;
 	this->occurrence_in_temperature_zone[1] = 0.01;
 	this->occurrence_in_temperature_zone[2] = 0.8;
@@ -282,17 +275,16 @@ void Region::setToSteppe() {
 	resource_distribution_via_skill[1] = 0.1;
 	resource_distribution_via_skill[2] = 0.8;
 
-	this->possible_neighbour_chanse_factor[0] = 10;		//ocean
-	this->possible_neighbour_chanse_factor[1] = 3;		//lake
-	this->possible_neighbour_chanse_factor[2] = 70;		//meadow
-	this->possible_neighbour_chanse_factor[3] = 10;		//forest
-	this->possible_neighbour_chanse_factor[4] = 800;	//steppe
-	this->possible_neighbour_chanse_factor[5] = 300;		//desert
-	this->possible_neighbour_chanse_factor[6] = 10;		//moor
-	this->possible_neighbour_chanse_factor[7] = 100;		//tropical forest
-	this->possible_neighbour_chanse_factor[8] = 0;		//ice desert
-	this->possible_neighbour_chanse_factor[9] = 0;//3;		//highlands
-	this->possible_neighbour_chanse_factor[10] = 110;		//mountain
+	this->possible_neighbour_chanse_factor[0] = 0.1;	//ocean
+	this->possible_neighbour_chanse_factor[1] = 0.001;	//lake
+	this->possible_neighbour_chanse_factor[2] = 0.1;	//meadow
+	this->possible_neighbour_chanse_factor[3] = 0.1;	//forest
+	this->possible_neighbour_chanse_factor[4] = 0.199;	//steppe
+	this->possible_neighbour_chanse_factor[5] = 0.1;	//desert
+	this->possible_neighbour_chanse_factor[6] = 0.1;	//moor
+	this->possible_neighbour_chanse_factor[7] = 0.1;	//tropical forest
+	this->possible_neighbour_chanse_factor[8] = 0.1;	//ice desert
+	this->possible_neighbour_chanse_factor[9] = 0.1;	//mountain
 
 	this->min_neighbour_with_same_region = 4;
 
@@ -313,7 +305,7 @@ void Region::setToDesert() {
 	this->variation_in_temperature[2] = Season<Propability>(Propability(7.0, 4.0), Propability(15.0, 4.0), Propability(13.0, 4.0), Propability(7.0, 4.0));
 	this->variation_in_temperature[3] = Season<Propability>(Propability(10.0, 4.0), Propability(18.0, 4.0), Propability(14.0, 4.0), Propability(10.0, 4.0));
 
-	this->height = MinMax(-100,1000.0);
+	this->height = MinMax(-50,1000.0);
 	this->occurrence_in_temperature_zone[0] = 0.0;
 	this->occurrence_in_temperature_zone[1] = 0.0;
 	this->occurrence_in_temperature_zone[2] = 0.1;
@@ -335,17 +327,16 @@ void Region::setToDesert() {
 	resource_distribution_via_skill[1] = 0.99;
 	resource_distribution_via_skill[2] = 0.0;
 
-	this->possible_neighbour_chanse_factor[0] = 600;		//ocean
-	this->possible_neighbour_chanse_factor[1] = 3;		//lake
-	this->possible_neighbour_chanse_factor[2] = 20;		//meadow
-	this->possible_neighbour_chanse_factor[3] = 0;		//forest
-	this->possible_neighbour_chanse_factor[4] = 400;		//steppe
-	this->possible_neighbour_chanse_factor[5] = 800;	//desert
-	this->possible_neighbour_chanse_factor[6] = 0;		//moor
-	this->possible_neighbour_chanse_factor[7] = 0;		//tropical forest
-	this->possible_neighbour_chanse_factor[8] = 0;		//ice desert
-	this->possible_neighbour_chanse_factor[9] = 0;// 5;		//highlands
-	this->possible_neighbour_chanse_factor[10] = 150;		//mountain
+	this->possible_neighbour_chanse_factor[0] = 0.1;	//ocean
+	this->possible_neighbour_chanse_factor[1] = 0.0001;	//lake
+	this->possible_neighbour_chanse_factor[2] = 0.1;	//meadow
+	this->possible_neighbour_chanse_factor[3] = 0.1;	//forest
+	this->possible_neighbour_chanse_factor[4] = 0.1;	//steppe
+	this->possible_neighbour_chanse_factor[5] = 0.1999;	//desert
+	this->possible_neighbour_chanse_factor[6] = 0.1;	//moor
+	this->possible_neighbour_chanse_factor[7] = 0.1;	//tropical forest
+	this->possible_neighbour_chanse_factor[8] = 0.1;	//ice desert
+	this->possible_neighbour_chanse_factor[9] = 0.1;	//mountain
 
 	this->min_neighbour_with_same_region = 3;
 
@@ -365,7 +356,7 @@ void Region::setToMoor() {
 	this->variation_in_temperature[2] = Season<Propability>(Propability(+1.0, 5.0), Propability(+1.0, 1.5), Propability(2.0, 3.5), Propability(-1, 3));
 	this->variation_in_temperature[3] = Season<Propability>(Propability(+2.0, 2.0), Propability(+2.0, 0.5), Propability(2.0, 1.5), Propability(0, 1.5));
 
-	this->height = MinMax(-100,2000.0);
+	this->height = MinMax(-50,2000.0);
 	this->occurrence_in_temperature_zone[0] = 0.01;
 	this->occurrence_in_temperature_zone[1] = 1.0;
 	this->occurrence_in_temperature_zone[2] = 1.0;
@@ -388,17 +379,16 @@ void Region::setToMoor() {
 	resource_distribution_via_skill[1] = 0.9;
 	resource_distribution_via_skill[2] = 0.0;
 
-	this->possible_neighbour_chanse_factor[0] = 10;		//ocean
-	this->possible_neighbour_chanse_factor[1] = 20;		//lake
-	this->possible_neighbour_chanse_factor[2] = 300;		//meadow
-	this->possible_neighbour_chanse_factor[3] = 200;		//forest
-	this->possible_neighbour_chanse_factor[4] = 10;		//steppe
-	this->possible_neighbour_chanse_factor[5] = 0;		//desert
-	this->possible_neighbour_chanse_factor[6] = 500;		//moor
-	this->possible_neighbour_chanse_factor[7] = 10;		//tropical forest
-	this->possible_neighbour_chanse_factor[8] = 10;		//ice desert
-	this->possible_neighbour_chanse_factor[9] = 0;//4;		//highlands
-	this->possible_neighbour_chanse_factor[10] = 150;		//mountain
+	this->possible_neighbour_chanse_factor[0] = 0.1;	//ocean
+	this->possible_neighbour_chanse_factor[1] = 0.1;	//lake
+	this->possible_neighbour_chanse_factor[2] = 0.1;	//meadow
+	this->possible_neighbour_chanse_factor[3] = 0.1;	//forest
+	this->possible_neighbour_chanse_factor[4] = 0.1;	//steppe
+	this->possible_neighbour_chanse_factor[5] = 0.1;	//desert
+	this->possible_neighbour_chanse_factor[6] = 0.1;	//moor
+	this->possible_neighbour_chanse_factor[7] = 0.1;	//tropical forest
+	this->possible_neighbour_chanse_factor[8] = 0.1;	//ice desert
+	this->possible_neighbour_chanse_factor[9] = 0.1;	//mountain
 
 	this->min_neighbour_with_same_region = 2;
 
@@ -418,7 +408,7 @@ void Region::setToTropicalForest() {
 	this->variation_in_temperature[2] = Season<Propability>(Propability(3.5, 2.0), Propability(2.5, 1.0), Propability(3.5, 1.0), Propability(3.5, 2.0));
 	this->variation_in_temperature[3] = Season<Propability>(Propability(5.0, 2.0), Propability(+5.0, 1.0), Propability(+5.0, 1.0), Propability(+5.0, 2.0));
 
-	this->height = MinMax(-100,2500.0);
+	this->height = MinMax(-50,2500.0);
 	this->occurrence_in_temperature_zone[0] = 0.0;
 	this->occurrence_in_temperature_zone[1] = 0.0;
 	this->occurrence_in_temperature_zone[2] = 0.2;
@@ -441,17 +431,16 @@ void Region::setToTropicalForest() {
 	resource_distribution_via_skill[1] = 0.1;
 	resource_distribution_via_skill[2] = 0.3;
 
-	this->possible_neighbour_chanse_factor[0] = 10;		//ocean
-	this->possible_neighbour_chanse_factor[1] = 20;		//lake
-	this->possible_neighbour_chanse_factor[2] = 50;		//meadow
-	this->possible_neighbour_chanse_factor[3] = 10;		//forest
-	this->possible_neighbour_chanse_factor[4] = 50;		//steppe
-	this->possible_neighbour_chanse_factor[5] = 0;		//desert
-	this->possible_neighbour_chanse_factor[6] = 50;		//moor
-	this->possible_neighbour_chanse_factor[7] = 900;	//tropical forest
-	this->possible_neighbour_chanse_factor[8] = 0;		//ice desert
-	this->possible_neighbour_chanse_factor[9] = 0;//4;		//highlands
-	this->possible_neighbour_chanse_factor[10] = 400;	//mountain
+	this->possible_neighbour_chanse_factor[0] = 0.1;	//ocean
+	this->possible_neighbour_chanse_factor[1] = 0.03;	//lake
+	this->possible_neighbour_chanse_factor[2] = 0.1;	//meadow
+	this->possible_neighbour_chanse_factor[3] = 0.1;	//forest
+	this->possible_neighbour_chanse_factor[4] = 0.1;	//steppe
+	this->possible_neighbour_chanse_factor[5] = 0.1;	//desert
+	this->possible_neighbour_chanse_factor[6] = 0.1;	//moor
+	this->possible_neighbour_chanse_factor[7] = 0.17;	//tropical forest
+	this->possible_neighbour_chanse_factor[8] = 0.1;	//ice desert
+	this->possible_neighbour_chanse_factor[9] = 0.1;	//mountain
 
 	this->min_neighbour_with_same_region = 3;
 
@@ -471,7 +460,7 @@ void Region::setToIceDesert() {
 	this->variation_in_temperature[2] = Season<Propability>(Propability(2.0, 2.0), Propability(0, 2.0), Propability(2, 2.0), Propability(4, 2.0));
 	this->variation_in_temperature[3] = Season<Propability>(Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0, 0.0));
 
-	this->height = MinMax(-100, _MAX_TERRANE_HEIGHT);
+	this->height = MinMax(-50, _MAX_TERRANE_HEIGHT);
 	this->occurrence_in_temperature_zone[0] = 1.0;
 	this->occurrence_in_temperature_zone[1] = 0.01;
 	this->occurrence_in_temperature_zone[2] = 0.0;
@@ -493,17 +482,16 @@ void Region::setToIceDesert() {
 	resource_distribution_via_skill[1] = 0.0;
 	resource_distribution_via_skill[2] = 0.0;
 
-	this->possible_neighbour_chanse_factor[0] = 400;		//ocean
-	this->possible_neighbour_chanse_factor[1] = 1;		//lake
-	this->possible_neighbour_chanse_factor[2] = 50;		//meadow
-	this->possible_neighbour_chanse_factor[3] = 50;		//forest
-	this->possible_neighbour_chanse_factor[4] = 0;		//steppe
-	this->possible_neighbour_chanse_factor[5] = 0;		//desert
-	this->possible_neighbour_chanse_factor[6] = 50;		//moor
-	this->possible_neighbour_chanse_factor[7] = 0;		//tropical forest
-	this->possible_neighbour_chanse_factor[8] = 900;		//ice desert
-	this->possible_neighbour_chanse_factor[9] = 0;//4;		//highlands
-	this->possible_neighbour_chanse_factor[10] = 200;	//mountain
+	this->possible_neighbour_chanse_factor[0] = 0.1;	//ocean
+	this->possible_neighbour_chanse_factor[1] = 0.001;	//lake
+	this->possible_neighbour_chanse_factor[2] = 0.1;	//meadow
+	this->possible_neighbour_chanse_factor[3] = 0.1;	//forest
+	this->possible_neighbour_chanse_factor[4] = 0.1;	//steppe
+	this->possible_neighbour_chanse_factor[5] = 0.1;	//desert
+	this->possible_neighbour_chanse_factor[6] = 0.1;	//moor
+	this->possible_neighbour_chanse_factor[7] = 0.1;	//tropical forest
+	this->possible_neighbour_chanse_factor[8] = 0.199;	//ice desert
+	this->possible_neighbour_chanse_factor[9] = 0.1;	//mountain
 
 	this->min_neighbour_with_same_region = 4;
 
@@ -516,60 +504,8 @@ void Region::setToIceDesert() {
 	this->ground_properties.ground_last_layer_temp[1] = 0.0; //[°C] The temperature of the last layer for latitude [90°]
 
 }
-void Region::setToHeighland() {
-	this->region_id = 9;
-	this->variation_in_temperature[0] = Season<Propability>(Propability(-5, 10.0), Propability(-3, 5.0), Propability(-5.0, 10.0), Propability(-9, 10.0));
-	this->variation_in_temperature[1] = Season<Propability>(Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0, 0.0));
-	this->variation_in_temperature[2] = Season<Propability>(Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0, 0.0));
-	this->variation_in_temperature[3] = Season<Propability>(Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0.0, 0.0), Propability(0, 0.0));
-
-	this->height = MinMax(800,2000.0);
-	this->occurrence_in_temperature_zone[0] = 0.0;
-	this->occurrence_in_temperature_zone[1] = 0.0;
-	this->occurrence_in_temperature_zone[2] = 0.0;
-	this->occurrence_in_temperature_zone[3] = 0.0;
-	
-	this->max_fresh_water = 0.1;
-	this->max_plants = 1.0;
-	this->tau_fresh_water = this->getRegionBasedWaterRegeneration(this->region_id);
-	this->tau_plants = this->getRegionBasedPlantGrowth(this->region_id);
-	this->temp_optimal_growth = this->getOptimalTempForGrowth(this->region_id);
-
-	this->skill_to_cross[0] = NoSkill();
-	this->skill_to_cross[1] = NoSkill();
-	this->skill_to_cross[2] = NoSkill();
-	this->skill_to_reach_resources[0] = Climb();
-	this->skill_to_reach_resources[1] = Dig();
-	this->skill_to_reach_resources[2] = NoSkill();
-	resource_distribution_via_skill[0] = 0.1;
-	resource_distribution_via_skill[1] = 0.1;
-	resource_distribution_via_skill[2] = 0.8;
-
-	this->possible_neighbour_chanse_factor[0] = 100;		//ocean
-	this->possible_neighbour_chanse_factor[1] = 10;		//lake
-	this->possible_neighbour_chanse_factor[2] = 50;		//meadow
-	this->possible_neighbour_chanse_factor[3] = 20;		//forest
-	this->possible_neighbour_chanse_factor[4] = 10;		//steppe
-	this->possible_neighbour_chanse_factor[5] = 10;		//desert
-	this->possible_neighbour_chanse_factor[6] = 10;		//moor
-	this->possible_neighbour_chanse_factor[7] = 20;		//tropical forest
-	this->possible_neighbour_chanse_factor[8] = 50;		//ice desert
-	this->possible_neighbour_chanse_factor[9] = 0;//10;		//highlands
-	this->possible_neighbour_chanse_factor[10] = 100;		//mountain
-
-	this->min_neighbour_with_same_region = 0;
-
-	this->ground_properties.ground_pt1_t = 201600; //T parameter of discrete Pt1 behaviour
-	this->ground_properties.ground_above_layer_factor = 0.55; //weigheted mean factor for the layer above
-	this->ground_properties.ground_below_layer_factor = 0.45; //weigheted mean factor for the layer below
-	this->ground_properties.ground_depth = 2.0; //[m] at which layer we have a stable temperature
-	this->ground_properties.ground_layer_thickness = 0.25; //[m] how thik one layer shall be
-	this->ground_properties.ground_last_layer_temp[0] = -10.0; //[°C] The temperature of the last layer for latitude [0°]
-	this->ground_properties.ground_last_layer_temp[1] = 20.0; //[°C] The temperature of the last layer for latitude [90°]
-
-}
 void Region::setToMountain() {
-	this->region_id = 10;
+	this->region_id = 9;
 	this->variation_in_temperature[0] = Season<Propability>(Propability(-10,4.0), Propability(-8, 4.0), Propability(-9.0, 4.0), Propability(-11, 4.0));
 	this->variation_in_temperature[1] = Season<Propability>(Propability(-5, 10.0), Propability(-2, 10.0), Propability(-3.0, 10.0), Propability(-7, 10.0));
 	this->variation_in_temperature[2] = Season<Propability>(Propability(-3, 4.0), Propability(-1, 4.0), Propability(-2.0, 4.0), Propability(-4.5, 4.0));
@@ -597,17 +533,16 @@ void Region::setToMountain() {
 	resource_distribution_via_skill[1] = 0.1;
 	resource_distribution_via_skill[2] = 0.0;
 
-	this->possible_neighbour_chanse_factor[0] = 10;		//ocean
-	this->possible_neighbour_chanse_factor[1] = 1;		//lake
-	this->possible_neighbour_chanse_factor[2] = 100;		//meadow
-	this->possible_neighbour_chanse_factor[3] = 150;		//forest
-	this->possible_neighbour_chanse_factor[4] = 40;		//steppe
-	this->possible_neighbour_chanse_factor[5] = 10;		//desert
-	this->possible_neighbour_chanse_factor[6] = 100;		//moor
-	this->possible_neighbour_chanse_factor[7] = 150;		//tropical forest
-	this->possible_neighbour_chanse_factor[8] = 10;		//ice desert
-	this->possible_neighbour_chanse_factor[9] = 0;// 5;		//highlands
-	this->possible_neighbour_chanse_factor[10] = 800;		//mountain
+	this->possible_neighbour_chanse_factor[0] = 0.1;	//ocean
+	this->possible_neighbour_chanse_factor[1] = 0.02;	//lake
+	this->possible_neighbour_chanse_factor[2] = 0.1;	//meadow
+	this->possible_neighbour_chanse_factor[3] = 0.1;	//forest
+	this->possible_neighbour_chanse_factor[4] = 0.1;	//steppe
+	this->possible_neighbour_chanse_factor[5] = 0.1;	//desert
+	this->possible_neighbour_chanse_factor[6] = 0.1;	//moor
+	this->possible_neighbour_chanse_factor[7] = 0.1;	//tropical forest
+	this->possible_neighbour_chanse_factor[8] = 0.1;	//ice desert
+	this->possible_neighbour_chanse_factor[9] = 0.18;	//mountain
 
 	this->min_neighbour_with_same_region = 4;
 

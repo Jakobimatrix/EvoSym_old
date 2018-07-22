@@ -55,7 +55,7 @@ public:
 	/**
 	* @function World(std::string imgSRC = "")
 	* @brief: Constructor. Sets up a new World depending on the GLOBAL Variables.
-	* @param[in] std::string imgSRC: A path to a black white image as a relief map. If empty then the world is created with a perlian pseudo randoom pattern.
+	* @param[in] std::string imgSRC: A path to a black white image as a relief map. If empty then the world is created with a perlian pseudo random pattern.
 	**/
 	World(std::string imgSRC = "")
 	{
@@ -103,7 +103,7 @@ public:
 
 	/**
 	* @function reset()
-	* @brief: Resets every deltaWorld within the world. If no Picture path for a relief map was set, the new world will be a new randoom one.
+	* @brief: Resets every deltaWorld within the world. If no Picture path for a relief map was set, the new world will be a new random one.
 	**/
 	void reset();
 
@@ -124,16 +124,22 @@ private:
 
 	/**
 	* @function createSetHeightPredefined()
-	* @brief: Set all Delta Worlds height according to the given relief map. Randoom Regions according to setted height and latitude will be set.
+	* @brief: Set all Delta Worlds height according to the given relief map. random Regions according to setted height and latitude will be set.
 	**/
 	void createSetHeightPredefined();
 
 	/**
 	* @function createSetHeightRand()
-	* @brief: Set all Delta Worlds height using perlian noise. Randoom Regions according to setted height and latitude will be set.
+	* @brief: Set all Delta Worlds height using perlian noise. random Regions according to setted height and latitude will be set.
 	**/
 	void createSetHeightRand();
 
+	/**
+	* @function resetBadDeltaWorldRegions(std::vector<int>& bad_regions);
+	* @brief: Sets new rand region to the delta worlds whichs position were given in bad_regions.
+	* @param[in] std::vector<int>& bad_regions: Positions of delta world within vector this->world_parts. bad_regions will be empty at the end.
+	**/
+	void resetBadDeltaWorldRegions(std::vector<int>& bad_regions);
 	/**
 	* @function getNeigbourRegionIdXY(int neigbourRegionId[], int x, int y, const int num_neigbours = 8);
 	* @brief: Returns the region ids of all 8 Neigbours of a given Delta World by its x y position in an virtual 2d vector.
@@ -141,7 +147,7 @@ private:
 	* @param[in] int y: y position of the Region.
 	* @param[out] int neigbourRegionId[]: The 8 neigbours region ids. If x y was at the border of the world, the not existing neigbours region ids will be -1.
 	**/
-	void getNeigbourRegionIdXY(int neigbourRegionId[], int x, int y, const int num_neigbours = 8);
+	void getNeigbourRegionIdXY(int(&regionNeigbourID)[_AMOUNT_NEIGHBOURS], int x, int y);
 
 	/**
 	* @function getNeigbourRegionIdAT(int neigbourRegionId[], int at, const int num_neigbours = 8);
@@ -149,8 +155,15 @@ private:
 	* @param[in] at: Position in vector.
 	* @param[out] int neigbourRegionId[]: The 8 neigbours region ids. If x y was at the border of the world, the not existing neigbours region ids will be -1.
 	**/
-	void getNeigbourRegionIdAT(int neigbourRegionId[], int at, const int num_neigbours = 8);
+	void getNeigbourRegionIdAT(int(&regionNeigbourID)[_AMOUNT_NEIGHBOURS], int at);
 
+	/**
+	* @function getNeigbourAT(int neigbourAT[], int at, const int num_neigbours)
+	* @brief: Returns the positions within the vactor of all neigbours of one delta world
+	* @param[in] at: Position in vector.
+	* @param[out] int neigbourRegionId[]: The 8 neigbours position in vector
+	**/
+	void World::getNeigboursAT(std::vector<int>& neighbour_pos, int at, const int num_neigbours = 8);
 	/**
 	* @function getNeigbourTempXY(double temp, double neigbourTemp[], int x, int y, const int num_neigbours = 8);
 	* @brief: Returns temperature of all 8 Neigbours of a given Delta World by its x y position in an virtual 2d vector.
@@ -158,7 +171,7 @@ private:
 	* @param[in] int y: y position of the Region.
 	* @param[out] int neigbourTemp[]: The 8 neigbours temperature. If x y was at the border of the world, the not existing neigbours temperature will be the mean temperature of the existing neigbours.
 	**/
-	void getNeigbourTempXY(double temp, double neigbourTemp[], int x, int y, const int num_neigbours = 8);
+	void getNeigbourTempXY(double temp, double(&neighbour_temp)[_AMOUNT_NEIGHBOURS], int x, int y);
 
 	/**
 	* @function getNeigbourMeanTempXY(double temp, int x, int y);

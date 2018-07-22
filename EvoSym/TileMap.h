@@ -53,7 +53,7 @@ public:
 			// get the current tile number
 			int tileNumber = DW->getRegionId();
 			if (DW->GroundFrozen()) {
-				tileNumber += 11;
+				tileNumber += _AMOUNT_REGIONS;//The tiles are arranged according to there id 0-_AMOUNT_REGIONS, the frozen tiles are after the unfrozen tiles.
 			}
 
 			// find its position in the tileset texture
@@ -76,7 +76,7 @@ public:
 			quad[3].color = quad[0].color;
 		}
 		else {
-			int tileNumber = 23;
+			int tileNumber = _AMOUNT_REGIONS*2 +1;//the transparent tile
 			// find its position in the tileset texture
 			int tu = tileNumber % (tileset.getSize().x / _TILE_RESULUTION);
 			int tv = tileNumber / (tileset.getSize().x / _TILE_RESULUTION);

@@ -46,8 +46,6 @@ public:
 	sf::Color color_moorf;
 	sf::Color color_tropical_forest;
 	sf::Color color_ice_desert;
-	sf::Color color_heighlands;
-	sf::Color color_heighlandsf;
 	sf::Color color_mountains;
 	sf::Color color_mountainsf;
 
@@ -81,8 +79,6 @@ private:
 		this->color_moorf = sf::Color(229, 255, 214);
 		this->color_tropical_forest = sf::Color(77, 137, 42);
 		this->color_ice_desert = sf::Color(250, 250, 250);
-		this->color_heighlands = sf::Color(158, 250, 167);
-		this->color_heighlandsf = sf::Color(177, 191, 179);
 		this->color_mountains = sf::Color(181, 181, 181);
 		this->color_mountainsf = sf::Color(244, 242, 242);
 

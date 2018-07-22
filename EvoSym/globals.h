@@ -18,9 +18,10 @@ constexpr double _INVERSE_2PI = 1.0 / _2PI;	//[math.const] The inverse of two ti
 constexpr double _PI_QUARTER = 0.785398163397448309615; //[math.const] A fourth of the constant pi.
 
 //Dimensiones of this world
-constexpr int _AMOUNT_REGIONS = 11; //[int] The amount of defined regions.
+constexpr int _AMOUNT_REGIONS = 10; //[int] The amount of defined regions.
 constexpr int _AMOUNT_TEMPERATE_ZONES = 4; //[int] The amount of defined temperature zones.
 constexpr int _AMOUNT_SEASONS = 4; //[int] the amount of defined seasons.
+constexpr int _AMOUNT_NEIGHBOURS = 8;
 
 constexpr double _LAND_TO_OCEAN_RATIO = 1.3; //[ratio] This ratio determines how much land compared to ocean there shall be.
 constexpr int _DIMENSION_HALF = 200; //[DeltaWorld] The radius in tiles the world should consist of. Program Crashes for more than 300.
@@ -42,13 +43,13 @@ constexpr int _WORLD_DIAMETER_IN_PIXEL = _WORLD_DIMENSION*_TILE_RESULUTION; //[p
 
 //Parameter for a random generated world with perlian noise.
 
-/*Perlian noise is like the pattern of a military uniform. This pattern is only pseudorandom but i can choose randoomly with
+/*Perlian noise is like the pattern of a military uniform. This pattern is only pseudorandom but i can choose randomly with
 the offset O (_MIN_OFFSET_PERLIAN_NOISE < O < _MAX_OFFSET_PERLIAN_NOISE) where to start on a large predifined pattern map.*/
 constexpr int _MAX_OFFSET_PERLIAN_NOISE = 1000000;			//[int] Empirical value, should not be more than  1000000.
 constexpr int _MIN_OFFSET_PERLIAN_NOISE = _WORLD_DIMENSION;	//[int] Dont go into the negatives of the perlian noise.
 
 //divided by _DIMENSION_HALF to assure the same pattern independent from the amount of tiles 
-/*One way to make perlian noise more randoom is to zoom randoomly into the predefined pattern map.*/
+/*One way to make perlian noise more random is to zoom randomly into the predefined pattern map.*/
 constexpr double _MIN_ZOOM_PERLIAN_NOISE = 0.6 / _DIMENSION_HALF;//Min zoomfactor 1.1->less Islands.
 constexpr double _MAX_ZOOM_PERLIAN_NOISE = 3.0 / _DIMENSION_HALF;//Max zoomfactor 3.0->many Islands. 
 

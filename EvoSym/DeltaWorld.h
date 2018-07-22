@@ -217,7 +217,7 @@ public:
 	* @param[out] TempZonenfluence: Array with the Temp. influences
 	* @retval void:
 	**/
-	void getAllTempInfluence(double(&TempZonenfluence)[4]) {
+	void getAllTempInfluence(double(&TempZonenfluence)[_AMOUNT_TEMPERATE_ZONES]) {
 		TempZonenfluence[0] = this->temperature_zone_influence[0];
 		TempZonenfluence[1] = this->temperature_zone_influence[1];
 		TempZonenfluence[2] = this->temperature_zone_influence[2];
@@ -285,8 +285,9 @@ public:
 	* @function changeRegionToFitNeigbours(int regionNeigbour[], const int num_neigbours = 8)
 	* @brief: changes the current region to fit the neigbours reagion.
 	* @param[in] regionNeigbour[]: Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
+	* @retval bool: returns false if no region could be set.->reevaluate neigbours
 	**/
-	void changeRegionToFitNeigbours(int regionNeigbour[], const int num_neigbours = 8);
+	bool changeRegionToFitNeigbours(int(&regionNeigbour)[_AMOUNT_NEIGHBOURS]);
 
 	/**
 	* @function setRandRegion(double height, int regionNeigbour[], const int num_neigbours = 8, int notThisRegion = -1);
@@ -294,8 +295,9 @@ public:
 	* @param[in] height: the height of this region???
 	* @param[in] regionNeigbour[]: Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
 	* @param[in] notThisRegion: If a specific region shall not be choosen, notThisRegion must be the id of that region.
+	* @retval bool: returns false if no region could be set.->reevaluate neigbours
 	**/
-	void setRandRegion(double height, int regionNeigbour[], const int num_neigbours = 8, int notThisRegion = -1);
+	bool setRandRegion(double height, int(&regionNeigbour)[_AMOUNT_NEIGHBOURS], int notThisRegion = -1);
 
 	/**
 	* @function bool hadChangeInAppearance()

@@ -1,129 +1,111 @@
 #include"DeltaWorld.h"
 
-
-
 void DeltaWorld::setNeigboursTemperature(double meanTemp){
 	this->mean_neigbour_temperature = meanTemp;
 }
 
-void DeltaWorld::changeRegionToFitNeigbours(int regionNeigbour[], const int num_neigbours) {
+bool DeltaWorld::changeRegionToFitNeigbours(int(&regionNeigbour)[_AMOUNT_NEIGHBOURS]) {
 
-	this->setRandRegion(this->height, regionNeigbour, num_neigbours, this->region->getRegionId());
+	return this->setRandRegion(this->height, regionNeigbour, this->region->getRegionId());
 
 }
 
-void DeltaWorld::setRandRegion(double height, int regionNeigbour[], const int num_neigbours, int notThisRegion) {
-	//region
-	//gehe alle Nachbarn durch, errechne für jeden Nachbarn die Wahrscheinlichkeit für this DeltaWorld Region
-	//Durch Höhe und Breitengrad wird die Auswahl begrenzt
+bool DeltaWorld::setRandRegion(double height, int(&regionNeigbour)[_AMOUNT_NEIGHBOURS], int notThisRegion) {
 
-	double PossibleRegion[_AMOUNT_REGIONS];//hier wird gespeichert, welche Regionen möglich sind
-	double PossibleRegion_probability[_AMOUNT_REGIONS];//hier wird gespeichert, mit welcher warscheinlichkeit, welche Region diese DeltaWorld wird.
-	//std::string report = this->getUnitName();
-	for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
-		PossibleRegion[ir] = 0.0;
-		PossibleRegion_probability[ir] = 0.0;
-		if (this->_RG_->getRegion(ir)->occoursInHeight(height)) {//kommt die Region in dieser Höhe vor?
-			//Ja
-			//report += "Region Nr. " + std::to_string(ir) + " can occur in this height: " + std::to_string(height);
-			for (int it = 0; it < _AMOUNT_TEMPERATE_ZONES; it++) {//wie wharscheinlich kommt die Region in der Tempertur Zohne vor?
-				if (!IsNaN(this->getTempZoneInfluence(it))) {
-					PossibleRegion[ir] += this->getTempZoneInfluence(it) * this->_RG_->getRegion(ir)->occoursInTempZone(it);				
+	double region_probability[_AMOUNT_REGIONS]; //saves the probabilitiy of the region i
+	double total_probability = 0;
+	//1. get the probability for the region from the temperated zone and the height
+	for (int i = 0; i < _AMOUNT_REGIONS; i++) {
+		region_probability[i] = 0;
+		if (this->_RG_->getRegion(i)->occoursInHeight(height)) {
+			for (int tz = 0; tz < _AMOUNT_TEMPERATE_ZONES; tz++) {
+				region_probability[i] += temperature_zone_influence[tz] * this->_RG_->getRegion(i)->occoursInTempZone(tz);
+				total_probability += region_probability[i];
+			}
+		}
+	}
+	//error handling
+	if (total_probability == 0) {
+		std::string info = "Warning: Bad region parameters! \n";
+		info += "Coordinates: " + getUnitName() + "\n"
+			+ "Height: \t" + std::to_string(this->height) + " m\n";
+		for (int i = 0; i < _AMOUNT_TEMPERATE_ZONES; i++) {
+			if (this->temperature_zone_influence[i] > 0) {
+				info += std::to_string(this->temperature_zone_influence[i] * 100) + "% " + _RG_->getTemperatureZone(i)->getZoneName() + "\n";
+			}
+		}
+		std::cout << info;
+		bool polar = false;
+		if (this->temperature_zone_influence[0] > 0.5) {
+			polar = true;
+		}
+		this->InitSetRegionAndHeight(this->_RG_->getDefaultRegion(height, polar), height);
+		return false;
+	}
+	total_probability = 0;
+
+	//2. consider neigbours
+	std::string info2 = "";
+	for (int n = 0; n < _AMOUNT_NEIGHBOURS; n++) {
+		if (!(regionNeigbour[n] < 0)) { // the neigbour has a region 
+			for (int r = 0; r < _AMOUNT_REGIONS; r++) {
+				region_probability[r] = region_probability[r] *
+					this->_RG_->getRegion(regionNeigbour[n])->getRegionChanseFaktor(r);
+				if ((this->_RG_->getRegion(regionNeigbour[n])->getRegionChanseFaktor(r)) == 0.0) {
+					info2 += "Region " + std::to_string(regionNeigbour[n]) + " mag Region " + std::to_string(r) + " nicht\n";
 				}
 			}
-			if (PossibleRegion[ir] > 0) {
-				//report += " and has a chanse of " + std::to_string(PossibleRegion[ir]) + " to occur.\n";
-			}
-			else {
-				//report += " but does not appear in the temperate zones.\n";
-			}
+		}
+	}
+
+	//calc the summof all probabilities
+	total_probability = 0;
+	for (int r = 0; r < _AMOUNT_REGIONS; r++) {
+		total_probability += region_probability[r];
+	}
+
+	//check if the probability for every region is zero
+	if (total_probability == 0) {
+		//std::cout << "Warning: Region set to random after considering neigbours.\n" + info2;
+		bool polar = false;
+		if (this->temperature_zone_influence[0] > 0.5) {
+			polar = true;
+		}
+		this->InitSetRegionAndHeight(this->_RG_->getDefaultRegion(height, polar), height);
+		return false;
+	}
+
+	// rule out region which was given if its possible
+	if (-1 < notThisRegion && notThisRegion < _AMOUNT_REGIONS) {
+		if (total_probability - region_probability[notThisRegion] > 0) {//there are other possibilities apart from that regon we dont want
+			total_probability = total_probability - region_probability[notThisRegion];
+			region_probability[notThisRegion] = 0.0;		
 		}
 		else {
-			//report += "Region Nr. " + std::to_string(ir) + " can NOT occur in this height: " + std::to_string(height) + ".\n";
-		}
-	}
-	if (-1 < notThisRegion && notThisRegion < _AMOUNT_REGIONS) {//schließe die Region aus, die Übergeben wurde.
-		PossibleRegion[notThisRegion] = 0.0;
-		//report += "Region Nr. " + std::to_string(notThisRegion) + " has been ruled out.\n";
-	}
-	int count = 0;
-	for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
-		if (PossibleRegion[notThisRegion] != 0.0) {
-			count++;
-		}
-	}
-	if (count == 0) {
-		//report += "It appears that here no Region is allowed?";
-	}
-	//Die Region muss sich mit den Regionen der Nachbar DeltaWorlds vertragen
-
-	for (int i = 0; i < num_neigbours; i++) {//8 Nachbarn
-		if (!(regionNeigbour[i] < 0)) {
-			for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
-				PossibleRegion_probability[ir] = PossibleRegion[ir] * (double)(this->_RG_->getRegion(regionNeigbour[i])->getRegionChanseFaktor(ir));
-				//P(Region_i) = P(Region_i|Klimazohne) * P(Region_i|NachbarRegion)
-				if (PossibleRegion_probability[ir] == 0) {
-					//report += "Region Nr. " + std::to_string(ir) + " has been ruled out it can not appear next to region "+std::to_string(regionNeigbour[i])+".\n";
-				}
-			}			
+			//std::cout << "Warning: We cannot rule out the region " << notThisRegion << ". It is the only possible.\n";
 		}
 	}
 
-	double TotalChanse = 0;
-	for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
-		TotalChanse += PossibleRegion_probability[ir];
-	}
-	if (TotalChanse == 0) {//falls etwas schief gelaufen ist und für jede Region P(Region_i) = 0 gilt, alle auf possible region zurück
-		std::cout << "Warning: One Region had to be random; jede Region P(Region_i) = 0:" << std::endl;
-		//std::cout << report << std::endl;
-		if (count != 0) {
-			for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
-				PossibleRegion_probability[ir] = PossibleRegion[ir];
-			}
-			for (int i = 0; i < num_neigbours; i++) {//every valide neigbour with region x doubles the chanse that this ´region, will be the neigbours region
-				if (!(regionNeigbour[i] < 0)) {
-					PossibleRegion_probability[regionNeigbour[i]] += 1;
-				}
-			}
-		}
-		else {
-			count = 0;
-			for (int i = 0; i < num_neigbours; i++) {//every valide neigbour with region x doubles the chanse that this region, will be the neigbours region
-				if (!(regionNeigbour[i] < 0)) {
-					PossibleRegion_probability[regionNeigbour[i]] += 1;
-					count++;
-				}
-			}
-			if (count == 0) {
-				std::cout << "Warning: One Region had to be default:" << std::endl;
-				//std::cout << report << std::endl;
-				bool polar = false;
-				if (this->temperature_zone_influence[0] > 0.5) {
-					polar = true;
-				}
-				this->InitSetRegionAndHeight(this->_RG_->getDefaultRegion(height,polar),height);
-				return;
-			}
-			else {
-				std::cout << "Warning: One Region had to be random; no valide neigbours:" << std::endl;
-				//std::cout << report << std::endl;
-			}
+	//3. set a rand region according to the region_probability[r]
+	double rand_region = uniform_double_dist(0.0, total_probability);
+	total_probability = 0;
+	for (int r = 0; r < _AMOUNT_REGIONS; r++) {
+		total_probability += region_probability[r];
+		if (total_probability > rand_region) {
+			this->InitSetRegionAndHeight(this->_RG_->getRegion(r), height);
+			return true;
 		}
 	}
 
-	double RandRegion = uniform_double_dist(0.0, TotalChanse);
-	TotalChanse = 0;
-	for (int ir = 0; ir < _AMOUNT_REGIONS; ir++) {
-		TotalChanse += PossibleRegion_probability[ir];
-		if (TotalChanse > RandRegion) {
-			this->InitSetRegionAndHeight(this->_RG_->getRegion(ir), height);
-			return;
-		}
+	std::cout << "Warning: Region set to random after probability failed:\n"
+		<< "total_probability: " + std::to_string(total_probability) + "\n"
+		+ "choosen probability: " + std::to_string(rand_region) + "\n";
+	bool polar = false;
+	if (this->temperature_zone_influence[0] > 0.5) {
+		polar = true;
 	}
-	std::cout << "ERROR: Deltla Worls was not initialized!" << std::endl;
-	std::getchar();
-	
-	return;
+	this->InitSetRegionAndHeight(this->_RG_->getDefaultRegion(height, polar), height);
+	return false;
 }
 double DeltaWorld::calcSetPointTemperature() {
 
@@ -245,7 +227,7 @@ std::string DeltaWorld::getInfoString() {
 	}
 	info += "Temperatur Ground constLayer: \t" + std::to_string(this->ground.last_layer_temperature) + " °C\n";
 	info += "Season: \t" + this->getSeasonText() + "\n";
-	TemperateZone T;//todo safe pointer as attribute!!
+
 	for (int i = 0; i < _AMOUNT_TEMPERATE_ZONES; i++) {
 		if (this->temperature_zone_influence[i] > 0) {
 			info += std::to_string(this->temperature_zone_influence[i]*100) + "% " + _RG_->getTemperatureZone(i)->getZoneName()+"\n";

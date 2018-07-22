@@ -74,15 +74,16 @@ bool World::createWorld() {
 		this->createSetHeightRand();
 	}
 
-
 	/*cleanup der Regionen
 	Erosion*/
 	volatile int i_er = 0;
-	volatile int imax = 2;
+	volatile int imax = 15;
 	volatile bool erosion;
 
 	std::vector<int> indices;	//array with all indices
 	indices.reserve(_AMOUNT_DELTA_WORLDS);
+	std::vector<int> bad_region_setting;
+
 	for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
 		indices.emplace_back(i);
 	}
@@ -91,15 +92,20 @@ bool World::createWorld() {
 		erosion = false;
 		i_er++;
 		for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
-			if (! this->_RG_->getRegion(this->world_parts[indices[i]].getRegionId())->hasEnoughNeigboursWithSameRegion(this->getNumNeigboursSameRegion(indices[i], this->world_parts[indices[i]].getRegionId())) ){
+			if (!this->_RG_->getRegion(this->world_parts[indices[i]].getRegionId())->hasEnoughNeigboursWithSameRegion(this->getNumNeigboursSameRegion(indices[i], this->world_parts[indices[i]].getRegionId())) ){
 				
 				int Region_of_neigbours[8];
 				this->getNeigbourRegionIdAT(Region_of_neigbours, indices[i]);
-				this->world_parts[indices[i]].changeRegionToFitNeigbours(Region_of_neigbours);
+				if (!this->world_parts[indices[i]].changeRegionToFitNeigbours(Region_of_neigbours)) {
+					bad_region_setting.emplace_back(i);
+					getNeigboursAT(bad_region_setting, i);
+				}
 				erosion = true;
 			}
 		}
-		std::cout << "erosion Nr. " << i_er << std::endl;
+		resetBadDeltaWorldRegions(bad_region_setting);
+		std::cout << "erosion Nr. " << i_er << std::endl;		
+
 	} while (erosion && (i_er < imax));
 
 	std::vector<int>().swap(indices);//That will create an empty vector with no memory allocated and swap it with indices, effectively deallocating the memory.
@@ -114,9 +120,18 @@ bool World::createWorld() {
 	return true;
 }
 
+void World::resetBadDeltaWorldRegions(std::vector<int>& bad_regions) {
+	while (bad_regions.size() != 0) {
+		int Region_of_neigbours[8];
+		this->getNeigbourRegionIdAT(Region_of_neigbours, bad_regions.back());
+		this->world_parts[bad_regions.back()].changeRegionToFitNeigbours(Region_of_neigbours);
+		bad_regions.pop_back();
+	}
+}
+
 void World::createSetHeightRand() {
 
-	////randoomize Perlian Noice
+	////randomize Perlian Noice
 	int x;//koordinaten
 	int y;//koordinaten
 	int xOffset;
@@ -191,6 +206,8 @@ void World::createSetHeightRand() {
 	xOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);
 	yOffset = uniform_int_dist(_MIN_OFFSET_PERLIAN_NOISE, _MAX_OFFSET_PERLIAN_NOISE);
 
+	std::vector<int> bad_region_setting;
+
 	for (int xi = 0; xi < _WORLD_DIMENSION; xi++) {
 		for (int yi = 0; yi < _WORLD_DIMENSION; yi++) {
 			x = xi - _DIMENSION_HALF;
@@ -222,7 +239,10 @@ void World::createSetHeightRand() {
 			//Durch Höhe und Breitengrad wird die Auswahl begrenzt
 			int NeigbourRegionId[8];
 			this->getNeigbourRegionIdXY(NeigbourRegionId, xi, yi);
-			this->world_parts.at(i).setRandRegion(height, NeigbourRegionId);
+			if (this->world_parts.at(i).setRandRegion(height, NeigbourRegionId)) {
+				bad_region_setting.emplace_back(i);
+				getNeigboursAT(bad_region_setting, i);
+			}
 		}
 	}
 	std::vector<double>().swap(perlNoiseSmootFaktor);//That will create an empty vector with no memory allocated and swap it with perlNoiseSmootFaktor, effectively deallocating the memory.
@@ -243,6 +263,8 @@ void World::createSetHeightPredefined() {
 		}
 	}
 	resample(a, b, ImageSize.x, ImageSize.y, _WORLD_DIMENSION, _WORLD_DIMENSION);
+
+	std::vector<int> bad_region_setting;
 
 	for (unsigned int x = 0; x < _WORLD_DIMENSION; x++) {
 		for (unsigned int y = 0; y < _WORLD_DIMENSION; y++) {
@@ -266,9 +288,13 @@ void World::createSetHeightPredefined() {
 			int Region_of_neigbours[8];
 			this->getNeigbourRegionIdXY(Region_of_neigbours, x, y);
 
-			this->world_parts.at(i).setRandRegion(height, Region_of_neigbours);
+			if (!this->world_parts.at(i).setRandRegion(height, Region_of_neigbours)) {
+				bad_region_setting.emplace_back(i);
+				getNeigboursAT(bad_region_setting, i);
+			}
 		}
 	}
+	resetBadDeltaWorldRegions(bad_region_setting);
 	delete[] a;
 	delete[] b;
 }
@@ -385,7 +411,7 @@ bool World::getIsReady() {
 	return this->init;
 }
 
-void World::getNeigbourRegionIdXY(int neigbourRegionId[], int x, int y, const int num_neigbours) {
+void World::getNeigbourRegionIdXY(int(&neigbourRegionId)[_AMOUNT_NEIGHBOURS], int x, int y) {
 	//Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
 
 			bool left_border_violated = (x - 1 > -1) ? false : true;
@@ -460,7 +486,7 @@ void World::getNeigbourRegionIdXY(int neigbourRegionId[], int x, int y, const in
 				neigbourRegionId[3] = -1;
 			}
 }
-void World::getNeigbourRegionIdAT(int neigbourRegionId[], int at, const int num_neigbours) {
+void World::getNeigbourRegionIdAT(int(&neigbourRegionId)[_AMOUNT_NEIGHBOURS], int at) {
 	//Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
 
 	//at to x y
@@ -540,7 +566,59 @@ void World::getNeigbourRegionIdAT(int neigbourRegionId[], int at, const int num_
 		neigbourRegionId[3] = -1;
 	}
 }
-void World::getNeigbourTempXY(double temp, double neigbourTemp[], int x, int y, const int num_neigbours) {
+void World::getNeigboursAT(std::vector<int>& neighbour_pos, int at, const int num_neigbours){
+	//Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
+
+	//at to x y
+
+	int x = this->at2xy_lookup_table.at(at).x;
+	int y = this->at2xy_lookup_table.at(at).y;
+
+	bool left_border_violated = (x - 1 > -1) ? false : true;
+	bool right_border_violated = (x + 1 < _WORLD_DIMENSION) ? false : true;
+
+	bool top_border_violated = (y - 1 > -1) ? false : true;
+	bool bottom_border_violated = (y + 1 < _WORLD_DIMENSION) ? false : true;
+
+	int in;
+	if (!left_border_violated) {//left
+		in = (x - 1)*_WORLD_DIMENSION + y;
+		neighbour_pos.push_back(in);
+	}
+	if (!right_border_violated) {//right
+		in = (x + 1)*_WORLD_DIMENSION + y;
+		neighbour_pos.push_back(in);
+	}
+	if (!bottom_border_violated) {//bottom
+		in = (x)*_WORLD_DIMENSION + y + 1;
+		neighbour_pos.push_back(in);
+
+		if (!left_border_violated) {//bottom-left
+			in = (x - 1)*_WORLD_DIMENSION + y + 1;
+			neighbour_pos.push_back(in);
+		}
+
+		if (!right_border_violated) {//bottom-right
+			in = (x + 1)*_WORLD_DIMENSION + y + 1;
+			neighbour_pos.push_back(in);
+		}
+	}
+	if (!top_border_violated) {//top
+		in = (x)*_WORLD_DIMENSION + y - 1;
+		neighbour_pos.push_back(in);
+
+		if (!left_border_violated) {//top-left
+			in = (x - 1)*_WORLD_DIMENSION + y - 1;
+			neighbour_pos.push_back(in);
+		}
+
+		if (!right_border_violated) {//top-right
+			in = (x + 1)*_WORLD_DIMENSION + y - 1;
+			neighbour_pos.push_back(in);
+		}
+	}
+}
+void World::getNeigbourTempXY(double temp, double(&neigbourTemp)[_AMOUNT_NEIGHBOURS], int x, int y) {
 	//Array with the region id for all neigbours: right, topRight, top, topLeft, left, botLeft, bot, bottRight
 
 	bool left_border_violated = (x - 1 > -1) ? false : true;

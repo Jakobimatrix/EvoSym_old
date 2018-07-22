@@ -27,7 +27,7 @@ private:
 	Skills skill_to_reach_resources[3]; //alle Skills, die notwendig sind um die resourcen erreichen zu können
 	double resource_distribution_via_skill[3];//wie viel Prozent der Resourcen mit diesem Skill zu erreichen sind
 
-	int possible_neighbour_chanse_factor[_AMOUNT_REGIONS];//rellative Wahrscheinlichkeit, mit der DIESE Region auftritt in Abhängigkeit eines Nachbarn
+	double possible_neighbour_chanse_factor[_AMOUNT_REGIONS];//rellative Wahrscheinlichkeit, mit der DIESE Region auftritt in Abhängigkeit eines Nachbarn
 	int region_id;
 	int min_neighbour_with_same_region;//DIESE Region tritt nur auf, wenn es mindestens n Nachbarn gibt, die auch DIESE Region sind
 
@@ -54,7 +54,6 @@ public:
 	void setToMoor();
 	void setToTropicalForest();
 	void setToIceDesert();
-	void setToHeighland();
 	void setToMountain();
 	void setToDefault();
 
@@ -66,7 +65,7 @@ public:
 	bool occoursInHeight(double h) {
 		return this->height.isWithin(h);
 	}
-	int getRegionChanseFaktor(int region) {
+	double getRegionChanseFaktor(int region) {
 		if (region > _AMOUNT_REGIONS) {
 			std::cout << "ERROR: Region ID not valide" << std::endl;
 			return 0;
@@ -99,7 +98,6 @@ public:
 		return &this->tau_plants;
 	}
 
-
 	static std::string getRegionName(int i) {
 		
 		switch (i)
@@ -123,8 +121,6 @@ public:
 		case 8:
 			return "Ice dessert";
 		case 9:
-			return "heightland";
-		case 10:
 			return "Mountain";
 		default:
 			return "Default";
