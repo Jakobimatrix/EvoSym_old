@@ -70,7 +70,7 @@ public:
 	* @retval bool: returns true if the given mouseposition is over the button and this function wasnt called within minDiffBetweenClicks twice ore more.
 	**/
 	bool click(sf::Vector2i& mousePosition, sf::Color& hooverColor = sf::Color(250, 250, 250)) {
-		if (std::chrono::system_clock::now() - this->lastClick > minDiffBetweenClicks) {
+		if (std::chrono::system_clock::now() - this->lastClick > _MIN_DIFFERENCE_BETWEEN_CKLICKS) {
 			if (this->Over(mousePosition)) {
 				this->lastClick = this->lastClick = std::chrono::system_clock::now();
 				return true;

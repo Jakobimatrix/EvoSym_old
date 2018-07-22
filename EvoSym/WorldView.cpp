@@ -74,13 +74,20 @@ void WorldView::Update(World& W, bool forceUpdate) {
 				}
 
 				//TileInformation
-				if (!mouse_over_menue) {//mouse_over_menue
+				if (!mouse_over_menue && (std::chrono::system_clock::now() - this->lastClick) > _MIN_DIFFERENCE_BETWEEN_CKLICKS) {//mouse_over_menue
 					int hover_over_tile_x = (int)(((float) MousePos.x * graphic_to_windowsize_ratio.x*this->zoom - (float)this->left_upper_corner_of_view.x)/ (float)_TILE_RESULUTION);
 					int hover_over_tile_y = (int)(((float) MousePos.y * graphic_to_windowsize_ratio.y*this->zoom - (float)this->left_upper_corner_of_view.y)/ (float)_TILE_RESULUTION);
 
 					int dw_element = (hover_over_tile_x)*_WORLD_DIMENSION + hover_over_tile_y;
 					if (dw_element > -1 && dw_element < _AMOUNT_DELTA_WORLDS) {
-						this->focussed_delta_world = dw_element;
+
+						this->lastClick = std::chrono::system_clock::now();
+						if (this->focussed_delta_world == dw_element) {
+							this->focussed_delta_world = -1; //it was focussed-> unfocus it
+						}
+						else {
+							this->focussed_delta_world = dw_element; //focus it
+						}		
 					}
 					else {
 						this->focussed_delta_world = -1;

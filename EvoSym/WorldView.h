@@ -10,6 +10,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
+#include <chrono>
 #include <iostream>
 #include "DeltaWorld.h"
 #include "World.h"
@@ -28,6 +29,7 @@ public:
 
 	sf::Text info_text;
 	sf::RectangleShape info_box;
+	std::chrono::time_point<std::chrono::system_clock> lastClick = std::chrono::system_clock::now();
 
 	sf::Vector2i left_upper_corner_of_view;
 	float zoom;

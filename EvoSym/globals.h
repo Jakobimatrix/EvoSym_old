@@ -4,6 +4,7 @@
 #include <string>
 #include <math.h>
 #include <iostream>
+#include <chrono>
 #include "structs.h"
 
 //constexpression constexbr -> ändern wird zur compilezeit erstellt
@@ -40,6 +41,8 @@ constexpr int _TILE_RESULUTION = 500;//[pixel] Resulution of the individual tile
 constexpr double _VISUALIZED_TEMPERATURE_DIFFERENCE = 0.5; //[°C] At which temperature difference a tile should change apearence. The smaller this number the more often a tile has to be redrawn.
 const std::string _DEFINED_MAP = "bilder/map2.jpg"; //[path] Loades a hight profile from an black and white image. If empty the height profile will be randomized with perlian noise.
 constexpr int _WORLD_DIAMETER_IN_PIXEL = _WORLD_DIMENSION*_TILE_RESULUTION; //[pix] gesammt anzahl der Pixel in Länge und breite
+
+constexpr std::chrono::milliseconds _MIN_DIFFERENCE_BETWEEN_CKLICKS = std::chrono::milliseconds(150);
 
 //Parameter for a random generated world with perlian noise.
 

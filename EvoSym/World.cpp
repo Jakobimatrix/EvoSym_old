@@ -77,7 +77,7 @@ bool World::createWorld() {
 	/*cleanup der Regionen
 	Erosion*/
 	volatile int i_er = 0;
-	volatile int imax = 15;
+	volatile int imax = 7;
 	volatile bool erosion;
 
 	std::vector<int> indices;	//array with all indices

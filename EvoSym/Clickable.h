@@ -4,7 +4,7 @@
 #include <chrono>
 #include <SFML/Graphics.hpp>
 
-static std::chrono::milliseconds minDiffBetweenClicks = std::chrono::milliseconds(100);
+
 
 class ClickableRectangleShape
 {
