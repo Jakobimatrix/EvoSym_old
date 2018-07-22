@@ -83,10 +83,10 @@ constexpr double _TIME_DEPENDANTCY_FOR_TEMP_IN_S = 60 * 60 * 24 *7; //[s] After 
 constexpr double _INVERSE_TIME_DEPENDANTCY_FOR_TEMP_IN_S = 1/ _TIME_DEPENDANTCY_FOR_TEMP_IN_S; //[1/s] After 1/(this time intervall) the calculation for the new temperature depends only on seasonal influences.
 constexpr double _PT_1_T_SEASONAL_OFFSET = 10000000; //[/] Good values between: [4.233.600 - 86.313.600] Pt_1 diskrete time constant for the change of the seasonal offset between years.
 //!!!The summ of all _TEMP_INFLUENCE_... has to be 1.0! 
-constexpr double _TEMP_INFLUENCE_NEIGHBOURS = 0.37; //[ratio] How much influence neighbour tiles have on the temperature.
-constexpr double _TEMP_INFLUENCE_TEMPERATE_ZONE = 0.45; //[ratio] How much influence the temperate zone has on the temperature.
-constexpr double _TEMP_INFLUENCE_IS_TEMP = 0.09; //[ratio] How much the temperature of the last simulation step influences the new temperature.
-constexpr double _TEMP_INFLUENCE_GROUND = 0.09; //[ratio] How much the temperature of the ground influences the new temperature.
+constexpr double _TEMP_INFLUENCE_NEIGHBOURS = 0;// 0.37; //[ratio] How much influence neighbour tiles have on the temperature.
+constexpr double _TEMP_INFLUENCE_TEMPERATE_ZONE = 0;// 0.45; //[ratio] How much influence the temperate zone has on the temperature.
+constexpr double _TEMP_INFLUENCE_IS_TEMP = 0;// 0.09; //[ratio] How much the temperature of the last simulation step influences the new temperature.
+constexpr double _TEMP_INFLUENCE_GROUND = 1;// 0.09; //[ratio] How much the temperature of the ground influences the new temperature.
 //constexpr double _TEMP_INFLUENCE_GROUND_TEMP; //[ratio] How much the groundtemperature the temperature influences.
 
 //simulation physics

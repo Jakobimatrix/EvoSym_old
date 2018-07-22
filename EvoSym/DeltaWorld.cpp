@@ -124,80 +124,73 @@ void DeltaWorld::setRandRegion(double height, int regionNeigbour[], const int nu
 	
 	return;
 }
+double DeltaWorld::calcSetPointTemperature() {
+
+	double set_point_temperature_season = 0;
+	double temperature_year_offset = 0;
+	double temperature_region_offset = 0;
+	for (int s = 0; s < _AMOUNT_SEASONS; s++) {
+		if (this->_G_->SeasonMultiplier[s] > 0) {//only the seasons which influences our temperature.
+			for (int tz = 0; tz < _AMOUNT_TEMPERATE_ZONES; tz++) {
+				if (this->temperature_zone_influence[tz] > 0) {//only the temp_zones wich effect this delta world.
+					set_point_temperature_season +=
+						this->_RG_->getTemperatureZone(tz)->getSeasonDependentTemp()->getValue(s) //[celsius] set_point for the season s in the temperate zone tz
+						* this->temperature_zone_influence[tz] //[0-1] influence of the temperature zone
+						* this->_G_->SeasonMultiplier[s]; //[0-1] influence of the season
+
+					temperature_region_offset +=
+						this->region->getSeasonDependantTempVariation(s,tz) //[celsius] different offset for each season in different temperate zones
+						* this->temperature_zone_influence[tz] //[0-1] influence of the temperature zone
+						* this->_G_->SeasonMultiplier[s]; //[0-1] influence of the season
+				}
+			}
+			temperature_year_offset += this->_G_->CurrentYearTempOffset[s] //different offset for each season in each year
+				* this->_G_->SeasonMultiplier[s]; //[0-1] influence of the season			
+		}
+	}
+
+	return set_point_temperature_season + temperature_year_offset + temperature_region_offset + temperature_drop_due_height;
+}
 
 void DeltaWorld::calcTemp(double dt) {
 	
-	double tempAlt = this->temperature;
-	//dependencys: height, t neigbours, season, region, temperateZone
-
-	double T_TempZone_mean	= 0;//Mittlere Temperatur in der TempZohne  -> Abhängig von der Season
-	//this->TempDropDueHeight //Pro 100m Fällt die Durchschnittstemperatur um 1 °C
-	//this->meanTempNeigbour Die Temperatur ist von den Temperaturen der Nachbarregionen abhängig
-	double T_Region_Offset	= 0; //+- Varianz_tagesrauschen: Jede Region kann Währme besser/schlechter speichern  -> Abhängig von der Season
-	double T_TempZone_Offset = 0; //+- Varianz_Jahresrauschen: In jeder TempZohne Treten temperaturschwankungen anders auf  -> Abhängig von der Season
-	//this->temperature //ist Temperatur
+	double last_temperature = this->temperature;
 	
-	//Season
-	for (int s = 0; s < _AMOUNT_SEASONS; s++) {
-		if (this->_G_->SeasonMultiplier[s] > 0) {
-			double T_TempZone_mean_2 = 0;
-			double T_Region_mean_2 = 0;
-			double T_TempZone_offset_Seasondependant = 0;
-			//TempZohne
-			for (int TempZone = 0; TempZone < _AMOUNT_TEMPERATE_ZONES; TempZone++) {
-
-				if (this->temperature_zone_influence[TempZone] > 0) {
-				T_TempZone_mean_2 += this->_RG_->getTemperatureZone(TempZone)->getSeasonDependentTemp()->getValue(s) * this->temperature_zone_influence[TempZone];
-									//mean temp.in TempZone in Season		//influence of TempZone 
-				T_TempZone_offset_Seasondependant += this->_G_->CurrentYearTempOffset[s] * this->temperature_zone_influence[TempZone];
-
-				T_Region_mean_2 += this->region->getSeasonDependantTempVariation(s, TempZone) * this->temperature_zone_influence[TempZone];
-				}
-			}
-
-			T_TempZone_mean += T_TempZone_mean_2 * this->_G_->SeasonMultiplier[s]; //einfluss momentane Season[0-1] auf mittlere Temp aller TempZonen
-			T_TempZone_Offset += T_TempZone_offset_Seasondependant * this->_G_->SeasonMultiplier[s]; //einfluss momentane Season[0-1] auf mittlere Varianz aller TempZonen
-
-							
-			//Region
-			T_Region_Offset += T_Region_mean_2 * this->_G_->SeasonMultiplier[s];
-		}
-	}
-
-	if (!this->initilized) {//dann nur von Temperaturzohne abhängig
-		this->temperature = T_TempZone_mean + this->temperature_drop_due_height + T_Region_Offset + T_TempZone_Offset;
-																					 
-		this->recent_delta_temperature += this->temperature - tempAlt;//for drawing purpose
-		return;
-	}
-	
-
-	//calc new Temp
-	this->temperature = (this->temperature - this->temperature_drop_due_height )*_TEMP_INFLUENCE_IS_TEMP + this->mean_neigbour_temperature*_TEMP_INFLUENCE_NEIGHBOURS + T_TempZone_mean*_TEMP_INFLUENCE_TEMPERATE_ZONE + this->ground.layer_temperature[0]* _TEMP_INFLUENCE_GROUND;
-	this->temperature += this->temperature_drop_due_height; //beachte Höhe
-
-	this->temperature = this->temperature + T_Region_Offset + T_TempZone_Offset; //beachte Varianzen in TemperaturZohne(Jährlich anders) und Region
+	this->temperature = last_temperature * _TEMP_INFLUENCE_IS_TEMP
+		+ this->mean_neigbour_temperature * _TEMP_INFLUENCE_NEIGHBOURS
+		+ this->ground.layer_temperature[0] * _TEMP_INFLUENCE_GROUND
+		+ this->calcSetPointTemperature() * _TEMP_INFLUENCE_TEMPERATE_ZONE;
 
 	//for drawing purpose
-	this->recent_delta_temperature += this->temperature - tempAlt;
+	this->recent_delta_temperature += this->temperature - last_temperature;	
+	
 }
 void DeltaWorld::calcIceThicknes(double dt) {
 
-	double freezingTemp = _WATER_FREEZING_TEMPERATURE[0];
+	double freezing_temperature = _WATER_FREEZING_TEMPERATURE[0];
 	if (this->region->getRegionId() == 0) {//ocean
-		freezingTemp = _WATER_FREEZING_TEMPERATURE[1];
+		freezing_temperature = _WATER_FREEZING_TEMPERATURE[1];
 	}
-	if (this->ground.layer_temperature[0] < 0) {
+	if (this->ground.layer_temperature[0] < freezing_temperature) {
 		this->is_frozen = true;
+
 		for (unsigned int FrozenLayer = 1; FrozenLayer < this->ground.amount_layers; FrozenLayer++) {
-			if (this->ground.layer_temperature[FrozenLayer] > freezingTemp) { //this layer is not frozen anymore
+			if (this->ground.layer_temperature[FrozenLayer] > freezing_temperature) { //this layer is not frozen anymore
 				//linear interpolation between this layer and the last
+				//temp_freez = a*ice_thickness + b;			seaching ice_thickness
+				//t_neg = a*((n-1)*layer_thickness) + b		first equation
+				//t_pos = a*(n*layer_thicknes) + b			second equation
+				//a = t_pos-t_neg/layer_thickness			gradient
+				//b = t_pos - a*layer_thickness*n			offset
+				//ice_thickness = (temp_freez - b)/a		
+
 				double a = (this->ground.layer_temperature[FrozenLayer] - this->ground.layer_temperature[FrozenLayer-1]) / this->region->getGroundProperties()->ground_layer_thickness;
-				double b = this->ground.layer_temperature[FrozenLayer] - a*this->region->getGroundProperties()->ground_layer_thickness*(FrozenLayer+1);
-				this->ice_thickness = -b / a;
-				break;
+				double b = this->ground.layer_temperature[FrozenLayer] - a*this->region->getGroundProperties()->ground_layer_thickness*(FrozenLayer);
+				this->ice_thickness = (freezing_temperature - b) / a;
+				return;
 			}
 		}
+		this->ice_thickness = this->ground.amount_layers * this->region->getGroundProperties()->ground_layer_thickness;
 	}
 	else {
 		this->is_frozen = false;

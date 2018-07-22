@@ -393,6 +393,8 @@ private:
 	**/
 	void calcTemp(double dt);
 
+	double calcSetPointTemperature();
+
 	/**
 	* @function calcResources(double dt)
 	* @brief: Calculates the resources when dt time has passed.
