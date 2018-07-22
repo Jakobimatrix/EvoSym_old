@@ -617,7 +617,7 @@ void Region::setToMountain() {
 	this->ground_properties.ground_depth = 2.5; //[m] at which layer we have a stable temperature
 	this->ground_properties.ground_layer_thickness = 0.25; //[m] how thik one layer shall be
 	this->ground_properties.ground_last_layer_temp[0] = -15; //[°C] The temperature of the last layer for latitude [0°]
-	this->ground_properties.ground_last_layer_temp[1] = 5.0; //[°C] The temperature of the last layer for latitude [90°]
+	this->ground_properties.ground_last_layer_temp[1] = 20.0; //[°C] The temperature of the last layer for latitude [90°]
 
 }
 void Region::setToDefault() {

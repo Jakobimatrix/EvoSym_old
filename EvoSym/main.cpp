@@ -47,7 +47,7 @@ Doch es gab Bugs zu beheben und Finetuning durchzuführen. Eine Welt ist eben nic
 
 int main() {
 
-	World SimulatedWorld = World();
+	World SimulatedWorld = World(_DEFINED_MAP);
 
 	if (!SimulatedWorld.getIsReady()) {
 		return 0;
