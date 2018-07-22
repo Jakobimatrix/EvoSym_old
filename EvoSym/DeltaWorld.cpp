@@ -140,15 +140,14 @@ void DeltaWorld::calcTemp(double dt) {
 	//Season
 	for (int s = 0; s < _AMOUNT_SEASONS; s++) {
 		if (this->_G_->SeasonMultiplier[s] > 0) {
-			TemperateZone T;//todo safe pointer as attribute!!
 			double T_TempZone_mean_2 = 0;
 			double T_Region_mean_2 = 0;
 			double T_TempZone_offset_Seasondependant = 0;
 			//TempZohne
 			for (int TempZone = 0; TempZone < _AMOUNT_TEMPERATE_ZONES; TempZone++) {
-				T = TemperateZone(TempZone);
+
 				if (this->temperature_zone_influence[TempZone] > 0) {
-				T_TempZone_mean_2 += T.getSeasonDependentTemp()->getValue(s) * this->temperature_zone_influence[TempZone];
+				T_TempZone_mean_2 += this->_RG_->getTemperatureZone(TempZone)->getSeasonDependentTemp()->getValue(s) * this->temperature_zone_influence[TempZone];
 									//mean temp.in TempZone in Season		//influence of TempZone 
 				T_TempZone_offset_Seasondependant += this->_G_->CurrentYearTempOffset[s] * this->temperature_zone_influence[TempZone];
 
@@ -253,10 +252,9 @@ std::string DeltaWorld::getInfoString() {
 	info += "Temperatur Ground constLayer: \t" + std::to_string(this->ground.last_layer_temperature) + " °C\n";
 	info += "Season: \t" + this->getSeasonText() + "\n";
 	TemperateZone T;//todo safe pointer as attribute!!
-	for (int i = 0; i < _AMOUNT_SEASONS; i++) {
+	for (int i = 0; i < _AMOUNT_TEMPERATE_ZONES; i++) {
 		if (this->temperature_zone_influence[i] > 0) {
-			T = TemperateZone(i);
-			info += std::to_string(this->temperature_zone_influence[i]*100) + "% " + T.getZoneName()+"\n";
+			info += std::to_string(this->temperature_zone_influence[i]*100) + "% " + _RG_->getTemperatureZone(i)->getZoneName()+"\n";
 		}
 	}
 	info += "Latitude: \t" + std::to_string(this->latitude) + " °\n\n";

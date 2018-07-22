@@ -2,16 +2,23 @@
 #define _RegionGlobals_
 #include "globals.h"
 #include "Region.h"
+#include "TemperateZone.h"
+
 class RegionGlobals {
 
 private:
 	Region Regions[_AMOUNT_REGIONS];
 	Region uninitilized;
+	TemperateZone temperate_zone[_AMOUNT_TEMPERATE_ZONES];
+
 	RegionGlobals() {
 		for (int i = 0; i < _AMOUNT_REGIONS; i++) {
 			this->Regions[i].setTo(i);
 		}	
 		uninitilized.setToDefault();
+		for (int i = 0; i < _AMOUNT_TEMPERATE_ZONES; i++) {
+			this->temperate_zone[i] = TemperateZone(i);
+		}
 	}
 	// Stop the compiler generating methods of copy the object
 	RegionGlobals(RegionGlobals const& copy);            // Not Implemented
@@ -23,14 +30,7 @@ public:
 	}
 
 	Region* getRegion(int i) {
-		if (i < _AMOUNT_REGIONS) {
-			return &this->Regions[i];
-		}
-		else {
-			std::cout << "ERROR: This region ID is not valide: " << std::to_string(i) << std::endl;
-			getchar();
-			return this->getDefaultRegion();//Default meaddow
-		}
+		return &this->Regions[i]; //NOT FAILSAVE
 	}
 	Region* getDefaultRegion(double height = 1.0, bool polar = false) {
 		if (height > 0) {
@@ -45,6 +45,9 @@ public:
 			return &this->Regions[0];//Default ocean
 		}
 		
+	}
+	TemperateZone* getTemperatureZone(int temp_zone) {
+		return &this->temperate_zone[temp_zone]; //NOT FAILSAVE
 	}
 	static int getDefaultRegionID(double height = 1.0, bool polar = false) {
 		if (height > 0) {
