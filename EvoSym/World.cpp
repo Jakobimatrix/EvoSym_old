@@ -394,7 +394,11 @@ void World::Update() {
 	}
 
 	BOOST_FOREACH(Animal animal, this->animals) {
-		animal.simulate(this->time);
+		animal.simulate(this->time);//animal does action
+	}
+
+	BOOST_FOREACH(Animal animal, this->animals) {
+		animal.simulationResult();//update animal, if action was successfull
 	}
 
 	//for-schleife langsamer als Boost

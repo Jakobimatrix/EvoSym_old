@@ -30,18 +30,12 @@ public:
 private:
 
 	struct{
-		bool sex;			//male = false, female = true
-		struct {
-			Code color;		//visual difference
-			//Code scent;		//
-			//Code development;//how the animal will evolve; when its adult, when its grow up, when it dies
-			//Code bodyProportions;		//weight/energy reservoir/size
-			//Code stats;		//ofense,defense,topspeed
-			//Code senses;	//hearing/smelling/vision/taste
-		}gene;
+		bool sex;	//male = false, female = true
+		Gene genom;
 
 		struct {
 			bool is_alive;
+			bool has_reproduced;
 			double size;		//m
 			double weight;		//Kg
 			double strength;	//kg bewegt werden kann
@@ -60,8 +54,7 @@ private:
 		}is_condition;	
 
 		struct {
-			double points;
-			
+			double points;			
 		}evolution;
 
 	}animal_characteristics;
@@ -76,6 +69,7 @@ private:
 	void growth();
 	void die();
 	void decay(double decayfactor);
+	bool hasReproduced();
 
 
 	///actions
@@ -106,5 +100,7 @@ public:
 		this->nextAction();
 		this->growth();
 	}
+
+	void simulationResult();
 };
 #endif

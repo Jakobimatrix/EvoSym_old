@@ -2,6 +2,7 @@
 #define _STRUCTS_
 
 #include <Windows.h> //WORD BYTE etc
+#include <array>
 #include "functions.h"
 #include "Point2d.h"
 #include "Skills.h"
@@ -79,7 +80,7 @@ const int _SIGNIFICANCE[5] = {5,4,3,2,1};
 
 struct Code{
 	Code() {}
-	Code(const uint16_t (&_template)[5]) {
+	Code(const uint16_t (&_template)[_MAX_CODE_DEPTH]) {
 		for (int i = 0; i < _MAX_CODE_DEPTH; i++) {
 			this->part[i] = _template[i];
 		}
@@ -115,6 +116,33 @@ struct Code{
 			else {
 				child.part[i] = father->part[i];
 			}
+		}
+	}
+};
+
+struct Gene {
+	std::array<Code, 6> genome;//color,scent,development,bodyProportions,stats,senses
+	Code& getColor() {
+		return genome[0];//visual difference
+	}
+	Code& getScent() {
+		return genome[1];
+	}
+	Code& getDevelopment() {
+		return genome[2]; //how the animal will evolve; when its adult, when its grow up, when it dies
+	}
+	Code& getBbodyProportions() {
+		return genome[3];//weight/energy reservoir/size
+	}
+	Code& getStats() {
+		return genome[4];//ofense,defense,topspeed
+	}
+	Code& getSenses() {
+		return genome[5];//hearing/smelling/vision/taste
+	}
+	void makeRandom() {
+		for (int g = 0; g < 6; g++) {
+			genome[g].makeRandom();
 		}
 	}
 };

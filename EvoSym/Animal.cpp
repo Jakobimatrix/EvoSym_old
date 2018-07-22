@@ -79,9 +79,9 @@ void Animal::growth() {
 	//update ofense, defense
 
 	//update factors
-	this->animal_characteristics.is_condition.weight_strength_factor = _energy_consumption_size_factor*std::pow(this->animal_characteristics.is_condition.size, _energy_consumption_weight_exponent) \
-		+ \
-		_energy_consumption_weight_factor*std::pow(this->animal_characteristics.is_condition.weight, _energy_consumption_weight_exponent);
+	this->animal_characteristics.is_condition.weight_strength_factor = 
+		_energy_consumption_size_factor*std::pow(this->animal_characteristics.is_condition.size, _energy_consumption_weight_exponent)
+		+ _energy_consumption_weight_factor*std::pow(this->animal_characteristics.is_condition.weight, _energy_consumption_weight_exponent);
 
 }
 //TODO
@@ -138,4 +138,12 @@ double Animal::clone() {
 }
 double Animal::sex() {
 	return 2.0;
+}
+
+bool Animal::hasReproduced() {
+	return this->animal_characteristics.is_condition.has_reproduced;
+}
+
+void Animal::simulationResult() {
+
 }
