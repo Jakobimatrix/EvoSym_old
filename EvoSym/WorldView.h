@@ -155,7 +155,7 @@ public:
 
 	}
 
-	void Update(World& W, bool forceUpdate = false);
+	void Update(World& W);
 
 	//menue actions
 	void SetDeltaWorldColor(int i) {

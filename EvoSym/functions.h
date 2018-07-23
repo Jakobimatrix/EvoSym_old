@@ -180,5 +180,14 @@ inline double PT1_T_Discrete(double dt, double pt1_T_continous) {
 	return 1.0 / (pt1_T_continous / dt + 1); //see wikipedia pt1 for time discrete form
 }
 
+
+inline double ReLU(double input) {
+	if (input>0)
+	{
+		return 0.0;
+	}
+	return input;
+}
+
 #endif // !_FUNCTIONS_
 

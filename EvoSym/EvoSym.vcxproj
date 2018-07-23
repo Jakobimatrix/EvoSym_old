@@ -88,7 +88,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>W:\Programieren\cpp\Software\boost_1_64_0;W:\Programieren\cpp\Software\SFML-2.4.2-vc14-32bit\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>W:\Programieren\cpp\Software\Eigen;W:\Programieren\cpp\Software\boost_1_64_0;W:\Programieren\cpp\Software\SFML-2.4.2-vc14-32bit\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>
     <Link>
@@ -120,7 +120,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>W:\Programieren\cpp\Software\boost_1_64_0;W:\Programieren\cpp\Software\SFML-2.4.2-vc14-32bit\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>W:\Programieren\cpp\Software\boost_1_64_0;W:\Programieren\cpp\Software\Eigen;W:\Programieren\cpp\Software\SFML-2.4.2-vc14-32bit\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -150,6 +150,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Animal.h" />
+    <ClInclude Include="Animals.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Clickable.h" />
     <ClInclude Include="functions.h" />
@@ -177,13 +178,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animal.cpp" />
+    <ClCompile Include="Animals.cpp" />
     <ClCompile Include="functions.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="Menue.cpp" />
     <ClCompile Include="noises\simplexnoise1234.cpp" />
     <ClCompile Include="Plant.cpp" />
     <ClCompile Include="Point2d.cpp" />
     <ClCompile Include="DeltaWorld.cpp" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="Region.cpp" />
     <ClCompile Include="Resources.cpp" />
     <ClCompile Include="Skills.cpp" />
@@ -192,8 +194,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\packages\Eigen.3.3.3\build\native\Eigen.targets" Condition="Exists('..\packages\Eigen.3.3.3\build\native\Eigen.targets')" />
   </ImportGroup>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Eigen.3.3.3\build\native\Eigen.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Eigen.3.3.3\build\native\Eigen.targets'))" />
+  </Target>
 </Project>

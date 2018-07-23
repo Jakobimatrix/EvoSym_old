@@ -1,5 +1,26 @@
 #include "Animal.h"
 
+/*
+//input neurones:
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+
+//output neurones;
+0	travel_x
+1	travel_x_speed
+2	travel_y
+3	travel_y_speed
+
+*/
 
 void Animal::init(){
 	this->delta_t_update = _HOUR_IN_S;
@@ -28,7 +49,7 @@ void Animal::randinit() {
 	this->animal_characteristics.is_condition.weight = uniform_double_dist(sizeEnergyWaterFactor*0.01, sizeEnergyWaterFactor*100.0);		//Kg
 	this->animal_characteristics.is_condition.strength = uniform_double_dist(this->animal_characteristics.is_condition.weight*0.1, this->animal_characteristics.is_condition.weight*10.0);	//kg bewegt werden kann
 
-	this->animal_characteristics.gene.color.makeRandom();
+	this->animal_characteristics.genom.makeRandom();
 
 	this->growth();
 }
@@ -98,11 +119,25 @@ void Animal::decay(double decayfactor) {//decayfactor depends on region
 	}*/
 }
 
-//TODO
-void Animal::nextAction() {
-	////neuronal network decission
-	//energy = action
-	//energyconsumption
+int Animal::nextAction() {
+	neurone_hidden_1 = weights_hidden_1*neurones_input + bias_hidden_1;
+	neurone_hidden_1.unaryExpr(&ReLU);
+
+	neurone_hidden_2 = weights_hidden_2*neurone_hidden_1 + bias_hidden_2;
+	neurone_hidden_2.unaryExpr(&ReLU);
+
+	neurones_output = weights_output*neurone_hidden_2 + bias_output;
+
+	//strongest neuron wins
+	double next_action = 0;
+	double next_action_value = 0;
+	for (int i = 0; i < _AMOUNT_OUTPUT_NEURONES_NN; i++) {
+		if (next_action_value < neurones_output(i)) {
+			next_action = i;
+			next_action_value = neurones_output(i);
+		}
+	}
+	return next_action;
 }
 //TODO
 double Animal::travelGround(Point2d travelvector, double speed, double heightDiff) {
@@ -136,14 +171,25 @@ double Animal::drink() {
 double Animal::clone() {
 	return 2.0;
 }
-double Animal::sex() {
-	return 2.0;
-}
+
 
 bool Animal::hasReproduced() {
 	return this->animal_characteristics.is_condition.has_reproduced;
 }
 
-void Animal::simulationResult() {
 
+void Animal::update(double tnow) {
+	double dt = (tnow - this->t_last_update);
+	doAction(this->nextAction(), dt);
+	this->growth();
+}
+
+void Animal::doAction(int action, double dt) {
+	switch (action)
+	{
+	case 0:
+
+	default:
+		break;
+	}
 }

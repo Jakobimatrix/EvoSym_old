@@ -2,7 +2,7 @@
 
 void World::reset() {
 	this->time = 0;
-	this->animals.clear();
+
 	if (!this->init) {
 		for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
 			this->world_parts.emplace_back(DeltaWorld());
@@ -392,27 +392,22 @@ void World::Update() {
 			this->world_parts[i].setNeigboursTemperature(this->getNeigbourMeanTempXY(this->world_parts[i].getTemp(), xi, yi));
 		}
 	}
-
-	BOOST_FOREACH(Animal animal, this->animals) {
-		animal.simulate(this->time);//animal does action
-	}
-
-	BOOST_FOREACH(Animal animal, this->animals) {
-		animal.simulationResult();//update animal, if action was successfull
-	}
-
-	//for-schleife langsamer als Boost
-	//for (int i = 0; i < _Amount_Delta_Worlds; i++) {
-	//	this->WorldParts[i]->setSeason(this->_G_->_SeasonShift + this->WorldParts[i]->getPosition().getArg());
-	//	this->WorldParts[i]->simulate(this->time);
-	//}
-	//for-schleife
-
-	//Update Animal
 }
 
 bool World::getIsReady() {
 	return this->init;
+}
+
+bool World::getWorldPartByPosition(Point2d& position, DeltaWorld& dw) {
+	int x = (int) (position.x / (double)_TILE_RESULUTION);
+	int y = (int) (position.y / (double)_TILE_RESULUTION);
+
+	int dw_element = (x)*_WORLD_DIMENSION + y;
+	if (dw_element > -1 && dw_element < _AMOUNT_DELTA_WORLDS) {
+		dw = world_parts[dw_element];
+		return true;
+	}
+	return false;
 }
 
 void World::getNeigbourRegionIdXY(int(&neigbourRegionId)[_AMOUNT_NEIGHBOURS], int x, int y) {

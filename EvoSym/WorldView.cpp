@@ -1,6 +1,6 @@
 #include "WorldView.h"
 
-void WorldView::Update(World& W, bool forceUpdate) {
+void WorldView::Update(World& W) {
 	if (this->window.isOpen()) {
 		bool mouse_over_menue = false;
 		sf::Event event;

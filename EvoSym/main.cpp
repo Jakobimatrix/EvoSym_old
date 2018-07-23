@@ -41,9 +41,14 @@ Doch es gab Bugs zu beheben und Finetuning durchzuführen. Eine Welt ist eben nic
 * @version 1.0
 **/
 
+
 #include "globals.h"
 #include "World.h"
 #include "WorldView.h"
+#include "Animals.h"
+
+
+#include <iostream>
 
 int main() {
 
@@ -53,12 +58,15 @@ int main() {
 		return 0;
 	}
 
+	Animals animals = Animals();
+
 	WorldView worldview;
 
 	while (worldview.window.isOpen())
 	{
-		worldview.Update(SimulatedWorld, true);
+		worldview.Update(SimulatedWorld);
 		SimulatedWorld.Update();
+		animals.Update(SimulatedWorld);
 	}
 
 	return 0;

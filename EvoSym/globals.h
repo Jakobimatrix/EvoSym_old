@@ -98,8 +98,12 @@ constexpr double _WATER_FREEZING_TEMPERATURE[2] = { -0.2, -1.9 }; //[°C,°C] At t
 constexpr double _TEMPERATURE_DROP_PER_METER = -0.005; //[°C/m] With every meter the average temperature drops by this value.
 constexpr double _BEGIN_HEIGHT_TEMP_DROP = 0; //[m] Above this value the average temperature drops per meter with _TEMPERATURE_DROP_PER_METER.
 
-
 constexpr double _plants_stop_growth_temp = 4.0;//this should be defined for each region 
+
+constexpr int _AMOUNT_INPUT_PARAMS_NN = 20; //number of input parameters for the neuronal network for each animal
+constexpr int _AMOUNT_HIDDEN_NEURONS_1_NN = 100; //number of neurones for each hidden layer
+constexpr int _AMOUNT_HIDDEN_NEURONS_2_NN = 100; //number of neurones for each hidden layer
+constexpr int _AMOUNT_OUTPUT_NEURONES_NN = 10; //all possible actions an animal can do
 
 
 

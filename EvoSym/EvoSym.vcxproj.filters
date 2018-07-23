@@ -27,9 +27,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="globals.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="DeltaWorld.h">
       <Filter>Header Files\world</Filter>
     </ClInclude>
@@ -84,14 +81,20 @@
     <ClInclude Include="GlobalDraw.h">
       <Filter>Header Files\window</Filter>
     </ClInclude>
-    <ClInclude Include="RegionGlobals.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="TileMap.h">
       <Filter>Header Files\window</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
       <Filter>Header Files\functions</Filter>
+    </ClInclude>
+    <ClInclude Include="Animals.h">
+      <Filter>Header Files\simulation</Filter>
+    </ClInclude>
+    <ClInclude Include="globals.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RegionGlobals.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -100,9 +103,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Header Files</Filter>
-    </ClCompile>
     <ClCompile Include="DeltaWorld.cpp">
       <Filter>Header Files\world</Filter>
     </ClCompile>
@@ -139,8 +139,15 @@
     <ClCompile Include="Resources.cpp">
       <Filter>Header Files\simulation</Filter>
     </ClCompile>
+    <ClCompile Include="Animals.cpp">
+      <Filter>Header Files\simulation</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Header Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>

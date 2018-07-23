@@ -22,9 +22,7 @@
 #include "RegionGlobals.h"
 #include "functions.h"
 #include "noises/simplexnoise1234.h"
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/OpenGL.hpp>
+
 
 struct xyMap {
 	unsigned int x;
@@ -38,13 +36,13 @@ public:
 	//// ary[i][j] is then rewritten as
 	//ary[i*sizeY + j]
 	std::vector<DeltaWorld> world_parts;
-	std::vector<Animal> animals;
-	std::vector<xyMap> at2xy_lookup_table; //to find teh x y coordnate if just iterating through the WorldParts Vector.
+	std::vector<xyMap> at2xy_lookup_table; //to find the x y coordnate if just iterating through the WorldParts Vector.
+	double time;
 private:
 
 	GlobalSingleton* _G_;
 	RegionGlobals* _RG_;
-	double time;
+
 
 	bool init;
 	bool load_from_image;
@@ -113,6 +111,14 @@ public:
 	* @retval bool: True, if the world is ready for simulaton.
 	**/
 	bool getIsReady();
+
+	/**
+	* @function getIsReady();
+	* @brief: Returns the corresponding Worldpart by giving a position
+	* @param[in] Point2d& position: The position in meter.
+	* @retval DeltaWorld&: The corresonding Worldpart.
+	**/
+	bool getWorldPartByPosition(Point2d& position, DeltaWorld& dw);
 private:
 
 	/**
