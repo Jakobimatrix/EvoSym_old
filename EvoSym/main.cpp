@@ -41,14 +41,11 @@ Doch es gab Bugs zu beheben und Finetuning durchzuführen. Eine Welt ist eben nic
 * @version 1.0
 **/
 
-
 #include "globals.h"
 #include "World.h"
 #include "WorldView.h"
 #include "Animals.h"
 
-
-#include <iostream>
 
 int main() {
 

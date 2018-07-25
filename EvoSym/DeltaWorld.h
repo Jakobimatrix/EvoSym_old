@@ -50,6 +50,8 @@ typedef struct Ground {
 class DeltaWorld : public SimulatedUnit
 {
 private:
+
+	Point2d gradient;
 	
 	double mean_neigbour_temperature; //saves the last mean temperature of the neigbours
 
@@ -119,7 +121,7 @@ public:
 	/**
 	* @function initSetPositionAndLatitude(const Point2d& position, double latitude)
 	* @brief: Part of the initialization: Sets the Position and the latitude and all things which depends on thouse parameters.
-	* @param[in] Point2d& position: The Position in meter within the world.
+	* @param[in] Point2d& position: The Position in meter within the world. Center of the delta World
 	* @param[in] double latitude:	The latitude within this world.
 	**/
 	void initSetPositionAndLatitude(const Point2d& position, double latitude) {
@@ -136,7 +138,7 @@ public:
 		this->_G_->announceDeltaTime(this->delta_t_update);
 		this->t_last_update = 0.0;
 		this->latitude = latitude;
-		this->position = position;
+		this->position = position; //die Mitte der Kachel
 
 		this->initilized = false;
 
@@ -156,7 +158,7 @@ public:
 	* @param[in] int regionID: The Id of the region this delta world shall have.
 	* @param[out] double height: The height of this delta world in meter.
 	**/
-	void InitSetRegionAndHeight(Region* region, double height) {
+	void initSetRegionAndHeight(Region* region, double height) {
 		this->ice_thickness = 0.0;
 		this->is_frozen = false;
 		this->region = region;
@@ -183,6 +185,10 @@ public:
 		ground.init(this->region->getGroundProperties(), _G_, latitude);
 		this->initilized = true;		
 	}
+
+	void initSetGradient(Point2d gradient) {
+		this->gradient = gradient;
+	}
 	~DeltaWorld(){	
 
 	}
@@ -193,7 +199,7 @@ public:
 	* @brief: returns the position of the delta world as its name within a string.
 	* @retval std::string: position of the delta world
 	**/
-	std::string getUnitName() { return std::to_string(this->position.x) + "X " + std::to_string(this->position.x) + "Y"; }
+	std::string getUnitName() { return std::to_string(this->position.x) + "X " + std::to_string(this->position.y) + "Y"; }
 
 	/**
 	* @function Resources* ShowResources() 
@@ -253,6 +259,10 @@ public:
 	**/
 	double getHeight() {
 		return this->height;
+	}
+
+	Point2d& getGradient() {
+		return gradient;
 	}
 
 	/**
@@ -383,6 +393,25 @@ public:
 	double getIsPlant() {
 		return this->resources.getIsPlants();
 	}
+
+	/**
+	* @function getLatitude()
+	* @brief: getter function; returns latitude of the delta world.
+	* @retval double: the latitude of the delta world
+	**/
+	double getLatitude() {
+		return this->latitude;
+	}
+
+	/**
+	* @function bool getBorderEntryPoint(Point2d& entry_point, , Point2d& begin_travel_point, Point2d& end_travel_point)
+	* @brief: Calculates the point where a given vector intersects with the border of this delta world.
+	* @param[in] Point2d& begin_travel_point: the start point of the travel vector.
+	* @param[in] Point2d& end_travel_point: the end point of the travel vector.
+	* @param[out] Point2d& entry_point: the intersection
+	* @retval double: true, if there is a intersection
+	**/
+	bool getBorderEntryPoint(Point2d& entry_point, Point2d& begin_travel_point, Point2d& end_travel_point);
 
 private:
 	/**

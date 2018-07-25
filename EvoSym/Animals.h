@@ -13,7 +13,7 @@ private:
 public:
 	Animals();
 	~Animals();
-	void Update(World& W);
+	void Update(World& w);
 
 
 };

@@ -16,7 +16,6 @@
 #include "DeltaWorld.h"
 #include "Region.h"
 #include "structs.h"
-#include "Animal.h"
 #include "Point2d.h"
 #include "globals.h"
 #include "RegionGlobals.h"
@@ -116,9 +115,10 @@ public:
 	* @function getIsReady();
 	* @brief: Returns the corresponding Worldpart by giving a position
 	* @param[in] Point2d& position: The position in meter.
-	* @retval DeltaWorld&: The corresonding Worldpart.
+	* @param[out] DeltaWorld* dw: The corresonding Worldpart as a pointer.
+	* @retval bool: True if the position was inside the worlds dimension.
 	**/
-	bool getWorldPartByPosition(Point2d& position, DeltaWorld& dw);
+	bool getWorldPartByPosition(Point2d& position, DeltaWorld*& dw);
 private:
 
 	/**
@@ -139,6 +139,12 @@ private:
 	* @brief: Set all Delta Worlds height using perlian noise. random Regions according to setted height and latitude will be set.
 	**/
 	void createSetHeightRand();
+
+	/**
+	* @function createSetGradient()
+	* @brief: Set all Delta Worlds gradients. Delta worlds heights must be set already
+	**/
+	void createSetGradient();
 
 	/**
 	* @function resetBadDeltaWorldRegions(std::vector<int>& bad_regions);

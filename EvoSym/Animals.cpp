@@ -7,8 +7,8 @@ Animals::~Animals(){
 
 }
 
-void Animals::Update(World& W) {
+void Animals::Update(World& w) {
 	BOOST_FOREACH(Animal animal, this->animals) {
-		animal.simulate(W.time);
+		animal.simulate(w.time);
 	}
 }

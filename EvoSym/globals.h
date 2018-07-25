@@ -29,7 +29,9 @@ constexpr int _DIMENSION_HALF = 200; //[DeltaWorld] The radius in tiles the worl
 constexpr int _WORLD_DIMENSION = _DIMENSION_HALF * 2; //[DeltaWorld] The diameter in tiles the world consist of.
 constexpr int _AMOUNT_DELTA_WORLDS = _WORLD_DIMENSION * _WORLD_DIMENSION; //[DeltaWorld] The amount of all tiles creating this world.
 constexpr double _WORLD_DIAMETER = 40000000.0; // [m] The Diameter of the created world in meters. This sets the size of the world in relation to the animals.
+constexpr double _WORLD_DIAMETER_HALF = _WORLD_DIAMETER / 2.0; [m]; //The radius of the created world in meters.
 constexpr double _DELTA_SIZE = _WORLD_DIAMETER/ _AMOUNT_DELTA_WORLDS; //[m] The size of one tile of the world in meter.
+constexpr double _DELTA_SIZE_HALF = _DELTA_SIZE / 2.0; //the half of the size of one side of an tile
 constexpr double _MAX_TERRANE_HEIGHT = 3000;//[m] The highst possible point of the world.
 constexpr double _MIN_TERRANE_HEIGHT = -3000;//[m] The lowest possible point of this world.
 
@@ -100,10 +102,14 @@ constexpr double _BEGIN_HEIGHT_TEMP_DROP = 0; //[m] Above this value the average
 
 constexpr double _plants_stop_growth_temp = 4.0;//this should be defined for each region 
 
-constexpr int _AMOUNT_INPUT_PARAMS_NN = 20; //number of input parameters for the neuronal network for each animal
+constexpr int _AMOUNT_NEW_INPUT_PARAMS_NN = 25; //number of new input parameters for the neuronal network for each animal
+constexpr int _MEMORY_DEPTH_NN = 4; //how output of output neurons get passed back to the input neurons at the next decision step
 constexpr int _AMOUNT_HIDDEN_NEURONS_1_NN = 100; //number of neurones for each hidden layer
 constexpr int _AMOUNT_HIDDEN_NEURONS_2_NN = 100; //number of neurones for each hidden layer
-constexpr int _AMOUNT_OUTPUT_NEURONES_NN = 10; //all possible actions an animal can do
+constexpr int _AMOUNT_ACTION_OUTPUT_NEURONES_NN = 10; //all possible actions an animal can do 
+constexpr int _AMOUNT_MEMORY_OUTPUT_NEURONES_NN = 10; //places for active memory the animal might use as it likes
+constexpr int _AMOUNT_OUTPUT_NEURONES_NN = _AMOUNT_ACTION_OUTPUT_NEURONES_NN + _AMOUNT_MEMORY_OUTPUT_NEURONES_NN; //all possible actions an animal can do + "memory" the animal can use to save things
+constexpr int _AMOUNT_ALL_INPUT_PARAMS_NN = _AMOUNT_NEW_INPUT_PARAMS_NN + _MEMORY_DEPTH_NN *_AMOUNT_OUTPUT_NEURONES_NN; //number of input parameters for the neuronal network for each animal + memory
 
 
 

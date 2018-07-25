@@ -120,3 +120,124 @@ void resample(void *a, void *b, int oldw, int oldh, int neww, int newh)
 		}
 	}
 }
+
+double getMinDistanceLine(Point2d& LineBegin, Point2d& LineEnd, Point2d& Position)
+{
+	//berechnte über Normale d. Hesseschen Normalform den kleinsten Abstand
+	//Vorher wird geschaut ob dieser "Kleinste Abstand" auch zwischen dem Anfangs und Endpunkt liegt
+	//dazu muss entweder LineBegin.x < Position.x < LineEnd.x sein oder das Gleiche bei y
+
+
+	bool PointIsInbetween = false;
+	if (smallerValue(LineBegin.x, LineEnd.x) < Position.x && largerValue(LineBegin.x, LineEnd.x) > Position.x || smallerValue(LineBegin.y, LineEnd.y) < Position.y && largerValue(LineBegin.y, LineEnd.y) > Position.y)
+	{
+		PointIsInbetween = true;
+	}
+	if (PointIsInbetween)
+	{
+		double x1 = LineBegin.x;
+		double y1 = LineBegin.y;
+		double x2 = LineEnd.x;
+		double y2 = LineEnd.y;
+		double x3 = Position.x;
+		double y3 = Position.y;
+		double nx = -1 * (y1 - y2);
+		double ny = (x1 - x2);
+		double norm_n = 1 / std::sqrt(nx*nx + ny*ny);
+		return std::abs(norm_n*((nx*x3 + ny*y3) - (nx*x1 + ny*y1)));
+	}
+	else//einer der Endpunkte der Linie sind die nächsten Punkte
+	{
+		Point2d PDistance1 = LineBegin - Position;
+		Point2d PDistance2 = LineEnd - Position;
+		double distance1 = std::abs(PDistance1.getR());
+		double distance2 = std::abs(PDistance2.getR());
+		return smallerValue(distance1, distance2);
+	}
+}
+
+double getMinDistanceInfLine(Point2d& LineBegin, Point2d& LineEnd, Point2d& Position) {
+	//berechnte über Normale d. Hesseschen Normalform den kleinsten Abstand
+	double x1 = LineBegin.x;
+	double y1 = LineBegin.y;
+	double x2 = LineEnd.x;
+	double y2 = LineEnd.y;
+	double x3 = Position.x;
+	double y3 = Position.y;
+	double nx = -1 * (y1 - y2);
+	double ny = (x1 - x2);
+	double norm_n = 1 / std::sqrt(nx*nx + ny*ny);
+	return std::abs(norm_n*((nx*x3 + ny*y3) - (nx*x1 + ny*y1)));
+}
+
+bool isPointCinLineAB(Point2d& A, Point2d& B, Point2d& C, double tollerance)
+{
+	if (tollerance<getMinDistanceLine(A, B, C))
+	{
+		return false;
+	}
+	return true;
+}
+
+bool isLineABcrossedByLineCD(Point2d& A, Point2d& B, Point2d& C, Point2d& D, double tollerance)
+{
+	Point2d SchnittP = getSchnittpunkt(A, B, C, D);
+	if (isPointCinLineAB(A, B, SchnittP, tollerance) && isPointCinLineAB(C, D, SchnittP, tollerance))//Liegt der Schnittpunkt in beiden Linien mit Tolleranz von minimalem Sicherheitsabstand der Drohne
+	{
+		return true;
+	}
+	return false;
+}
+
+Point2d getSchnittpunkt(Point2d& A, Point2d& B, Point2d& C, Point2d& D)
+{
+	/*
+	In 2D gibt es einen tollen Trick. Du kannst sowohl Geraden als auch Punkte mit 3D-Vektoren beschreiben und ganz einfach mit diesen Vektoren rechnen. Stell Dir dazu folgendes in 3D vor:
+	Code:
+	/|
+	/ |
+	(0;0;0)         |  |
+	*               |  |
+	(Ursprung)      |  |
+	| /
+	|/(Ebene "z=1")
+
+	Die 2D-Ebene, in der Du die Punkte und Linien beschreibst, ist die "z=1"-Ebene.
+
+	Einen Punkt repräsentierst Du durch einen 3D-Vektor. Stell Dir vor, wie er vom Ursprung ausgehend, in eine Richtung zeigt und damit eine Gerade in 3D definiert. Diese Gerade schneidet die z=1 Ebene in dem Punkt, den du beschreiben willst. Der zum Punkt (x;y) gehörige 3D-Vektor ergibt sich einfach durch anhängen einer 1: (x;y;1.0).
+
+	Eine Gerade repräsentierst Du auch durch einen 3D-Vektor. Stell Dir dazu eine zweite Ebene vor, die durch den Ursprung geht und die z=1 Ebene schneidet. Der Schnitt zweier Ebenen ist die Gerade. Diese zweite Ebene kannst Du auch mit einem 3D-Vektor beschreiben, nämlich den Normalvektor, also der, der senkrecht auf der Ebene steht.
+
+	Der Trick ist nun der, dass das Kreuzprodukt dazu benutzt werden kann, aus 2 Punkten eine Linie zu erzeugen und aus 2 Linien einen Schnittpunkt zu berechnen:
+	Code:
+	linie1   = cross( punkt1, punkt2 );
+	linie2   = cross( punkt3, punkt4 );
+	schnittp = cross( linie1, linie2 );
+
+	wobei punkt1..4 und linie1..2 3D-Vektoren sind (Homogene Koordinaten) und "cross" das Kreuzprodukt berechnet. Warum funktioniert das? Naja, die Punkte werden durch 3D-Richtungsvektoren repräsentiert. Es Ergibt sich ein Dreieck mit den Punkten Ursprung, Punkt1 und Punkt2. Mit dem Kreuzprodukt kann der Normalvektor dieses Dreiecks (der Ebene) bestimmt werden. Weiter kannst Du über das Kreuzprodukt zweier Normalvektoren von Ebenen einen 3. Vektor bestimmen, der in beiden Ebenen enthalten ist und den "Schnittpunkt" repräsentiert. In der projektiven Geometrie spricht man hier von einem Dualismus zwischen Punkt und Gerade.
+
+	Die letzte Komponente von schnittp wird nicht mehr 1 sein. Um wieder auf zwei Komponenten zu kommen teilst Du durch die letzte Komponente:
+
+	//https://www.c-plusplus.net/forum/258648-full
+	*/
+
+	double p1[3] = { A.x,A.y,1.0 };
+	double p2[3] = { B.x,B.y,1.0 };
+	double p3[3] = { C.x,C.y,1.0 };
+	double p4[3] = { D.x,D.y,1.0 };
+
+	double l1[3], l2[3], s[3];
+
+	l1[0] = p1[1] * p2[2] - p1[2] * p2[1];
+	l1[1] = p1[2] * p2[0] - p1[0] * p2[2];
+	l1[2] = p1[0] * p2[1] - p1[1] * p2[0];
+	l2[0] = p3[1] * p4[2] - p3[2] * p4[1];
+	l2[1] = p3[2] * p4[0] - p3[0] * p4[2];
+	l2[2] = p3[0] * p4[1] - p3[1] * p4[0];
+	s[0] = l1[1] * l2[2] - l1[2] * l2[1];
+	s[1] = l1[2] * l2[0] - l1[0] * l2[2];
+	s[2] = l1[0] * l2[1] - l1[1] * l2[0];
+	double schX = s[0] / s[2];
+	double schY = s[1] / s[2];
+	return Point2d(schX, schY);
+}

@@ -74,6 +74,8 @@ bool World::createWorld() {
 		this->createSetHeightRand();
 	}
 
+	this->createSetGradient();
+
 	/*cleanup der Regionen
 	Erosion*/
 	volatile int i_er = 0;
@@ -299,6 +301,12 @@ void World::createSetHeightPredefined() {
 	delete[] b;
 }
 
+void World::createSetGradient() {
+	//todo
+	for (int i = 0; i < _AMOUNT_DELTA_WORLDS; i++) {
+		world_parts[i].initSetGradient(Point2d(0, 0));
+	}
+}
 //TODO go 3D with interpolation between heights http://vis.lbl.gov/NERSC/Software/gsharp/help/Gsharp/userguide/interpolate/index.html
 
 std::string World::GetTimeReadable(bool y,bool d,bool h, bool m, bool s) {
@@ -398,13 +406,13 @@ bool World::getIsReady() {
 	return this->init;
 }
 
-bool World::getWorldPartByPosition(Point2d& position, DeltaWorld& dw) {
+bool World::getWorldPartByPosition(Point2d& position, DeltaWorld*& dw) {
 	int x = (int) (position.x / (double)_TILE_RESULUTION);
 	int y = (int) (position.y / (double)_TILE_RESULUTION);
 
 	int dw_element = (x)*_WORLD_DIMENSION + y;
 	if (dw_element > -1 && dw_element < _AMOUNT_DELTA_WORLDS) {
-		dw = world_parts[dw_element];
+		dw = &world_parts[dw_element];
 		return true;
 	}
 	return false;

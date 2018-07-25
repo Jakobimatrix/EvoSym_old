@@ -8,6 +8,7 @@
 #include <Windows.h> 
 #include <math.h>
 #include <sys/types.h>
+#include "Point2d.h"
 
 
 //a - a primary array(which we need to stretch / compress) pointer.
@@ -188,6 +189,53 @@ inline double ReLU(double input) {
 	}
 	return input;
 }
+
+/**
+* @function double getMinDistanceLine(Point2d& LinieBegin, Point2d& LineEnd, Point2d& Position);
+* @brief Returns the minimal distance of a point to a Line (segment).
+* @param[in] Line:		segment to which the shortest distance shall be calculated
+* @param[in] Position:	point from which the shortest distance shall be calculated
+* @retval double:	the calculated distance
+**/
+double getMinDistanceLine(Point2d& LinieBegin, Point2d& LinieEnd, Point2d& Position);
+
+/**
+* @function getMinDistanceInfLine(oslam::CLine &Line, SVector2d &Position);
+* @brief Returns the minimal distance of a point to a Line (infinite long).
+* @param[in] Line:		segment to which the shortest distance shall be calculated
+* @param[in] Position:	point from which the shortest distance shall be calculated
+* @retval bool:			returns true if x is a valid number
+**/
+double getMinDistanceInfLine(Point2d& LineBegin, Point2d& LineEnd, Point2d& Position);
+
+
+/**
+* @function bool isPointCinLineAB(oslam::CLine &Line, SVector2d &C, double tollerance);
+* @brief Validates if a Point C lies within a tollerance on a line.
+* @param[in] Line:	segment on which the point might lie
+* @param[in] C:		point which might lie on a Line
+* @retval bool:		returns true if the point lies within tollerance to the line
+**/
+bool isPointCinLineAB(Point2d& A, Point2d& B, Point2d& C, double tollerance);
+
+/**
+* @function bool isLineABcrossedByLineCD(oslam::CLine &line1, oslam::CLine &line2, double tollerance);
+* @brief Validates if two lines intersect with each other.
+* @param[in] line1:			segment which might be intersected by segment2
+* @param[in] line2:			segment which might be intersected by segment1
+* @param[in] tollerance:	tolleranc for the intersection
+* @retval bool:				returns true if both lines intersect witch eachother
+**/
+bool isLineABcrossedByLineCD(Point2d& A, Point2d& B, Point2d& C, Point2d& D, double tollerance);
+
+/**
+* @function Point2d getSchnittpunkt(Point2d& A, Point2d& B, Point2d& C, Point2d& D);
+* @brief Calculates the point of intersection of 2 given lines which are interpreted as infinit long lines.
+* @param[in] line1:			line1 cuts line2 somewhere
+* @param[in] line2:			line2 cuts line1 somewhere
+* @retval Point2d:		returns the point of intersection
+**/
+Point2d getSchnittpunkt(Point2d& A, Point2d& B, Point2d& C, Point2d& D);
 
 #endif // !_FUNCTIONS_
 

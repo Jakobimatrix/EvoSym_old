@@ -39,7 +39,7 @@ bool DeltaWorld::setRandRegion(double height, int(&regionNeigbour)[_AMOUNT_NEIGH
 		if (this->temperature_zone_influence[0] > 0.5) {
 			polar = true;
 		}
-		this->InitSetRegionAndHeight(this->_RG_->getDefaultRegion(height, polar), height);
+		this->initSetRegionAndHeight(this->_RG_->getDefaultRegion(height, polar), height);
 		return false;
 	}
 	total_probability = 0;
@@ -71,7 +71,7 @@ bool DeltaWorld::setRandRegion(double height, int(&regionNeigbour)[_AMOUNT_NEIGH
 		if (this->temperature_zone_influence[0] > 0.5) {
 			polar = true;
 		}
-		this->InitSetRegionAndHeight(this->_RG_->getDefaultRegion(height, polar), height);
+		this->initSetRegionAndHeight(this->_RG_->getDefaultRegion(height, polar), height);
 		return false;
 	}
 
@@ -92,7 +92,7 @@ bool DeltaWorld::setRandRegion(double height, int(&regionNeigbour)[_AMOUNT_NEIGH
 	for (int r = 0; r < _AMOUNT_REGIONS; r++) {
 		total_probability += region_probability[r];
 		if (total_probability > rand_region) {
-			this->InitSetRegionAndHeight(this->_RG_->getRegion(r), height);
+			this->initSetRegionAndHeight(this->_RG_->getRegion(r), height);
 			return true;
 		}
 	}
@@ -104,7 +104,7 @@ bool DeltaWorld::setRandRegion(double height, int(&regionNeigbour)[_AMOUNT_NEIGH
 	if (this->temperature_zone_influence[0] > 0.5) {
 		polar = true;
 	}
-	this->InitSetRegionAndHeight(this->_RG_->getDefaultRegion(height, polar), height);
+	this->initSetRegionAndHeight(this->_RG_->getDefaultRegion(height, polar), height);
 	return false;
 }
 double DeltaWorld::calcSetPointTemperature() {
@@ -330,4 +330,60 @@ std::string DeltaWorld::getSeasonText() {
 	default:
 		return "ERROR";
 	}
+}
+
+bool DeltaWorld::getBorderEntryPoint(Point2d& entry_point, Point2d& begin_travel_point, Point2d& end_travel_point) {
+	/*______
+	|		|
+	|	.	|
+	|_______| .begin
+	*/
+
+	//which border is next to the begin point?
+	bool above = false;
+	bool right = false;
+	if (begin_travel_point.x > position.x) {
+		right = true;
+	}
+	if (begin_travel_point.y > position.y) {
+		above = true;
+	}
+
+	if (above) {
+		Point2d edge_upper_left  = Point2d(position.x - _DELTA_SIZE_HALF,position.y - _DELTA_SIZE_HALF);
+		Point2d edge_upper_right = Point2d(position.x + _DELTA_SIZE_HALF, position.y - _DELTA_SIZE_HALF);;
+		Point2d intersection = getSchnittpunkt(begin_travel_point, end_travel_point, edge_upper_left, edge_upper_right);
+		if (isPointCinLineAB(begin_travel_point, end_travel_point, intersection, 0.1) && isPointCinLineAB(edge_upper_left, edge_upper_right, intersection, 1.0)) {
+			entry_point = intersection;
+			return true;
+		}
+	}
+	else {
+		Point2d edge_lower_left  = Point2d(position.x - _DELTA_SIZE_HALF, position.y + _DELTA_SIZE_HALF);;
+		Point2d edge_lower_right = Point2d(position.x + _DELTA_SIZE_HALF, position.y + _DELTA_SIZE_HALF);;
+		Point2d intersection = getSchnittpunkt(begin_travel_point, end_travel_point, edge_lower_left, edge_lower_right);
+		if (isPointCinLineAB(begin_travel_point, end_travel_point, intersection, 0.1) && isPointCinLineAB(edge_lower_left, edge_lower_right, intersection, 1.0)) {
+			entry_point = intersection;
+			return true;
+		}
+	}
+	if (right) {
+		Point2d edge_lower_right = Point2d(position.x + _DELTA_SIZE_HALF, position.y + _DELTA_SIZE_HALF);;
+		Point2d edge_upper_right = Point2d(position.x + _DELTA_SIZE_HALF, position.y - _DELTA_SIZE_HALF);;
+		Point2d intersection = getSchnittpunkt(begin_travel_point, end_travel_point, edge_lower_right, edge_upper_right);
+		if (isPointCinLineAB(begin_travel_point, end_travel_point, intersection, 0.1) && isPointCinLineAB(edge_lower_right, edge_upper_right, intersection, 1.0)) {
+			entry_point = intersection;
+			return true;
+		}
+	}
+	else {
+		Point2d edge_lower_left = Point2d(position.x - _DELTA_SIZE_HALF, position.y + _DELTA_SIZE_HALF);;
+		Point2d edge_upper_left = Point2d(position.x - _DELTA_SIZE_HALF, position.y - _DELTA_SIZE_HALF);;
+		Point2d intersection = getSchnittpunkt(begin_travel_point, end_travel_point, edge_upper_left, edge_lower_left);
+		if (isPointCinLineAB(begin_travel_point, end_travel_point, intersection, 0.1) && isPointCinLineAB(edge_upper_left, edge_lower_left, intersection, 1.0)) {
+			entry_point = intersection;
+			return true;
+		}
+	}
+	return false;	
 }

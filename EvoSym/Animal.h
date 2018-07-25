@@ -8,6 +8,8 @@
 #ifndef _ANIMAL_
 #define _ANIMAL_
 #include <Eigen\Dense>
+#include <math.h>
+#include <iostream>
 #include "globals.h"
 #include "structs.h"
 #include "SimulatedUnit.h"
@@ -22,13 +24,19 @@ class Animal :public SimulatedUnit {
 private:
 	GlobalSingleton* _G_;
 	World* world;
+	DeltaWorld* current_delta_world;
 
-	Eigen::Matrix<double, _AMOUNT_INPUT_PARAMS_NN, 1> neurones_input;
+	/*
+	different NNs:
+	1 DecisionNetwork: makes decision
+	2-n ActionNetworks: decide (for the choosen decision) what exactly to do. These might not need all the input from the DecisionNetwork
+	*/
+	Eigen::Matrix<double, _AMOUNT_ALL_INPUT_PARAMS_NN, 1> neurones_input;
 	Eigen::Matrix<double, _AMOUNT_HIDDEN_NEURONS_1_NN, 1> neurone_hidden_1;
 	Eigen::Matrix<double, _AMOUNT_HIDDEN_NEURONS_2_NN, 1> neurone_hidden_2;
 	Eigen::Matrix<double, _AMOUNT_OUTPUT_NEURONES_NN, 1> neurones_output;
 
-	Eigen::Matrix<double, _AMOUNT_HIDDEN_NEURONS_1_NN, _AMOUNT_INPUT_PARAMS_NN> weights_hidden_1;
+	Eigen::Matrix<double, _AMOUNT_HIDDEN_NEURONS_1_NN, _AMOUNT_ALL_INPUT_PARAMS_NN> weights_hidden_1;
 	Eigen::Matrix<double, _AMOUNT_HIDDEN_NEURONS_2_NN, _AMOUNT_HIDDEN_NEURONS_1_NN> weights_hidden_2;
 	Eigen::Matrix<double, _AMOUNT_OUTPUT_NEURONES_NN, _AMOUNT_HIDDEN_NEURONS_2_NN> weights_output;
 
@@ -36,22 +44,27 @@ private:
 	Eigen::Matrix<double, _AMOUNT_HIDDEN_NEURONS_2_NN, 1> bias_hidden_2;
 	Eigen::Matrix<double, _AMOUNT_OUTPUT_NEURONES_NN, 1> bias_output;
 	
+	int num_input_initiated_neurons;
 	//animal characteristiks
 	
-	double sex;	//male = false, female = true
-	double size;		//m
-	double weight;		//Kg
-	double strength;	//kg bewegt werden kann
-	double ofense;		//points 
-	double defense;		//points 
-	double hearing;		//min dB recognizable //je kleiner desto besser > 0
-	double vision;		//m max distance
-	double energy_is;	//J
-	double water_is;	//L
-	double energy_max;	//J
-	double water_max;	//L
+
+	double* size;		//m
+	double* weight;		//Kg
+	double* strength;	//kg bewegt werden kann
+	double* health;		//points "healthbar"
+	double* health_previous;		//"healthbar"
+	double* ofense;		//points 
+	double* defense;		//points 
+	double* energy_is;	//J
+	double* energy_is_previous;	//J
+	double* water_is;	//L
+	double* water_is_previous;	//L
+	double* energy_max;	//J
+	double* water_max;	//L
+
+	bool sex;	//male = false, female = true
 	bool has_reproduced;
-	bool is_alive; //"healtbar"
+	bool is_alive; 
 
 						//factos to reduce calculationtime
 	double weight_strength_factor;
@@ -65,45 +78,82 @@ private:
 	void isCloned(const Animal &mother);
 
 	///update
+	void UpdateCurrentDeltaWorld();
 	void growth();
 	void die();
-	void decay(double decayfactor);
+	void decay();
 	bool hasReproduced();
+	void updateInputNeurons();
 
 
 	///actions
 
-	// \brief travel(Point2d travelvector, double speed, double heightDiff);
-	// moves the animal according to the given travelvector
-	//[Point2d travelvector]	vector to the next location
-	//[speed] speed =! length of travelvector due to simullated time difference
-	//[heightDiff] difference in height between 2 deltaWords
-	double travelGround(Point2d travelvector, double speed, double heightDiff);
-	double travelWater();
-	double climb();
-	double eat();
-	double drink();
-	double clone();
-	double sex();
+
+	void doNothing();
+
+	/**
+	* @function travel(Point2d &travelvector)
+	* @brief: Uses travelGround() or travelWater() depending on the current region. If transition to another region. current_region will be updated.
+	* @param[in] Point2d &travelvector: Travel velocity (includes direction).
+	**/
+	void travel(Point2d &travelvector);
+	void seachFood();
+	void seachWater();
+	void sleep();
+	void seachHideout();
+
+	/**
+	* @function travelGround(Point2d &travelvector)
+	* @brief:Updates the position depending on the travel vector. Calculates the new animal is conditions after the travel.
+	* @param[in] Point2d &travelvector: Travel velocity (includes direction).
+	**/
+	void travelGround(Point2d &travelvector);
+
+	/**
+	* @function travelWater(Point2d &travelvector)
+	* @brief:Updates the position depending on the travel vector. Calculates the new animal is conditions after the travel.
+	* @param[in] Point2d &travelvector: Travel velocity (includes direction).
+	**/
+	void travelWater(Point2d &travelvector);
+	void clone();
+
 
 	void doAction(int action, double dt);
 
-	int nextAction();
+	void nextAction(double dt);
+
+	double calcMaxPossibleSpeed();
 
 public:
-	Animal(World* world) {
+	Animal(World* world, Point2d& position) {
 		this->_G_ = &this->_G_->getInstance();
 		this->world = world;
+		this->position = position;
+		if (!world->getWorldPartByPosition(position, current_delta_world)) {
+			die();
+			return;
+		}
+		this->init();
 		this->randinit();
 	}
-	Animal(const Animal &mother, const Animal &father, World* world) {
+	Animal(Animal &mother, Animal &father, World* world) {
 		this->_G_ = &this->_G_->getInstance();
 		this->world = world;
+		if (!world->getWorldPartByPosition(mother.position, current_delta_world)) {
+			die();
+			return;
+		}
+		this->init();
 		this->isBorn(mother, father);
 	}
-	Animal(const Animal &mother, World* world) {
+	Animal(Animal &mother, World* world) {
 		this->_G_ = &this->_G_->getInstance();
 		this->world = world;
+		if (!world->getWorldPartByPosition(mother.position, current_delta_world)) {
+			die();
+			return;
+		}
+		this->init();
 		this->isCloned(mother);
 	}
 	~Animal() {}
