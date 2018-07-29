@@ -115,7 +115,7 @@ void Animal::live(double dt) {
 	//calc new is-properties using age
 	//calc energy needen to live (depends on metabolism and is_temperature and is_sleeping, senses, etc )
 	properties_is.energie_storage.refillATP();
-	if (!properties_is.energie_storage.is.atp > 0 || !properties_is.energie_storage.is.water > 0) {
+	if (properties_is.energie_storage.is.atp <= 0.0 || properties_is.energie_storage.is.water <= 0.0) {
 		die();
 	}
 }
@@ -131,7 +131,7 @@ void Animal::decay(double dt) {//decayfactor depends on region
 			properties_is.energie_storage.is.fat -= current_delta_world->getTemp() * _DECAY_FACTOR_FAT; //todo depends on surface?
 		}
 
-		if (!properties_is.energie_storage.is.sugar > 0 && !properties_is.energie_storage.is.fat > 0) {
+		if (properties_is.energie_storage.is.sugar <= 0 && properties_is.energie_storage.is.fat <= 0) {
 			is_zero = true;
 		}
 	}
