@@ -19,6 +19,7 @@
 #include "DeltaWorld.h"
 
 
+
 class Animal :public SimulatedUnit {
 
 private:
@@ -27,7 +28,7 @@ private:
 	DeltaWorld* current_delta_world;
 
 	/*
-	different NNs:
+	different NNs: May be different animal classes?
 	1 DecisionNetwork: makes decision
 	2-n ActionNetworks: decide (for the choosen decision) what exactly to do. These might not need all the input from the DecisionNetwork
 	*/
@@ -44,31 +45,26 @@ private:
 	Eigen::Matrix<double, _AMOUNT_HIDDEN_NEURONS_2_NN, 1> bias_hidden_2;
 	Eigen::Matrix<double, _AMOUNT_OUTPUT_NEURONES_NN, 1> bias_output;
 	
-	int num_input_initiated_neurons;
-	//animal characteristiks
-	
+	int num_input_static_neurons;
 
-	double* size;		//m
-	double* weight;		//Kg
-	double* strength;	//kg bewegt werden kann
-	double* health;		//points "healthbar"
-	double* health_previous;		//"healthbar"
-	double* ofense;		//points 
-	double* defense;		//points 
-	double* energy_is;	//J
-	double* energy_is_previous;	//J
-	double* water_is;	//L
-	double* water_is_previous;	//L
-	double* energy_max;	//J
-	double* water_max;	//L
+	///animal characteristiks
+	//Gene
+	Gene genom;
+	//
+	AnimalProperties properties_adult;
+	AnimalProperties properties_is;
+	EnergyStorage energie_difference;
 
-	bool sex;	//male = false, female = true
-	bool has_reproduced;
-	bool is_alive; 
+	bool has_reproduced = false;;
+	bool is_alive = true; 
+	bool is_zero = false;
+	bool is_sleeping = false;
+
+
 
 						//factos to reduce calculationtime
 	double weight_strength_factor;
-	Gene genom;
+
 
 
 	///initiation
@@ -78,43 +74,36 @@ private:
 	void isCloned(const Animal &mother);
 
 	///update
-	void UpdateCurrentDeltaWorld();
-	void growth();
+	bool UpdateCurrentDeltaWorld();
+	void live(double dt);
 	void die();
-	void decay();
+	void decay(double dt);
 	bool hasReproduced();
 	void updateInputNeurons();
 
 
 	///actions
 
-
-	void doNothing();
-
 	/**
 	* @function travel(Point2d &travelvector)
 	* @brief: Uses travelGround() or travelWater() depending on the current region. If transition to another region. current_region will be updated.
 	* @param[in] Point2d &travelvector: Travel velocity (includes direction).
 	**/
-	void travel(Point2d &travelvector);
-	void seachFood();
-	void seachWater();
-	void sleep();
-	void seachHideout();
+	void travel(Point2d &travelvector, double dt);
+	void seachFood(double dt);
+	void seachWater(double dt);
+	void sleep(double dt);
+	void seachHideout(double dt);
 
 	/**
-	* @function travelGround(Point2d &travelvector)
-	* @brief:Updates the position depending on the travel vector. Calculates the new animal is conditions after the travel.
+	* @function travelGround(Point2d &travelvector, double dt, bool new_delta_world = false)
+	* @brief:Updates the position depending on the travel vector. And the pointer of this->current_delta_world. Calculates the new animal is conditions after the travel.
 	* @param[in] Point2d &travelvector: Travel velocity (includes direction).
+	* @param[in] double dt: Travel time.
+	* @param[in] bool new_delta_world: If true the current_world_will be updated.
 	**/
-	void travelGround(Point2d &travelvector);
+	void calcTravel(Point2d &travelvector, double dt, bool new_delta_world = false);
 
-	/**
-	* @function travelWater(Point2d &travelvector)
-	* @brief:Updates the position depending on the travel vector. Calculates the new animal is conditions after the travel.
-	* @param[in] Point2d &travelvector: Travel velocity (includes direction).
-	**/
-	void travelWater(Point2d &travelvector);
 	void clone();
 
 
@@ -122,7 +111,7 @@ private:
 
 	void nextAction(double dt);
 
-	double calcMaxPossibleSpeed();
+	double calcMaxPossibleSpeed(double dt);
 
 public:
 	Animal(World* world, Point2d& position) {
@@ -160,6 +149,10 @@ public:
 
 	bool isAlive() {
 		return this->is_alive;
+	}
+
+	bool isZero() {
+		return is_zero;
 	}
 
 	void update(double tnow);

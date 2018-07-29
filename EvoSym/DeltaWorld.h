@@ -274,6 +274,18 @@ public:
 		return this->region->getRegionId();
 	}
 
+	Region* getRegion() {
+		return this->region;
+	}
+
+	/**
+	* @function TravelDeltaWorld(Point2d& travelvector, double dt, double size, double density)
+	* @brief: 
+	* @param[out] Point2d& travelvector: Depending on the gradient or if its water, the travelvector will be changed.
+	* @retval double: Energy needed for the travel.
+	**/
+	double TravelDeltaWorld(Point2d& travelvector, double dt, double size, double density, double feather);
+
 
 	/**
 	* @function getSeason()

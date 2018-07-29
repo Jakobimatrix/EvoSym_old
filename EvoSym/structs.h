@@ -228,5 +228,115 @@ struct Propability
 		}
 	}
 };
+
+struct EnergyStorage {
+	double atp = 0; //[Kg] primary energy source
+	double sugar = 0; //[Kg] secondary energy source
+	double fat = 0; //[Kg] tertiary energy source
+	double water = 0; //[Kg] 
+};
+
+////////////////////////
+// GLOBAL VARIABLES
+////////////////////////
+constexpr double _SUGAR_TO_ATP = 12; //how many ATP from one sugar-molecule
+constexpr double _FAT_TO_ATP = 1000; //how many ATP from one fat-molecule
+constexpr double _LOSS_SUGAR_FAT_CONVERSATION = 0.5; //loss in percentage, if sugar gets convertead to fat and than to atp instead directly to atp
+constexpr double _SUGAR_TO_FAT = _SUGAR_TO_ATP / _FAT_TO_ATP * _LOSS_SUGAR_FAT_CONVERSATION; //how many FAT from one sugar-molecule
+constexpr double _ATP_TO_ENERGY = 470; //Hydrolysis of one gram mole of ATP releases about 470 kJ of useful energy
+
+struct AnimalEnergyStorage {
+	EnergyStorage is;
+	EnergyStorage max;
+	void refillATP() {
+		double refill = max.atp - is.atp;
+		double needed_sugar = refill / _SUGAR_TO_ATP;
+		if (needed_sugar < is.sugar) {//enough sugar stored
+			is.atp = max.atp;
+			is.sugar -= needed_sugar;
+		}
+		else {//not enough sugar stored use fat reserve
+			is.atp = _SUGAR_TO_ATP*is.sugar;
+			is.sugar = 0;
+			refill = max.atp - is.atp;
+			double needed_fat = refill / _FAT_TO_ATP;
+			if (needed_fat < is.fat) {
+				is.atp = max.atp;
+				is.fat -= needed_fat;
+			}
+			else {//fatreserve empty
+				is.atp = _FAT_TO_ATP*is.fat;
+				is.fat = 0;
+			}
+		}
+	}
+
+	void store(double sugar, double fat) {
+		is.sugar += sugar;
+		double sugar_surplus = 0;
+		if (is.sugar > max.sugar) {
+			sugar_surplus = is.sugar - max.sugar;
+			is.sugar = max.sugar;
+		}
+		is.fat += fat + sugar_surplus*_SUGAR_TO_FAT;
+		if (is.fat > max.fat) {
+			is.fat = max.fat;
+		}
+	}
+};
+
+struct AnimalSenses {
+	double hearing	= 0; //[dB]
+	double seight	= 0; //[m]
+	double taste	= 0; //[level]
+	double smell	= 0; //[dB]
+};
+
+
+struct AnimalSkin {
+	double feather		= 0;//[0-1]
+	double fur			= 0;//[0-1]
+	double scale		= 0;//[0-1]
+	double naked_skin	= 0;//[0-1]
+					 //all in sum == 1!
+};
+
+struct AnimalBuild {
+	double size		= 0.1;	//[m^3] volume
+	double density	= 1;	//[kg/m^3]
+	double strength = 0;	//[Kg*m/s^2]
+	double defense	= 0;	//[multiplier]
+	double offense	= 0;	//[multiplier]
+	double metabolism		= 300;//heartbeats per minute
+	double eupeptic_level	= 0;
+	bool sex = true;	//female = true, male = false;
+};
+
+struct AnimalProperties {
+	AnimalSkin skin;
+	AnimalSenses senses;
+	AnimalEnergyStorage energie_storage;
+	AnimalBuild build;
+	double last_update = 0;
+	double optimal_temperature = 20;
+	MinMax possible_temperature = MinMax(-10,30);
+
+	bool can_swim = false;
+	bool can_climb = false;
+	bool can_fly = false;
+
+	bool canSwimm(double time) {
+		//todo 
+		return true;
+	}
+	bool canClimb(double time) {
+		//todo 
+		return true;
+	}
+	bool canFly(double time) {
+		//todo
+		return true;
+	}
+};
 #endif // !_STRUCTS_
 

@@ -387,3 +387,38 @@ bool DeltaWorld::getBorderEntryPoint(Point2d& entry_point, Point2d& begin_travel
 	}
 	return false;	
 }
+
+double DeltaWorld::TravelDeltaWorld(Point2d& travelvector, double dt, double size, double density, double feather) {
+	double weight = size*density;
+	double velocity = travelvector.getR() / dt;
+	if (_MIN_FLYING_WEIGHT_PER_SIZE_RATIO * feather > density && feather > _MIN_FLYING_FEATHERS) { //animal flyes
+		double distance = travelvector.getR()*gradient.getR();
+		double angle = std::abs(gradient.getArg() - travelvector.getArg());
+		double height_difference = distance * cos(angle); //can be negative->gets energy back
+
+		return weight* (0.5 *  velocity*velocity + _EARTH_ACCELERATION * height_difference);
+		//1/2 m_animal * v_travel^2  + m*g*h
+	}
+
+	if (region->getRegionId() == 0 || region->getRegionId() == 1) {//lake or ocean
+		if (!is_frozen) {
+			double swimming_weight = weight - _WATER_WEIGHT_PER_CUBIC_METER*size;//if positive the animal does not float
+			return 0.5 * weight* velocity*velocity*_WATER_FRICTION_MULTIPLICATOR + largerValue(0.0, swimming_weight) * _EARTH_ACCELERATION * dt ;
+			//1/2 m_animal * v_travel^2 * water resistance +   m_not_swimming * 9.81 * t
+		}
+	}
+
+	double height_difference = 0;
+	double distance = travelvector.getR()*gradient.getR();
+	double angle = std::abs(gradient.getArg() - travelvector.getArg());
+	if (angle > _PI_HALF) {//downwards
+		height_difference = -_WORK_REDUCTION_DOWNWARDS * distance * cos(angle);
+	}
+	else {//upwards
+		height_difference = distance * cos(angle);
+	}
+
+	double height_difference = signed_scalar(travelvector,gradient);
+	return weight* (0.5 *  velocity*velocity +  _EARTH_ACCELERATION * height_difference);
+	//1/2 m_animal * v_travel^2  + m*g*h
+}

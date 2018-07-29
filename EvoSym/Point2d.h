@@ -52,11 +52,33 @@ public:
 		return false;
 	}
 
+	bool operator==(const Point2d &Pcompare)
+	{
+		if (Pcompare.x == this->x && Pcompare.y == this->y)
+		{
+			return true;
+		}
+		return false;
+	}
+
 	bool operator!=(Point2d &Pcompare)
 	{
 		return !(*this == Pcompare);
 	}
+
+	bool operator!=(const Point2d &Pcompare)
+	{
+		return !(*this == Pcompare);
+	}
 	Point2d operator-(Point2d &other)
+	{
+		Point2d returnVal = *this;
+		returnVal.x = returnVal.x - other.x;
+		returnVal.y = returnVal.y - other.y;
+		return returnVal;
+	}
+
+	Point2d operator-(const Point2d &other)
 	{
 		Point2d returnVal = *this;
 		returnVal.x = returnVal.x - other.x;
@@ -68,6 +90,31 @@ public:
 		Point2d returnVal = *this;
 		returnVal.x = returnVal.x + other.x;
 		returnVal.y = returnVal.y + other.y;
+		return returnVal;
+	}
+
+	Point2d operator+(const Point2d &other)
+	{
+		Point2d returnVal = *this;
+		returnVal.x = returnVal.x + other.x;
+		returnVal.y = returnVal.y + other.y;
+		return returnVal;
+	}
+
+	//scalar product
+	double operator*(Point2d &other)
+	{
+		double r = this->getR()*other.getR();
+		double angle = std::abs(this->getArg() - other.getArg());
+		return r * std::abs(cos(angle));
+	}
+
+	//scalar stretch vector
+	Point2d operator*(double stretch)
+	{
+		Point2d returnVal = *this;
+		x = x*stretch;
+		y = y*stretch;
 		return returnVal;
 	}
 

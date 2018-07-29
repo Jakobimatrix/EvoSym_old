@@ -50,23 +50,14 @@
 void Animal::init(){
 	this->delta_t_update = _HOUR_IN_S;
 	this->_G_->announceDeltaTime(this->delta_t_update);
-
+	//properties_max = ...;
+	//properties_is = ...;
 	int i = 0;
-	size				= &neurones_input(i++, 0);		
-	weight				= &neurones_input(i++, 0);
-	strength			= &neurones_input(i++, 0);
-	health				= &neurones_input(i++, 0);
-	health_previous		= &neurones_input(i++, 0);
-	ofense				= &neurones_input(i++, 0);
-	defense				= &neurones_input(i++, 0);
-	energy_is			= &neurones_input(i++, 0);
-	energy_is_previous	= &neurones_input(i++, 0);
-	water_is			= &neurones_input(i++, 0);
-	water_is_previous	= &neurones_input(i++, 0);
-	energy_max			= &neurones_input(i++, 0);
-	water_max			= &neurones_input(i++, 0);
+
 	neurones_input(i++, 0) = _WORLD_DIAMETER_HALF;
-	num_input_initiated_neurons = i;
+	neurones_input(i++, 0) = position.x; //place of birth
+	neurones_input(i++, 0) = position.y; //place of birth
+	num_input_static_neurons = i;
 
 
 }
@@ -100,8 +91,6 @@ void Animal::isBorn(const Animal &mother, const  Animal &father) {
 	//todo
 	this->init();
 
-	this->growth();
-
 }
 //TODO
 void Animal::isCloned(const Animal &mother) {
@@ -109,56 +98,58 @@ void Animal::isCloned(const Animal &mother) {
 	return;
 	//todo;
 	this->init();
-
-	this->growth();
 }
 //TODO
 void Animal::die() {
 	//this->animal_characteristics.gene.scent = Code(_scent_decay);//todo maybe slowly shift the scent into "decay scent"->do this within this->decay()
 	is_alive = false;
-	this->delta_t_update = _HOUR_IN_S;// a dead animal dont need to be updated every deltaTime
+	this->delta_t_update = _DAY_IN_S;// a dead animal dont need to be updated every deltaTime
+
+	//reset time for decay process
+	this->t0 = 0;
+	this->t_last_update = 0;
 }
 //TODO
-void Animal::growth() {
-	//is_alive
-
-	//update bodycharacteristics
-	//size
-
-	//maxEnergy
-
-	//maxWater
-
-	//weight
-
-	//strength
-
-
-	//update ofense, defense
-
-	//update factors
-	//weight_strength_factor = 
-	//	_energy_consumption_size_factor*std::pow(size, _energy_consumption_weight_exponent)
-	//	+ _energy_consumption_weight_factor*std::pow(weight, _energy_consumption_weight_exponent);
-
+void Animal::live(double dt) {
+	//calc if still alive
+	//calc new is-properties using age
+	//calc energy needen to live (depends on metabolism and is_temperature and is_sleeping, senses, etc )
+	properties_is.energie_storage.refillATP();
+	if (!properties_is.energie_storage.is.atp > 0 || !properties_is.energie_storage.is.water > 0) {
+		die();
+	}
 }
-//TODO
-void Animal::decay() {//decayfactor depends on region
+
+void Animal::decay(double dt) {//decayfactor depends on region
 	//energy_is *= decayfactor;
 	//den scent of the animal slowly into the scent of death 
-	/*for (int i = _MAX_CODE_DEPTH-1; i > -1; i--) {
-	if (this->animal_characteristics.gene.scent.part[i] != _scent_decay) {
-	for (int b = 15; b < 1; b--) {
-	<< b
+	if (current_delta_world->getTemp() > 0) {
+		if (properties_is.energie_storage.is.sugar > 0) {
+			properties_is.energie_storage.is.sugar -= current_delta_world->getTemp() * _DECAY_FACTOR_SUGAR; //todo depends on surface?
+		}
+		if (properties_is.energie_storage.is.fat > 0) {
+			properties_is.energie_storage.is.fat -= current_delta_world->getTemp() * _DECAY_FACTOR_FAT; //todo depends on surface?
+		}
+
+		if (!properties_is.energie_storage.is.sugar > 0 && !properties_is.energie_storage.is.fat > 0) {
+			is_zero = true;
+		}
 	}
-	return;
-	}
-	}*/
 }
 
 void Animal::updateInputNeurons() {
 	//animal stats are linked via pointer and always up to date
-	int i = num_input_initiated_neurons + 1;
+	int i = num_input_static_neurons + 1;
+
+	neurones_input(i++, 0) = properties_is.energie_storage.is.atp;
+	neurones_input(i++, 0) = properties_is.energie_storage.is.sugar;
+	neurones_input(i++, 0) = properties_is.energie_storage.is.fat;
+	neurones_input(i++, 0) = properties_is.energie_storage.is.water;
+	neurones_input(i++, 0) = energie_difference.atp;
+	neurones_input(i++, 0) = energie_difference.sugar;
+	neurones_input(i++, 0) = energie_difference.fat;
+	neurones_input(i++, 0) = energie_difference.water;
+
 	neurones_input(i++, 0) = position.x;
 	neurones_input(i++, 0) = position.y;
 	neurones_input(i++, 0) = position.x - _WORLD_DIAMETER_HALF;//distance to edge
@@ -187,10 +178,12 @@ void Animal::updateInputNeurons() {
 
 }
 void Animal::nextAction(double dt) {
-	if (!is_alive) {
-		decay();
+	if (!is_alive || !UpdateCurrentDeltaWorld()) {
+		decay(dt);
 		return;
 	}
+
+	is_sleeping = false;
 	updateInputNeurons();
 	neurone_hidden_1 = weights_hidden_1*neurones_input + bias_hidden_1;
 	neurone_hidden_1.unaryExpr(&ReLU);
@@ -212,10 +205,13 @@ void Animal::nextAction(double dt) {
 		}
 	}
 
+	energie_difference.atp = properties_is.energie_storage.is.atp;
+	energie_difference.water = properties_is.energie_storage.is.water;
+
 	switch (decision)
 	{
 	case 3:
-		doNothing();
+
 		break;
 	case 4:
 	{
@@ -223,38 +219,33 @@ void Animal::nextAction(double dt) {
 		for (int i = 3; i < _AMOUNT_OUTPUT_NEURONES_NN; i++) {
 			summ += neurones_output(i);
 		}
-		if (summ = 0.0) {
-			doNothing();
-		}
-		else {
-			double max_speed = calcMaxPossibleSpeed();
-			travel(Point2d(neurones_output(0) * max_speed / summ, neurones_output(1) * max_speed / summ));
+		if (summ != 0.0) {
+			double max_speed = calcMaxPossibleSpeed(dt);
+			travel(Point2d(neurones_output(0) * max_speed / summ, neurones_output(1) * max_speed / summ),dt);
 		}
 		break;
 	}
 	case 5:
-		seachFood();
+		seachFood(dt);
 		break;
 	case 6:
-		seachWater();
+		seachWater(dt);
 		break;
 	case 7:
-		sleep();
+		is_sleeping = true;
 		break;
 	case 8:
-		seachHideout();
+		seachHideout(dt);
 		break;
 	case 9:
 		clone();
 		break;
-	default:
-		doNothing();
-		break;
 	}	
+	energie_difference.atp = energie_difference.atp - properties_is.energie_storage.is.atp;//difference t_-1 - t_0
+	energie_difference.water = energie_difference.water - properties_is.energie_storage.is.water;//difference t_-1 - t_0
 }
 
-void Animal::travel(Point2d& travelvector) {
-	
+void Animal::travel(Point2d& travelvector, double dt) {
 	Point2d target_position = this->position + travelvector;
 	
 	DeltaWorld* target_delta_world; //new point in new DeltaWorld? Assuming the animal wont be able to travel over 2 borders in one simulation step.
@@ -262,77 +253,62 @@ void Animal::travel(Point2d& travelvector) {
 		die();//fall over the border of this world
 		return;
 	}
-	int current_regionId = current_delta_world->getRegionId();
 	if (target_delta_world == current_delta_world) { //same delta World
-		if (current_delta_world->getRegionId() == 0 || current_delta_world->getRegionId() == 1) {
-			travelWater(travelvector);
-			return;
-		}
-		else {
-			travelGround(travelvector);
-			return;
-		}
+			calcTravel(travelvector, dt);	
 	}
+
 	else {//target region is a different region
-		//travel to the border of the target delta world		
+		//travel to the border of the current delta world		
 		Point2d borderPoint;
 		if (current_delta_world->getBorderEntryPoint(borderPoint, position, target_position)) {
-			if (current_delta_world->getRegionId() == 0 || current_delta_world->getRegionId() == 1) {
-				travelWater(borderPoint - position);
-				return;
-			}
-			else {
-				travelGround(borderPoint - position);
-				return;
-			}
-			if (is_alive) {
-				current_delta_world = target_delta_world;
-				if (target_delta_world->getRegionId() == 0 || target_delta_world->getRegionId() == 1) {					
-					travelWater(target_position - position);
-					return;
-				}
-				else {
-					travelGround(target_position - position);
-					return;
-				}
-			}
+			Point2d first_part_travel_vector = borderPoint - position;
+			first_part_travel_vector = first_part_travel_vector*1.1;//TODO hack that we will be in the next region for sure
+			double dt_first_part = dt * (first_part_travel_vector.getR()/travelvector.getR());
+			Point2d second_part_travel_vector = travelvector - first_part_travel_vector;
+			calcTravel(first_part_travel_vector, dt_first_part, true);
+			travel(travelvector - first_part_travel_vector, dt - dt_first_part);//traveling the rest					
 		}
 		std::cout << "Warning: Animal.cpp: Animal travels too another region, but border intersection couldnt be calculated!\n";
 		std::getchar();
 	}
 }
-void Animal::travelGround(Point2d& travelvector) {
-	
-	energy_is ;
-	water_is;
-	*energy_is_previous = *energy_is;
-	*water_is_previous = *water_is;
+void Animal::calcTravel(Point2d& travelvector, double dt, bool new_delta_world) {
+
+	double travel_energy = current_delta_world->TravelDeltaWorld(travelvector, dt, properties_is.build.size, properties_is.build.density, properties_is.skin.feather);
+	properties_is.energie_storage.is.atp -= travel_energy;
+	properties_is.energie_storage.is.water -= _WATER_LOSS_FACTOR*travel_energy;	
+
 	this->position = this->position + travelvector;
+	if (new_delta_world) {
+		if (!world->getWorldPartByPosition(position, current_delta_world)) {
+			die();//fall over the border of this world
+			return;
+		}
+	}
+
 }
 
-void Animal::travelWater(Point2d& travelvector) {
-	//todo: check if animal can swimm
-	this->position = this->position + travelvector;
+
+double Animal::calcMaxPossibleSpeed(double dt) {
+	double weight = properties_is.build.density * properties_is.build.size;
+	return properties_is.build.strength / weight * dt ;
 }
 
-double Animal::calcMaxPossibleSpeed() {
-	return 2;
-}
-
+//TODO
 void Animal::clone() {
 
 }
-void Animal::doNothing() {
+//TODO
+void Animal::seachFood(double dt){}
+//TODO
+void Animal::seachWater(double dt){}
+//TODO
+void Animal::sleep(double dt){}
+//TODO
+void Animal::seachHideout(double dt){}
 
-}
 
-void Animal::seachFood(){}
-void Animal::seachWater(){}
-void Animal::sleep(){}
-void Animal::seachHideout(){}
-
-
-
+//TODO
 bool Animal::hasReproduced() {
 	return has_reproduced;
 }
@@ -341,12 +317,12 @@ bool Animal::hasReproduced() {
 void Animal::update(double tnow) {
 	double dt = (tnow - this->t_last_update);
 	this->nextAction(dt);
-	this->growth();
+	this->live(dt);
 }
 
-void Animal::UpdateCurrentDeltaWorld() {
+bool Animal::UpdateCurrentDeltaWorld() {
 	if (!world->getWorldPartByPosition(position, current_delta_world)) {
-		die();
-		return;
+		return false;
 	}
+	return true;
 }

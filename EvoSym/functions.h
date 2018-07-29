@@ -237,5 +237,19 @@ bool isLineABcrossedByLineCD(Point2d& A, Point2d& B, Point2d& C, Point2d& D, dou
 **/
 Point2d getSchnittpunkt(Point2d& A, Point2d& B, Point2d& C, Point2d& D);
 
+/**
+* @function double signed_scalar(Point2d &A, Point2d &B)
+* @brief A scala multiplication, but the result will be negative if the angle between two vectors exceed 90°.
+* @param[in] Point2d &A: First vector for scalar product.
+* @param[in] Point2d &B: Second vector for scalar product.
+* @retval double: signed scalar product result.
+**/
+double signed_scalar(Point2d &A, Point2d &B)
+{
+	double r = A.getR()*B.getR();
+	double angle = std::abs(A.getArg() - B.getArg());
+	return r * cos(angle);
+}
+
 #endif // !_FUNCTIONS_
 

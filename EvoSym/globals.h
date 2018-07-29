@@ -13,6 +13,7 @@
 
 //constants
 constexpr double _PI = 3.141592653589793238463; //[math.const] The constant pi.
+constexpr double _PI_HALF = _PI / 2.0;  //[math.const] The constant pi/2.
 constexpr double _INVERSE_PI = 0.318309886183790671537; //[math.const] The inverse of the constant pi.
 constexpr double _2PI = 2 * 3.141592653589793238463; //[math.const] Two times the constant pi.
 constexpr double _INVERSE_2PI = 1.0 / _2PI;	//[math.const] The inverse of two times the constant pi.
@@ -23,6 +24,9 @@ constexpr int _AMOUNT_REGIONS = 10; //[int] The amount of defined regions.
 constexpr int _AMOUNT_TEMPERATE_ZONES = 4; //[int] The amount of defined temperature zones.
 constexpr int _AMOUNT_SEASONS = 4; //[int] the amount of defined seasons.
 constexpr int _AMOUNT_NEIGHBOURS = 8;
+constexpr double _EARTH_ACCELERATION = 9.81; //[m/s^2]
+constexpr double _WORK_REDUCTION_DOWNWARDS = 0.3; // walking down needs also a little energy m*g*h*_WORK_REDUCTION_DOWNWARDS
+constexpr double _WATER_WEIGHT_PER_CUBIC_METER = 1000; //[Kg]
 
 constexpr double _LAND_TO_OCEAN_RATIO = 1.3; //[ratio] This ratio determines how much land compared to ocean there shall be.
 constexpr int _DIMENSION_HALF = 200; //[DeltaWorld] The radius in tiles the world should consist of. Program Crashes for more than 300.
@@ -114,6 +118,13 @@ constexpr int _AMOUNT_ALL_INPUT_PARAMS_NN = _AMOUNT_NEW_INPUT_PARAMS_NN + _MEMOR
 
 
 ///animalPropertys
+constexpr double _WATER_LOSS_FACTOR = 0.1; // if a action needs X energie, it needs _WATER_LOSS_FACTOR*X water.
+constexpr double _DECAY_FACTOR_FAT = 0.25 / _DAY_IN_S; //kg/s
+constexpr double _DECAY_FACTOR_SUGAR = _DECAY_FACTOR_FAT * 20; //kg/s
+constexpr double _WATER_FRICTION_MULTIPLICATOR = 3.0; //how much more energy traveling in water costs
+constexpr double _MIN_FLYING_WEIGHT_PER_SIZE_RATIO = 0.001; //how dense an anmal needs to be to be able to fly
+constexpr double _MIN_FLYING_FEATHERS = 0.7;
+
 constexpr uint16_t _scent_decay[5] = { 0b101010101010101,0b101010101010101,0b101010101010101,0b101010101010101,0b101010101010101};
 //energyconsumption
 //size: (factor*weight)^exponent
