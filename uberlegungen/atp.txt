@@ -1,0 +1,48 @@
+Credits: Adrian Pfleger
+
+ATP -> Glukose
+1. Glykolyse: 
+
+Reaktion:
+1 glukose -> 2 pyruvat
+
+Energiegewinn:
+2 ATP + 2 NADH+H+
+
+
+2. Oxidative Decarboxylierung:
+
+Reaktion: 
+2 Pyruvat -> 2 Acetyl-CoenzymA + CO2
+
+Energiegewinn:
+2 NADH+H+
+
+
+3. Citratzyklus:
+
+Reaktion:
+2 Acetyl-CoA -> 4 CO2
+
+Energiegewinn:
+6 NADH+H+ + 2 FADH2 + 2 GTP (ATP)
+
+4. Atmungskette:
+Hier wandelt man die 10 NADH+H+ und 2 FADH2 in ATP um. Fun fact: mega cooler vorgang in den mitochondrien, wir protonen nach außen gepumpt werden und dann mit dem gradienten auf sauerstoff geschleudert (kleine knallgasreaktion) und die energie dann in die ATP bindung rein.
+
+Energiegewinn:
+10 NADH+H+ (2,5 x 10 = 25 ATP) + 2 FADH2 ( 1,5 x 2 = 3)
+########
+#32 Atp#
+######## 
+
+Für fettsäuren gilt, dass sie im Schnitt steransäure ähneln mit 18 C-Atomen. Also die werden vorher in Acetyl-CoA stückchen (2C-Atome) zerhackt und gehen dann den weg des citratzyklus.
+Kurz und knapp ist die gesamtbilanz pro mol C18 ungesättigte fettsäure 122 mol ATP. Der vorgang verbraucht pro fettsäure jedoch 18 h2o und ist somit ein wasserfresser
+
+Das klassische fett besteht aus 3 fettsäuren und einem glycerin molekül. 
+
+4,5 glukose in 9 Acetyl -> 4,5 x 2 ATP + 4,5 x 4 NADH = 9 + 11,25 = 20,25 mol ATP   pro 4,5 mol glukose
+
+Der aufbau einer fettsäure kostet pro zyklus 3 Atp x 9 zyklen = 27 Atp und 4,5 mol Glucose
+
+Also 20,25 - 27 ATP = -6,75 (soviel kostet der aufbau einer fettsäure aus glucose in der bilanz)

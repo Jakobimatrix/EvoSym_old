@@ -239,11 +239,15 @@ struct EnergyStorage {
 ////////////////////////
 // GLOBAL VARIABLES
 ////////////////////////
-constexpr double _SUGAR_TO_ATP = 12; //how many ATP from one sugar-molecule
-constexpr double _FAT_TO_ATP = 1000; //how many ATP from one fat-molecule
-constexpr double _LOSS_SUGAR_FAT_CONVERSATION = 0.5; //loss in percentage, if sugar gets convertead to fat and than to atp instead directly to atp
-constexpr double _SUGAR_TO_FAT = _SUGAR_TO_ATP / _FAT_TO_ATP * _LOSS_SUGAR_FAT_CONVERSATION; //how many FAT from one sugar-molecule
-constexpr double _ATP_TO_ENERGY = 470; //Hydrolysis of one gram mole of ATP releases about 470 kJ of useful energy
+/*Credits for calculation X to ATP: Adrian Pfleger. */
+constexpr double _SUGAR_TO_ATP = 32; //[mol] how many ATP from one sugar-molecule
+constexpr double _FAT_TO_ATP = 122; //[mol] how many ATP from one fat-molecule
+constexpr double _FAT_TO_ATP_WATER_LOS = 18;//[mol] Conversation from 1 mol fat to 122 mol ATP needs 18 mol water
+constexpr double _LITER_2_MOL_H2O = 55.5;//[mol/l] => two hydrogen and one oxygen atom: atomic mass: 2*1.008 + 15.999 = 18.015. A litre is 1000 gm of water so 1000/18.015 = 55.5
+constexpr double _MOL_2_LITER_H20 = 1.0 / _LITER_2_MOL_H2O;
+//constexpr double _LOSS_SUGAR_FAT_CONVERSATION = 0.64; //loss in percentage, if sugar gets convertead to fat and than to atp instead directly to atp
+constexpr double _SUGAR_TO_FAT = 91.625; // [mol] how many FAT from one sugar-molecule
+constexpr double _ATP_TO_ENERGY = 32300; //[Jule] Wikipedia:  Hydrolyse des abgespalteten Phosphats unter Standardbedingungen jeweils 32,3 kJ/mol (Spaltung einer Bindung) oder 64,6 kJ/mol (Spaltung beider Bindungen) Energie für Arbeitsleistungen in den Zellen frei.
 
 struct AnimalEnergyStorage {
 	EnergyStorage is;
@@ -251,7 +255,7 @@ struct AnimalEnergyStorage {
 	void refillATP() {
 		double refill = max.atp - is.atp;
 		double needed_sugar = refill / _SUGAR_TO_ATP;
-		if (needed_sugar < is.sugar) {//enough sugar stored
+		if (needed_sugar < is.sugar) {//enough sugar stored to fill up ATP
 			is.atp = max.atp;
 			is.sugar -= needed_sugar;
 		}
@@ -263,9 +267,11 @@ struct AnimalEnergyStorage {
 			if (needed_fat < is.fat) {
 				is.atp = max.atp;
 				is.fat -= needed_fat;
+				is.water -= needed_fat*_MOL_2_LITER_H20; //converting fat to atp needs water
 			}
 			else {//fatreserve empty
 				is.atp = _FAT_TO_ATP*is.fat;
+				is.water -= is.fat*_MOL_2_LITER_H20; //converting fat to atp needs water
 				is.fat = 0;
 			}
 		}
@@ -274,11 +280,11 @@ struct AnimalEnergyStorage {
 	void store(double sugar, double fat) {
 		is.sugar += sugar;
 		double sugar_surplus = 0;
-		if (is.sugar > max.sugar) {
+		if (is.sugar > max.sugar) { //sugar reserve is full
 			sugar_surplus = is.sugar - max.sugar;
 			is.sugar = max.sugar;
 		}
-		is.fat += fat + sugar_surplus*_SUGAR_TO_FAT;
+		is.fat += fat + sugar_surplus*_SUGAR_TO_FAT; // convert rest (surplus sugar) to fat
 		if (is.fat > max.fat) {
 			is.fat = max.fat;
 		}
