@@ -46,11 +46,15 @@ Doch es gab Bugs zu beheben und Finetuning durchzuführen. Eine Welt ist eben nic
 #include "WorldView.h"
 #include "Animals.h"
 
+#include <iostream>
+#include "functions.h"
+
+
 
 int main() {
 
 	World SimulatedWorld = World(_DEFINED_MAP);
-
+	//World SimulatedWorld = World();
 	if (!SimulatedWorld.getIsReady()) {
 		return 0;
 	}

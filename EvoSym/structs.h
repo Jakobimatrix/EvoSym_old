@@ -230,10 +230,10 @@ struct Propability
 };
 
 struct EnergyStorage {
-	double atp = 0; //[Kg] primary energy source
-	double sugar = 0; //[Kg] secondary energy source
-	double fat = 0; //[Kg] tertiary energy source
-	double water = 0; //[Kg] 
+	double atp = 0; //[mol] primary energy source
+	double sugar = 0; //[mol] secondary energy source
+	double fat = 0; //[mol] tertiary energy source
+	double water = 0; //[l] 
 };
 
 ////////////////////////
@@ -247,11 +247,16 @@ constexpr double _LITER_2_MOL_H2O = 55.5;//[mol/l] => two hydrogen and one oxyge
 constexpr double _MOL_2_LITER_H20 = 1.0 / _LITER_2_MOL_H2O;
 //constexpr double _LOSS_SUGAR_FAT_CONVERSATION = 0.64; //loss in percentage, if sugar gets convertead to fat and than to atp instead directly to atp
 constexpr double _SUGAR_TO_FAT = 91.625; // [mol] how many FAT from one sugar-molecule
-constexpr double _ATP_TO_ENERGY = 32300; //[Jule] Wikipedia:  Hydrolyse des abgespalteten Phosphats unter Standardbedingungen jeweils 32,3 kJ/mol (Spaltung einer Bindung) oder 64,6 kJ/mol (Spaltung beider Bindungen) Energie für Arbeitsleistungen in den Zellen frei.
+constexpr double _MOL_ATP_TO_ENERGY = 42300; //[Jule] Wikipedia:  Hydrolyse des abgespalteten Phosphats unter Standardbedingungen jeweils 32,3 kJ/mol (Spaltung einer Bindung) oder 64,6 kJ/mol (Spaltung beider Bindungen) Energie für Arbeitsleistungen in den Zellen frei.
+constexpr double _ENERGY_TO_MOL_ATP = 1.0/_MOL_ATP_TO_ENERGY; //[mol atp]  
+constexpr double _MOl_SUGAR_TO_KG = 0.180156; //[Kg sugar] C6H12O6 6*15.999 + 12*1.008 + 6*12.0107 = x: 1000/x = 5.5525
+constexpr double _KG_SUGAR_TO_MOL = 1.0 / _MOl_SUGAR_TO_KG;
+constexpr double _MOl_FAT_TO_KG = 0.3817; //[Kg fat] // 1 glycerin (6*O + 18*H) und 3 Fettsäuren: je(19 C und 18*2+ 3 H). Atomic masses: 6*15.999 + 18*1.008 + (18*2+3)*1.008 + 19*12.0107 = 381.6533; 1kg = 1000g -> 1000/381.6533 = 2.6202Kg/mol
+constexpr double _KG_FAT_TO_MOL = 1.0 / _MOl_FAT_TO_KG;
 
 struct AnimalEnergyStorage {
 	EnergyStorage is;
-	EnergyStorage max;
+	EnergyStorage max; //maybe fet not max -> weight gets more untill animal cant move
 	void refillATP() {
 		double refill = max.atp - is.atp;
 		double needed_sugar = refill / _SUGAR_TO_ATP;
@@ -277,8 +282,9 @@ struct AnimalEnergyStorage {
 		}
 	}
 
-	void store(double sugar, double fat) {
-		is.sugar += sugar;
+	//sugar in kg, fat in kg
+	void store_food(double sugar, double fat) {
+		is.sugar += sugar;//TODO in mol umrechnen!!
 		double sugar_surplus = 0;
 		if (is.sugar > max.sugar) { //sugar reserve is full
 			sugar_surplus = is.sugar - max.sugar;
@@ -287,6 +293,13 @@ struct AnimalEnergyStorage {
 		is.fat += fat + sugar_surplus*_SUGAR_TO_FAT; // convert rest (surplus sugar) to fat
 		if (is.fat > max.fat) {
 			is.fat = max.fat;
+		}
+	}
+	//in water in liter
+	void store_water(double water) {
+		this->is.water += water;
+		if (this->is.water > this->max.water) {
+			is.water = max.water;
 		}
 	}
 };

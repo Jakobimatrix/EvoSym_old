@@ -282,10 +282,46 @@ public:
 	* @function TravelDeltaWorld(Point2d& travelvector, double dt, double size, double density)
 	* @brief: 
 	* @param[out] Point2d& travelvector: Depending on the gradient or if its water, the travelvector will be changed.
-	* @retval double: Energy needed for the travel.
+	* @retval double: Energy  in Jule  needed for the travel.
 	**/
 	double TravelDeltaWorld(Point2d& travelvector, double dt, double size, double density, double feather);
 
+	/**
+	* @function TravelDeltaWorldByFoot(Point2d& travelvector, double dt, double weight, double velocity)
+	* @brief:
+	* @retval double: Energy  in Jule needed for the travel.
+	**/
+	double TravelDeltaWorldByFoot(Point2d& travelvector, double dt, double weight, double velocity);
+
+	/**
+	* @function TravelDeltaWorldByWing(Point2d& travelvector, double dt, double weight)
+	* @brief:
+	* @retval double: Energy in Jule needed for the travel.
+	**/
+	double TravelDeltaWorldByWing(Point2d& travelvector, double dt, double weight);
+
+	/**
+	* @function TravelDeltaWorld(double velocity, double dt, double weight)
+	* @brief:
+	* @retval double: Energy needed for the travel.
+	**/
+	double TravelDeltaWorldBySwim(double velocity, double dt, double weight, double size);
+
+	/**
+	* @function seachWater(double dt);
+	* @brief: Simulates the seach for water, returning the needed energy and the water which were found.
+	* @param[out] plants_found: Found water in Liter
+	* @retval double: Energy  in Jule  needed for the seach.
+	**/
+	double seachWater(double& water_found, double dt, double size);
+
+	/**
+	* @function seachPlants(double dt);
+	* @brief: Simulates the seach for plants, returning the needed energy and the plants which were found.
+	* @param[out] plants_found: Found plants in Kg
+	* @retval double: Energy in Jule  needed for the seach.
+	**/
+	double seachPlants(double& plants_found, double dt, double size);
 
 	/**
 	* @function getSeason()

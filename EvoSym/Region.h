@@ -23,9 +23,8 @@ private:
 	MinMax height;
 	double occurrence_in_temperature_zone[4];	//mit welcher wahrschenlichkeit diese Region in einer der 4 Klimazonen vorkommt
 		
-	Skills skill_to_cross[3];	//alle Skills, die ein Tier haben muss, um durch diese Region laufen/fliegen/schwimmen zu können
-	Skills skill_to_reach_resources[3]; //alle Skills, die notwendig sind um die resourcen erreichen zu können
-	double resource_distribution_via_skill[3];//wie viel Prozent der Resourcen mit diesem Skill zu erreichen sind
+	double exp_distrib_lambda_find_all_water;  //how many (as a meanvalue) seconds of seach needed to find 100% of the water resources avaiable.
+	double exp_distrib_lambda_find_all_plants;  //how many (as a meanvalue) seconds of seach needed to find 100% of the plants resources avaiable.
 
 	double possible_neighbour_chanse_factor[_AMOUNT_REGIONS];//rellative Wahrscheinlichkeit, mit der DIESE Region auftritt in Abhängigkeit eines Nachbarn
 	int region_id;
@@ -244,7 +243,15 @@ public:
 		}
 	}
 
+	double getWaterMeanFindingTime() {
+		return exp_distrib_lambda_find_all_water;
+	}
+
+	double getPlantsMeanFindingTime() {
+		return exp_distrib_lambda_find_all_plants;
+	}
 	GroundProperties* getGroundProperties();
+
 };
 
 

@@ -78,7 +78,12 @@ public:
 
 		this->_G_ = &this->_G_->getInstance();
 
-		//this->window.create(sf::VideoMode(width, height, desktop.bitsPerPixel), "EvoSym", sf::Style::Default);
+		/*
+		width = width - 120;
+		height = height - 120;
+		ratio = (float)height / (float)width;
+		this->one_div_ratio;
+		this->window.create(sf::VideoMode(width, height, desktop.bitsPerPixel), "EvoSym", sf::Style::Default);*/
 		this->window.create(sf::VideoMode(width, height, desktop.bitsPerPixel), "EvoSym", sf::Style::Fullscreen);
 
 
@@ -150,6 +155,10 @@ public:
 		this->info_text.setCharacterSize(this->charactersize);
 		this->info_text.setPosition(this->info_box.getPosition().x + 10, this->info_box.getPosition().y + 10);
 
+		if (!this->map.isReady()) {
+			this->window.close();
+			std::cout << "ERROR in WorldView.h: Map konnte nicht erstellt werden\n";
+		}
 	}
 	~WorldView() {
 

@@ -17,7 +17,7 @@ T(deltaT,0.05)
 %pt_K ~dependancy: 0.9 depends on last layer | 1.0 depends on air layer
 
 %water temperature ocean
-% assumed to have a week memory (water) and a strong dependency to the last constant layer (energy in ocean) https://en.wikipedia.org/wiki/Thermocline#/media/File:ThermoclineSeasonDepth.png
+%assumed to have a week memory (water) and a strong dependency to the last constant layer (energy in ocean) https://en.wikipedia.org/wiki/Thermocline#/media/File:ThermoclineSeasonDepth.png
 % depth_ground = 3; %meter
 % resolution = 0.25; %meter
 % pt_T = 0.1; 

@@ -370,6 +370,9 @@ void World::Update() {
 
 	TemperateZone T;
 	if (this->_G_->_SeasonShift < -_2PI) {
+		timer.stop();
+		std::cout << "LoopingTime: " + std::to_string(timer.getTime_in_ms()) + "\n";
+		timer.start();
 		this->_G_->_SeasonShift = this->_G_->_SeasonShift + _2PI;//ein Jahr ist um
 		for (int s = 0; s < _AMOUNT_SEASONS; s++) {//new temperature offset for the 4 Seasons
 			T = TemperateZone(s);
@@ -387,10 +390,14 @@ void World::Update() {
 	//UPDATE DeltaWorld
 
 	//BOOST_FOREACH
-	BOOST_FOREACH(DeltaWorld &WorldPart, this->world_parts) {
+	/*BOOST_FOREACH(DeltaWorld &WorldPart, this->world_parts) {
 		WorldPart.simulate(this->time);
-	}	
+	}*/	
 	//BOOST_FOREACH
+	//normal for
+	for (std::vector<DeltaWorld>::iterator it = this->world_parts.begin(); it != this->world_parts.end(); it++) {
+		it->simulate(this->time);
+	}
 
 	//update temp for every neigbour
 	int i;

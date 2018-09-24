@@ -275,7 +275,7 @@ void Animal::travel(Point2d& travelvector, double dt) {
 void Animal::calcTravel(Point2d& travelvector, double dt, bool new_delta_world) {
 
 	double travel_energy = current_delta_world->TravelDeltaWorld(travelvector, dt, properties_is.build.size, properties_is.build.density, properties_is.skin.feather);
-	properties_is.energie_storage.is.atp -= travel_energy;
+	properties_is.energie_storage.is.atp -= travel_energy*_ENERGY_TO_MOL_ATP;
 	properties_is.energie_storage.is.water -= _WATER_LOSS_FACTOR*travel_energy;	
 
 	this->position = this->position + travelvector;
@@ -298,12 +298,24 @@ double Animal::calcMaxPossibleSpeed(double dt) {
 void Animal::clone() {
 
 }
+
+void Animal::seachFood(double dt){
+	double plants = 0;
+	current_delta_world->seachPlants(plants, dt, properties_is.build.size);
+	//todo planzs to sugar and Fatt
+	plants = plants*_KG_SUGAR_TO_MOL;
+	properties_is.energie_storage.store_food(plants,0);
+}
+
+void Animal::seachWater(double dt){
+	double water = 0;
+	current_delta_world->seachWater(water, dt, properties_is.build.size);
+	properties_is.energie_storage.store_water(water);
+}
 //TODO
-void Animal::seachFood(double dt){}
-//TODO
-void Animal::seachWater(double dt){}
-//TODO
-void Animal::sleep(double dt){}
+void Animal::sleep(double dt){
+
+}
 //TODO
 void Animal::seachHideout(double dt){}
 

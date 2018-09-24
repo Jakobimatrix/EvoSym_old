@@ -53,6 +53,12 @@ double randGaus(double mean, double variance)
 	return distribution(generator);
 }
 
+double expDist(double lambda, double dt)
+{
+	std::exponential_distribution<> distribution(lambda);
+	return distribution(generator)*dt;
+}
+
 //https://stackoverflow.com/questions/9570895/image-downscaling-algorithm
 //scales a image with bilinear interpolaton
 void resample(void *a, void *b, int oldw, int oldh, int neww, int newh)

@@ -7,9 +7,11 @@
 **/
 #ifndef _ANIMAL_
 #define _ANIMAL_
+#include <boost\foreach.hpp>
 #include <Eigen\Dense>
 #include <math.h>
 #include <iostream>
+#include <vector>
 #include "globals.h"
 #include "structs.h"
 #include "SimulatedUnit.h"
@@ -122,6 +124,7 @@ public:
 			die();
 			return;
 		}
+		
 		this->init();
 		this->randinit();
 	}

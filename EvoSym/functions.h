@@ -44,6 +44,13 @@ double uniform_double_dist(double max, double min);
 //[variance]	Varianz der Normalverteilten Zufallsvariable
 double randGaus(double mean, double variance);
 
+// \brief expDist(double lambda, double dt);
+// Rückgabe: double Anzahl an Ereignissen.
+
+//[lambda]		rate at which an event happens
+//[dt]			intervall length at which an event might happen.
+double expDist(double lambda, double dt);
+
 // \brief smallerValue(T a, T b);
 // Vergleicht zwei Zahlenwerte (Typ egal aber gleich!)
 // Rückgabe: EingabeTyp Kleinere von beiden Werten

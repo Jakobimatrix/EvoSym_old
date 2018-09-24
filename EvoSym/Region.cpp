@@ -61,15 +61,8 @@ void Region::setToOcean() {
 	this->tau_plants = this->getRegionBasedPlantGrowth(this->region_id);
 	this->temp_optimal_growth = this->getOptimalTempForGrowth(this->region_id);
 
-	this->skill_to_cross[0] = Swim();
-	this->skill_to_cross[1] = Fly();
-	this->skill_to_cross[2] = NoSkill();
-	this->skill_to_reach_resources[0] = Swim();
-	this->skill_to_reach_resources[1] = Dive();
-	this->skill_to_reach_resources[2] = NoSkill();
-	resource_distribution_via_skill[0] = 0.01;
-	resource_distribution_via_skill[1] = 0.99;
-	resource_distribution_via_skill[2] = 0.0;
+	this->exp_distrib_lambda_find_all_water = _DAY_IN_S;
+	this->exp_distrib_lambda_find_all_plants = _MINUTE_IN_S*15.0;
 
 	this->possible_neighbour_chanse_factor[0] = 0.2;	//ocean
 	this->possible_neighbour_chanse_factor[1] = 0.0;	//lake
@@ -112,15 +105,8 @@ void Region::setToLake() {
 	this->tau_plants = this->getRegionBasedPlantGrowth(this->region_id);
 	this->temp_optimal_growth = this->getOptimalTempForGrowth(this->region_id);
 
-	this->skill_to_cross[0] = Swim();
-	this->skill_to_cross[1] = Fly();
-	this->skill_to_cross[2] = NoSkill();
-	this->skill_to_reach_resources[0] = Swim();
-	this->skill_to_reach_resources[1] = Dive();
-	this->skill_to_reach_resources[2] = NoSkill();
-	resource_distribution_via_skill[0] = 0.05;
-	resource_distribution_via_skill[1] = 0.95;
-	resource_distribution_via_skill[2] = 0.0;
+	this->exp_distrib_lambda_find_all_water = 0.1; //like in an instance
+	this->exp_distrib_lambda_find_all_plants = _MINUTE_IN_S*15.0;
 
 	this->possible_neighbour_chanse_factor[0] = 0.0;	//ocean
 	this->possible_neighbour_chanse_factor[1] = 0.01;	//lake
@@ -162,16 +148,8 @@ void Region::setToMeadow() {
 	this->tau_plants = this->getRegionBasedPlantGrowth(this->region_id);
 	this->temp_optimal_growth = this->getOptimalTempForGrowth(this->region_id);
 
-	this->skill_to_cross[0] = NoSkill();
-	this->skill_to_cross[1] = NoSkill();
-	this->skill_to_cross[2] = NoSkill();
-	this->skill_to_reach_resources[0] = Dig();
-	this->skill_to_reach_resources[1] = NoSkill();
-	this->skill_to_reach_resources[2] = NoSkill();
-	resource_distribution_via_skill[0] = 0.2;
-	resource_distribution_via_skill[1] = 0.8;
-	resource_distribution_via_skill[2] = 0.0;
-
+	this->exp_distrib_lambda_find_all_water = _MINUTE_IN_S * 15;
+	this->exp_distrib_lambda_find_all_plants = _MINUTE_IN_S * 5.0;
 
 	this->possible_neighbour_chanse_factor[0] = 0.1;	//ocean
 	this->possible_neighbour_chanse_factor[1] = 0.05;	//lake
@@ -213,16 +191,9 @@ void Region::setToForest() {
 	this->tau_fresh_water = this->getRegionBasedWaterRegeneration(this->region_id);
 	this->tau_plants = this->getRegionBasedPlantGrowth(this->region_id);
 	this->temp_optimal_growth = this->getOptimalTempForGrowth(this->region_id);
-	
-	this->skill_to_cross[0] = NoSkill();
-	this->skill_to_cross[1] = NoSkill();
-	this->skill_to_cross[2] = NoSkill();
-    this->skill_to_reach_resources[0] = Climb();
-	this->skill_to_reach_resources[1] = Dig();
-	this->skill_to_reach_resources[2] = NoSkill();
-	resource_distribution_via_skill[0] = 0.5;
-	resource_distribution_via_skill[1] = 0.3;
-	resource_distribution_via_skill[2] = 0.2;
+
+	this->exp_distrib_lambda_find_all_water = _MINUTE_IN_S * 15.0;
+	this->exp_distrib_lambda_find_all_plants = _MINUTE_IN_S * 7.0;
 
 	this->possible_neighbour_chanse_factor[0] = 0.1;	//ocean
 	this->possible_neighbour_chanse_factor[1] = 0.03;	//lake
@@ -265,15 +236,8 @@ void Region::setToSteppe() {
 	this->tau_plants = this->getRegionBasedPlantGrowth(this->region_id);
 	this->temp_optimal_growth = this->getOptimalTempForGrowth(this->region_id);
 
-	this->skill_to_cross[0] = NoSkill();
-	this->skill_to_cross[1] = NoSkill();
-	this->skill_to_cross[2] = NoSkill();
-	this->skill_to_reach_resources[0] = Climb();
-	this->skill_to_reach_resources[1] = Dig();
-	this->skill_to_reach_resources[2] = NoSkill();
-	resource_distribution_via_skill[0] = 0.1;
-	resource_distribution_via_skill[1] = 0.1;
-	resource_distribution_via_skill[2] = 0.8;
+	this->exp_distrib_lambda_find_all_water = _MINUTE_IN_S * 15;
+	this->exp_distrib_lambda_find_all_plants = _MINUTE_IN_S * 5.0;
 
 	this->possible_neighbour_chanse_factor[0] = 0.1;	//ocean
 	this->possible_neighbour_chanse_factor[1] = 0.001;	//lake
@@ -317,15 +281,8 @@ void Region::setToDesert() {
 	this->tau_plants = this->getRegionBasedPlantGrowth(this->region_id);
 	this->temp_optimal_growth = this->getOptimalTempForGrowth(this->region_id);
 
-	this->skill_to_cross[0] = NoSkill();
-	this->skill_to_cross[1] = NoSkill();
-	this->skill_to_cross[2] = NoSkill();
-	this->skill_to_reach_resources[0] = Dig();
-	this->skill_to_reach_resources[1] = NoSkill();
-	this->skill_to_reach_resources[2] = NoSkill();
-	resource_distribution_via_skill[0] = 0.01;
-	resource_distribution_via_skill[1] = 0.99;
-	resource_distribution_via_skill[2] = 0.0;
+	this->exp_distrib_lambda_find_all_water = _HOUR_IN_S * 3;
+	this->exp_distrib_lambda_find_all_plants = _HOUR_IN_S;
 
 	this->possible_neighbour_chanse_factor[0] = 0.1;	//ocean
 	this->possible_neighbour_chanse_factor[1] = 0.0001;	//lake
@@ -369,15 +326,8 @@ void Region::setToMoor() {
 	this->tau_plants = this->getRegionBasedPlantGrowth(this->region_id);
 	this->temp_optimal_growth = this->getOptimalTempForGrowth(this->region_id);
 
-	this->skill_to_cross[0] = NoSkill();
-	this->skill_to_cross[1] = NoSkill();
-	this->skill_to_cross[2] = NoSkill();
-	this->skill_to_reach_resources[0] = Dig();
-	this->skill_to_reach_resources[1] = NoSkill();
-	this->skill_to_reach_resources[2] = NoSkill();
-	resource_distribution_via_skill[0] = 0.1;
-	resource_distribution_via_skill[1] = 0.9;
-	resource_distribution_via_skill[2] = 0.0;
+	this->exp_distrib_lambda_find_all_water = _MINUTE_IN_S * 1;
+	this->exp_distrib_lambda_find_all_plants = _MINUTE_IN_S * 5.0;
 
 	this->possible_neighbour_chanse_factor[0] = 0.1;	//ocean
 	this->possible_neighbour_chanse_factor[1] = 0.1;	//lake
@@ -421,15 +371,8 @@ void Region::setToTropicalForest() {
 	this->tau_plants = this->getRegionBasedPlantGrowth(this->region_id);
 	this->temp_optimal_growth = this->getOptimalTempForGrowth(this->region_id);
 
-	this->skill_to_cross[0] = NoSkill();
-	this->skill_to_cross[1] = NoSkill();
-	this->skill_to_cross[2] = NoSkill();
-	this->skill_to_reach_resources[0] = Climb();
-	this->skill_to_reach_resources[1] = Dig();
-	this->skill_to_reach_resources[2] = NoSkill();
-	resource_distribution_via_skill[0] = 0.6;
-	resource_distribution_via_skill[1] = 0.1;
-	resource_distribution_via_skill[2] = 0.3;
+	this->exp_distrib_lambda_find_all_water = _MINUTE_IN_S * 10.0;
+	this->exp_distrib_lambda_find_all_plants = _MINUTE_IN_S * 19.0;
 
 	this->possible_neighbour_chanse_factor[0] = 0.1;	//ocean
 	this->possible_neighbour_chanse_factor[1] = 0.03;	//lake
@@ -472,15 +415,8 @@ void Region::setToIceDesert() {
 	this->tau_plants = this->getRegionBasedPlantGrowth(this->region_id);
 	this->temp_optimal_growth = this->getOptimalTempForGrowth(this->region_id);
 
-	this->skill_to_cross[0] = NoSkill();
-	this->skill_to_cross[1] = NoSkill();
-	this->skill_to_cross[2] = NoSkill();
-	this->skill_to_reach_resources[0] = NoSkill();
-	this->skill_to_reach_resources[1] = NoSkill();
-	this->skill_to_reach_resources[2] = NoSkill();
-	resource_distribution_via_skill[0] = 1.0;
-	resource_distribution_via_skill[1] = 0.0;
-	resource_distribution_via_skill[2] = 0.0;
+	this->exp_distrib_lambda_find_all_water = _MINUTE_IN_S * 35.0;
+	this->exp_distrib_lambda_find_all_plants = _HOUR_IN_S * 7.0;
 
 	this->possible_neighbour_chanse_factor[0] = 0.1;	//ocean
 	this->possible_neighbour_chanse_factor[1] = 0.001;	//lake
@@ -523,15 +459,8 @@ void Region::setToMountain() {
 	this->tau_plants = this->getRegionBasedPlantGrowth(this->region_id);
 	this->temp_optimal_growth = this->getOptimalTempForGrowth(this->region_id);
 
-	this->skill_to_cross[0] = Climb();
-	this->skill_to_cross[1] = NoSkill();
-	this->skill_to_cross[2] = NoSkill();
-	this->skill_to_reach_resources[0] = Climb();
-	this->skill_to_reach_resources[1] = Dig();
-	this->skill_to_reach_resources[2] = NoSkill();
-	resource_distribution_via_skill[0] = 0.9;
-	resource_distribution_via_skill[1] = 0.1;
-	resource_distribution_via_skill[2] = 0.0;
+	this->exp_distrib_lambda_find_all_water = _MINUTE_IN_S * 45.0;
+	this->exp_distrib_lambda_find_all_plants = _MINUTE_IN_S * 10.0;
 
 	this->possible_neighbour_chanse_factor[0] = 0.1;	//ocean
 	this->possible_neighbour_chanse_factor[1] = 0.02;	//lake

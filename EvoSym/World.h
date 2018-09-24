@@ -7,12 +7,12 @@
 **/
 #ifndef _WORLD_
 #define _WORLD_
-#include <boost/foreach.hpp>
-
+#include <boost\foreach.hpp>
 #include <math.h> /* floor */
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include "Timer.h"
 #include "DeltaWorld.h"
 #include "Region.h"
 #include "structs.h"
@@ -37,6 +37,7 @@ public:
 	std::vector<DeltaWorld> world_parts;
 	std::vector<xyMap> at2xy_lookup_table; //to find the x y coordnate if just iterating through the WorldParts Vector.
 	double time;
+
 private:
 
 	GlobalSingleton* _G_;
@@ -46,6 +47,8 @@ private:
 	bool init;
 	bool load_from_image;
 	sf::Image world_height_map;
+
+	Timer timer;
 
 public:
 
@@ -68,6 +71,8 @@ public:
 
 		this->init = false;
 		this->reset();
+
+		timer.start();
 	}
 
 	/**

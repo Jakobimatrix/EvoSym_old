@@ -1,6 +1,7 @@
 #ifndef _TileMap_
 #define _TileMap_
 
+#include <boost\assert.hpp>
 #include <SFML\Graphics.hpp>
 #include "globals.h"
 #include "World.h"
@@ -10,16 +11,24 @@ class TileMap : public sf::Drawable, public sf::Transformable
 private:
 	GlobalDrawSingleton* _G_DRAW_;
 	GlobalSingleton* _G_;
+	bool tile_loaded = false;
 public:
 
 	TileMap() {
-		tileset.loadFromFile(_SRC_TILE_IMAGE);
+		this->tile_loaded = tileset.loadFromFile(_SRC_TILE_IMAGE);
+		BOOST_ASSERT_MSG(tile_loaded, "ERROR in TileMap.h: There was a problem loading the tiles");
+		if (!this->tile_loaded) {
+			std::cout << "ERROR in TileMap.h: There was a problem loading the tiles in TileMap.h" << std::endl;
+		}
 		this->_G_DRAW_ = &this->_G_DRAW_->getInstance();
 		this->_G_ = &this->_G_->getInstance();
 		// resize the vertex array to fit the level size
 		vertices.setPrimitiveType(sf::Quads);
 		vertices.resize(_WORLD_DIMENSION * _WORLD_DIMENSION * 4);
 	}
+	bool isReady() {
+		return this->tile_loaded;
+	 }
 
 	bool loadAll(World &W, int representation)
 	{
@@ -57,6 +66,7 @@ public:
 			}
 
 			// find its position in the tileset texture
+			BOOST_ASSERT_MSG(tileset.getSize().x == 0, "ERROR in TileMap.h: There was a problem with the tile map image. The size seems to be zero.");
 			int tu = tileNumber % (tileset.getSize().x / _TILE_RESULUTION);
 			int tv = tileNumber / (tileset.getSize().x / _TILE_RESULUTION);
 

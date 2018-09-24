@@ -16,6 +16,12 @@ void Animals::Update(World& w) {
 			animal_decayed++;
 		}
 	}
+	/*for (std::vector<Animal>::iterator it = this->animals.begin(); it != this->animals.end(); it++) {
+		it->simulate(w.time);
+		if (it->isZero()) {
+			animal_decayed++;
+		}
+	}*/
 	std::vector<Animal>::iterator it = animals.begin();
 	if (animal_decayed > 0) {
 		while (it != animals.end()) {//delete animals which died and have zero nutritiant value

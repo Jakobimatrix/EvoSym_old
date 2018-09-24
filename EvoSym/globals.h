@@ -40,8 +40,8 @@ constexpr double _MAX_TERRANE_HEIGHT = 3000;//[m] The highst possible point of t
 constexpr double _MIN_TERRANE_HEIGHT = -3000;//[m] The lowest possible point of this world.
 
 //TileMap
-const std::string _SRC_TILE_IMAGE = "bilder/backgrounds/Tiles.png";//[path] Path to the tile map.
-constexpr int _TILE_RESULUTION = 500;//[pixel] Resulution of the individual tile pattern in _SRC_TILE_IMAGE.
+const std::string _SRC_TILE_IMAGE = "bilder/backgrounds/Tiles_100.png";//[path] Path to the tile map.
+constexpr int _TILE_RESULUTION = 100;//[pixel] Resulution of the individual tile pattern in _SRC_TILE_IMAGE.
 
 //Drawing
 constexpr double _VISUALIZED_TEMPERATURE_DIFFERENCE = 0.5; //[°C] At which temperature difference a tile should change apearence. The smaller this number the more often a tile has to be redrawn.
@@ -124,6 +124,7 @@ constexpr double _DECAY_FACTOR_SUGAR = _DECAY_FACTOR_FAT * 20; //kg/s
 constexpr double _WATER_FRICTION_MULTIPLICATOR = 3.0; //how much more energy traveling in water costs
 constexpr double _MIN_FLYING_WEIGHT_PER_SIZE_RATIO = 0.001; //how dense an anmal needs to be to be able to fly
 constexpr double _MIN_FLYING_FEATHERS = 0.7;
+constexpr int _NUM_SKILLS = 4;
 
 constexpr uint16_t _scent_decay[5] = { 0b101010101010101,0b101010101010101,0b101010101010101,0b101010101010101,0b101010101010101};
 //energyconsumption
@@ -229,10 +230,6 @@ public:
 	double SeasonMultiplier[4];//-1 bis 1; //in welcher Season wir uns gerade befinden the positive numbers always add to 1 == 100%
 	int dominantSeason;
 
-	int THREADS;
-	unsigned int logicalCores;
-	unsigned int Cores;
-
 private:
 	// Private Constructor
 	GlobalSingleton() {
@@ -262,58 +259,8 @@ private:
 			this->CurrentYearTempOffset[i] = 0.0;
 			this->NextYearTempOffset[i] = 0.0;
 		}
-
-		this->getCPUFeautures();
 	}
 
-
-	void cpuID(unsigned i, unsigned regs[4]) {
-		#ifdef _WIN32
-				__cpuid((int *)regs, (int)i);
-
-		#else
-				asm volatile
-					("cpuid" : "=a" (regs[0]), "=b" (regs[1]), "=c" (regs[2]), "=d" (regs[3])
-						: "a" (i), "c" (0));
-				// ECX is set to zero for CPUID function 4
-		#endif
-	}
-	void getCPUFeautures() {
-		//https://stackoverflow.com/questions/150355/programmatically-find-the-number-of-cores-on-a-machine
-		this->THREADS = std::thread::hardware_concurrency();//C++11
-
-		unsigned regs[4];
-
-		// Get vendor
-		char vendor[12];
-		cpuID(0, regs);
-		((unsigned *)vendor)[0] = regs[1]; // EBX
-		((unsigned *)vendor)[1] = regs[3]; // EDX
-		((unsigned *)vendor)[2] = regs[2]; // ECX
-		std::string cpuVendor = std::string(vendor, 12);
-
-		// Get CPU features
-		cpuID(1, regs);
-		unsigned cpuFeatures = regs[3]; // EDX
-
-										// Logical core count per CPU
-		cpuID(1, regs);
-		this->logicalCores = (regs[1] >> 16) & 0xff; // EBX[23:16]
-
-		this->Cores = this->logicalCores;
-
-		if (cpuVendor == "GenuineIntel") {
-			// Get DCP cache info
-			cpuID(4, regs);
-			this->Cores = ((regs[0] >> 26) & 0x3f) + 1; // EAX[31:26] + 1
-
-		}
-		else if (cpuVendor == "AuthenticAMD") {
-			// Get NC: Number of CPU cores - 1
-			cpuID(0x80000008, regs);
-			this->Cores = ((unsigned)(regs[2] & 0xff)) + 1; // ECX[7:0] + 1
-		}
-	}
 
 	// Stop the compiler generating methods of copy the object
 	GlobalSingleton(GlobalSingleton const& copy);            // Not Implemented
