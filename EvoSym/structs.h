@@ -245,8 +245,8 @@ constexpr double _FAT_TO_ATP = 122; //[mol] how many ATP from one fat-molecule
 constexpr double _FAT_TO_ATP_WATER_LOS = 18;//[mol] Conversation from 1 mol fat to 122 mol ATP needs 18 mol water
 constexpr double _LITER_2_MOL_H2O = 55.5;//[mol/l] => two hydrogen and one oxygen atom: atomic mass: 2*1.008 + 15.999 = 18.015. A litre is 1000 gm of water so 1000/18.015 = 55.5
 constexpr double _MOL_2_LITER_H20 = 1.0 / _LITER_2_MOL_H2O;
-//constexpr double _LOSS_SUGAR_FAT_CONVERSATION = 0.64; //loss in percentage, if sugar gets convertead to fat and than to atp instead directly to atp
-constexpr double _SUGAR_TO_FAT = 91.625; // [mol] how many FAT from one sugar-molecule
+constexpr double _SUGAR_TO_FAT = 1.0/4.5; // [mol] 4.5 mol sugar to 1 mol fat
+constexpr double _SUGAR_TO_FAT_ATP_LOSS = 29; // [mol] how many FAT from one sugar-molecule
 constexpr double _MOL_ATP_TO_ENERGY = 42300; //[Jule] Wikipedia:  Hydrolyse des abgespalteten Phosphats unter Standardbedingungen jeweils 32,3 kJ/mol (Spaltung einer Bindung) oder 64,6 kJ/mol (Spaltung beider Bindungen) Energie für Arbeitsleistungen in den Zellen frei.
 constexpr double _ENERGY_TO_MOL_ATP = 1.0/_MOL_ATP_TO_ENERGY; //[mol atp]  
 constexpr double _MOl_SUGAR_TO_KG = 0.180156; //[Kg sugar] C6H12O6 6*15.999 + 12*1.008 + 6*12.0107 = x: 1000/x = 5.5525
@@ -284,13 +284,14 @@ struct AnimalEnergyStorage {
 
 	//sugar in kg, fat in kg
 	void store_food(double sugar, double fat) {
-		is.sugar += sugar;//TODO in mol umrechnen!!
+		is.sugar += sugar * _KG_SUGAR_TO_MOL;
 		double sugar_surplus = 0;
 		if (is.sugar > max.sugar) { //sugar reserve is full
 			sugar_surplus = is.sugar - max.sugar;
 			is.sugar = max.sugar;
 		}
 		is.fat += fat + sugar_surplus*_SUGAR_TO_FAT; // convert rest (surplus sugar) to fat
+		is.atp -= sugar_surplus * _SUGAR_TO_FAT_ATP_LOSS;
 		if (is.fat > max.fat) {
 			is.fat = max.fat;
 		}

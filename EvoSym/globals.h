@@ -40,8 +40,8 @@ constexpr double _MAX_TERRANE_HEIGHT = 3000;//[m] The highst possible point of t
 constexpr double _MIN_TERRANE_HEIGHT = -3000;//[m] The lowest possible point of this world.
 
 //TileMap
-const std::string _SRC_TILE_IMAGE = "bilder/backgrounds/Tiles_100.png";//[path] Path to the tile map.
-constexpr int _TILE_RESULUTION = 100;//[pixel] Resulution of the individual tile pattern in _SRC_TILE_IMAGE.
+const std::string _SRC_TILE_IMAGE = "bilder/backgrounds/Tiles_500.png";//[path] Path to the tile map.
+constexpr int _TILE_RESULUTION = 500;//[pixel] Resulution of the individual tile pattern in _SRC_TILE_IMAGE.
 
 //Drawing
 constexpr double _VISUALIZED_TEMPERATURE_DIFFERENCE = 0.5; //[°C] At which temperature difference a tile should change apearence. The smaller this number the more often a tile has to be redrawn.
