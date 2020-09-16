@@ -19,8 +19,8 @@ When finished, this should model a World simpler but similar to ours where anima
 ![Seasons](https://github.com/Jakobimatrix/EvoSym/blob/master/impressios/season.gif)
 
 ### Todos:
- [ ] Implement animels / Neuronal Nets
- [ ] Port to Linux
- [ ] Refactor all the code
- [ ] use Eigen
+ - [ ] Implement animels / Neuronal Nets
+ - [ ] Port to Linux
+ - [ ] Refactor all the code
+ - [ ] use Eigen
 
